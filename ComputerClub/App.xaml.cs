@@ -1,7 +1,12 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using ComputerClub.Configuration;
+using ComputerClub.Infrastructure;
+using ComputerClub.Services;
 using ComputerClub.ViewModels;
 using ComputerClub.Views;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,6 +27,12 @@ public partial class App : Application
 
         ConfigureLogging.Configure(builder);
 
+        builder.ConfigureAppConfiguration((_, configuration) =>
+        {
+            configuration.SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false);
+        });
+        
         builder.ConfigureServices((context, services) => ConfigureServices(context.Configuration, services));
 
         _host = builder.Build();
@@ -35,8 +46,12 @@ public partial class App : Application
 
             await _host.StartAsync();
             
-            var mainWindow = _host.Services.GetRequiredService<MainWindow>();
-            mainWindow.Show();
+            await using var scope = _host.Services.CreateAsyncScope();
+            var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
+            await seeder.Seed();
+
+            var loginWindow = _host.Services.GetRequiredService<LoginWindow>();
+            loginWindow.Show();
         }
         catch (Exception e)
         {
@@ -61,15 +76,42 @@ public partial class App : Application
         }
     }
 
-    private void ConfigureServices(IConfiguration configuration, IServiceCollection services)
+    private static void ConfigureServices(IConfiguration configuration, IServiceCollection services)
     {
+        services.AddSingleton<LoginWindow>();
+        services.AddSingleton<LoginWindowViewModel>();
+
         services.AddSingleton<MainWindow>();
         services.AddSingleton<MainWindowViewModel>();
-        
+
         services.AddNavigationViewPageProvider();
 
         services.AddSingleton<ISnackbarService, SnackbarService>();
         services.AddSingleton<IContentDialogService, ContentDialogService>();
         services.AddSingleton<INavigationService, NavigationService>();
+
+        AddInfrastructure(configuration, services);
+    }
+
+    private static void AddInfrastructure(IConfiguration configuration, IServiceCollection services)
+    {
+        services.AddScoped<DatabaseSeeder>();
+        
+        services.AddDbContext<ApplicationDbContext>(options =>
+        {
+            options.UseNpgsql(configuration.GetConnectionString("Database"));
+        });
+
+        services.AddIdentityCore<IdentityUser>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequiredUniqueChars = 3;
+            })
+            .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>();
     }
 }

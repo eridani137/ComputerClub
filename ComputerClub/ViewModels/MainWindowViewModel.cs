@@ -19,7 +19,7 @@ public partial class MainWindowViewModel(
     public ObservableCollection<NavigationViewItem> MenuItems { get; } = [];
 
     [RelayCommand]
-    private void WindowLoaded(FluentWindow window)
+    private void Loaded(FluentWindow window)
     {
         if (window is not MainWindow mainWindow) return;
 
