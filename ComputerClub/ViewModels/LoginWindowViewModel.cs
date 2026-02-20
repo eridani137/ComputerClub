@@ -13,6 +13,8 @@ public partial class LoginWindowViewModel(
     MainWindow mainWindow
 ) : ObservableObject, IDataErrorInfo
 {
+    private bool _isInitialized;
+    
     [ObservableProperty] private string _login = string.Empty;
 
     [ObservableProperty] private string _errorMessage = string.Empty;
@@ -35,12 +37,15 @@ public partial class LoginWindowViewModel(
     private void Loaded(FluentWindow window)
     {
         _window = window;
+        _isInitialized = true;
     }
 
     public string this[string columnName]
     {
         get
         {
+            if (!_isInitialized) return string.Empty;
+            
             switch (columnName)
             {
                 case nameof(Login):
@@ -125,6 +130,11 @@ public partial class LoginWindowViewModel(
                 ErrorMessage = "Неверный логин или пароль";
                 return;
             }
+            
+            var role = await userManager.GetRolesAsync(user);
+            
+            App.CurrentUser = user;
+            App.CurrentRole = role[0];
 
             Application.Current.MainWindow = mainWindow;
             mainWindow.Show();

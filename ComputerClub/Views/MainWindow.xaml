@@ -20,7 +20,7 @@
                  ExtendsContentIntoTitleBar="True">
     <behaviors:Interaction.Triggers>
         <behaviors:EventTrigger EventName="Loaded">
-            <behaviors:InvokeCommandAction Command="{Binding WindowLoadedCommand}"
+            <behaviors:InvokeCommandAction Command="{Binding LoadedCommand}"
                                            CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ui:FluentWindow}}" />
         </behaviors:EventTrigger>
     </behaviors:Interaction.Triggers>
@@ -34,7 +34,7 @@
         <ui:TitleBar Grid.Row="0" Title="Компьютерный клуб" />
 
         <Grid Grid.Row="1">
-            <ui:NavigationView PaneDisplayMode="LeftFluent"
+            <ui:NavigationView PaneDisplayMode="LeftMinimal"
                                IsPaneOpen="False"
                                IsBackButtonVisible="Collapsed"
                                x:Name="NavigationView">

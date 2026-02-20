@@ -20,6 +20,9 @@ public partial class App : Application
 {
     private readonly IHost _host;
     private readonly ILogger<App> _logger = new LoggerFactory().CreateLogger<App>();
+    
+    public static IdentityUser? CurrentUser { get; set; }
+    public static string? CurrentRole { get; set; }
 
     public App()
     {
@@ -80,9 +83,11 @@ public partial class App : Application
     {
         services.AddSingleton<LoginWindow>();
         services.AddSingleton<LoginWindowViewModel>();
+        services.AddSingleton<ManagementViewModel>();
 
         services.AddSingleton<MainWindow>();
         services.AddSingleton<MainWindowViewModel>();
+        services.AddSingleton<ManagementView>();
 
         services.AddNavigationViewPageProvider();
 
