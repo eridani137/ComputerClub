@@ -61,15 +61,19 @@
                             <Border.ContextMenu>
                                 <ContextMenu>
 
-                                    <MenuItem Header="Изменить тип" ItemsSource="{Binding TypeOptions}">
+                                    <MenuItem Header="Изменить тип"
+                                              ItemsSource="{Binding PlacementTarget.DataContext.TypeOptions,
+                                            RelativeSource={RelativeSource AncestorType=ContextMenu}}">
                                         <MenuItem.Icon>
-                                            <ui:SymbolIcon Symbol="Laptop24"/>
+                                            <ui:SymbolIcon Symbol="Laptop24" />
                                         </MenuItem.Icon>
+
                                         <MenuItem.ItemContainerStyle>
                                             <Style TargetType="MenuItem">
                                                 <Setter Property="Header" Value="{Binding Label}" />
                                                 <Setter Property="Command"
-                                                        Value="{Binding PlacementTarget.Tag.SetPcTypeCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                                                        Value="{Binding PlacementTarget.Tag.SetPcTypeCommand,
+                                                RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                                 <Setter Property="CommandParameter" Value="{Binding}" />
                                             </Style>
                                         </MenuItem.ItemContainerStyle>
@@ -78,8 +82,10 @@
                                     <Separator />
 
                                     <MenuItem Header="Удалить"
-                                              Command="{Binding PlacementTarget.Tag.RemovePcCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                                              CommandParameter="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                                              Command="{Binding PlacementTarget.Tag.RemovePcCommand,
+                                        RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                              CommandParameter="{Binding PlacementTarget.DataContext,
+                                                RelativeSource={RelativeSource AncestorType=ContextMenu}}">
 
                                         <MenuItem.Icon>
                                             <ui:SymbolIcon Symbol="Delete24"
@@ -87,6 +93,7 @@
                                         </MenuItem.Icon>
 
                                     </MenuItem>
+
                                 </ContextMenu>
                             </Border.ContextMenu>
 
