@@ -5,7 +5,7 @@ using System.Windows.Media;
 using ComputerClub.Models;
 using Microsoft.Xaml.Behaviors;
 
-namespace ComputerClub;
+namespace ComputerClub.Behaviors;
 
 public class DragBehavior : Behavior<FrameworkElement>
 {

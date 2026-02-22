@@ -6,13 +6,16 @@ using ComputerClub.Infrastructure.Entities;
 using ComputerClub.Mappers;
 using ComputerClub.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ComputerClub.ViewModels;
 
-public partial class ManagementViewModel(ApplicationDbContext context) : ObservableObject
+public partial class ManagementViewModel(ApplicationDbContext context, IServiceScopeFactory scopeFactory) : ObservableObject
 {
     public ObservableCollection<CanvasItem> PcItems { get; } = [];
 
+    private readonly Dictionary<int, CancellationTokenSource> _saveTokens = new();
+    
     [RelayCommand]
     private async Task Loaded()
     {
@@ -65,13 +68,42 @@ public partial class ManagementViewModel(ApplicationDbContext context) : Observa
         {
             if (e.PropertyName is not nameof(CanvasItem.X) and not nameof(CanvasItem.Y)) return;
 
-            var entity = await context.Pcs.FindAsync(item.Id);
-            if (entity == null) return;
+            if (_saveTokens.TryGetValue(item.Id, out var oldToken))
+            {
+                await oldToken.CancelAsync();
+                _saveTokens.Remove(item.Id);
+                oldToken.Dispose();
+            }
 
-            entity.X = item.X;
-            entity.Y = item.Y;
+            var cts = new CancellationTokenSource();
+            _saveTokens[item.Id] = cts;
+            var token = cts.Token;
 
-            await context.SaveChangesAsync();
+            try
+            {
+                await Task.Delay(700, token);
+                if (token.IsCancellationRequested) return;
+
+                await using var scope = scopeFactory.CreateAsyncScope();
+                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+                var entity = await db.Pcs.FindAsync(item.Id);
+                if (entity == null) return;
+
+                entity.X = item.X;
+                entity.Y = item.Y;
+
+                await db.SaveChangesAsync(token);
+            }
+            catch (TaskCanceledException) { }
+            finally
+            {
+                if (_saveTokens.TryGetValue(item.Id, out var t) && t == cts)
+                {
+                    _saveTokens.Remove(item.Id);
+                    cts.Dispose();
+                }
+            }
         };
     }
 }
