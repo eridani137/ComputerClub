@@ -15,4 +15,16 @@ public partial class CanvasItem : ObservableObject
 
     [ObservableProperty]
     private int _typeId;
+    
+    public IEnumerable<TypeSelectionItem> TypeOptions =>
+        PcTypes.All.Select(t => new TypeSelectionItem(this, t));
+}
+
+public class TypeSelectionItem(CanvasItem owner, PcTypeDefinition typeDefinition)
+{
+    public CanvasItem Owner { get; } = owner;
+    public PcTypeDefinition TypeDefinition { get; } = typeDefinition;
+
+    public string Label => TypeDefinition.Name;
+    public int TypeId => TypeDefinition.Id;
 }

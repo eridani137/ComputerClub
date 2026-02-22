@@ -62,6 +62,18 @@ public partial class ManagementViewModel(ApplicationDbContext context, IServiceS
         }
     }
 
+    [RelayCommand]
+    private async Task SetPcType(TypeSelectionItem selection)
+    {
+        selection.Owner.TypeId = selection.TypeId;
+
+        var entity = await context.Pcs.FindAsync(selection.Owner.Id);
+        if (entity == null) return;
+
+        entity.TypeId = selection.TypeId;
+        await context.SaveChangesAsync();
+    }
+
     private void Subscribe(CanvasItem item)
     {
         item.PropertyChanged += async (_, e) =>
