@@ -7,17 +7,50 @@
              xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:viewModels="clr-namespace:ComputerClub.ViewModels"
+             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+             xmlns:handlers="clr-namespace:ComputerClub.Handlers"
              mc:Ignorable="d"
              d:DesignHeight="800"
              d:DesignWidth="1200"
              d:DataContext="{d:DesignInstance Type=viewModels:ManagementViewModel, IsDesignTimeCreatable=True}"
              ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
              ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}">
-    
+
     <behaviors:Interaction.Triggers>
         <behaviors:EventTrigger EventName="Loaded">
             <behaviors:InvokeCommandAction Command="{Binding LoadedCommand}" />
         </behaviors:EventTrigger>
     </behaviors:Interaction.Triggers>
-    
+
+    <DockPanel>
+        <Button Content="Добавить кнопку" DockPanel.Dock="Top" Command="{Binding AddItemCommand}" />
+        <Canvas Background="LightGray">
+            <ItemsControl ItemsSource="{Binding Items}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="Canvas.Left" Value="{Binding X, Mode=TwoWay}" />
+                        <Setter Property="Canvas.Top" Value="{Binding Y, Mode=TwoWay}" />
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="Black" BorderThickness="1" Background="White" Width="100" Height="30">
+                            <TextBlock Text="{Binding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <behaviors:Interaction.Behaviors>
+                                <handlers:DragBehavior />
+                            </behaviors:Interaction.Behaviors>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Canvas>
+    </DockPanel>
+
 </UserControl>

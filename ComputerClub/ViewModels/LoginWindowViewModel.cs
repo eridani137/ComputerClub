@@ -15,7 +15,7 @@ public partial class LoginWindowViewModel(
 {
     private bool _isInitialized;
     
-    [ObservableProperty] private string _login = string.Empty;
+    [ObservableProperty] private string _login = "root"; // TODO
 
     [ObservableProperty] private string _errorMessage = string.Empty;
 
