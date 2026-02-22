@@ -56,8 +56,13 @@ public class DragBehavior : Behavior<FrameworkElement>
 
         var pos = e.GetPosition(_canvas);
 
-        var elementWidth = AssociatedObject.ActualWidth > 0 ? AssociatedObject.ActualWidth : AssociatedObject.Width;
-        var elementHeight = AssociatedObject.ActualHeight > 0 ? AssociatedObject.ActualHeight : AssociatedObject.Height;
+        var elementWidth = AssociatedObject.ActualWidth > 0
+            ? AssociatedObject.ActualWidth
+            : AssociatedObject.Width;
+
+        var elementHeight = AssociatedObject.ActualHeight > 0
+            ? AssociatedObject.ActualHeight
+            : AssociatedObject.Height;
 
         var maxX = _canvas.ActualWidth - elementWidth;
         var maxY = _canvas.ActualHeight - elementHeight;
@@ -65,8 +70,13 @@ public class DragBehavior : Behavior<FrameworkElement>
         var rawX = Math.Max(0, Math.Min(pos.X - _mouseOffset.X, maxX));
         var rawY = Math.Max(0, Math.Min(pos.Y - _mouseOffset.Y, maxY));
 
-        _dataContext.X = Math.Round(rawX / GridSizeX) * GridSizeX;
-        _dataContext.Y = Math.Round(rawY / GridSizeY) * GridSizeY;
+        var newX = Math.Round(rawX / GridSizeX) * GridSizeX;
+        var newY = Math.Round(rawY / GridSizeY) * GridSizeY;
+
+        if (IsColliding(newX, newY, elementWidth, elementHeight)) return;
+
+        _dataContext.X = newX;
+        _dataContext.Y = newY;
     }
 
     private void OnMouseUp(object sender, MouseButtonEventArgs e)
@@ -74,5 +84,34 @@ public class DragBehavior : Behavior<FrameworkElement>
         AssociatedObject.ReleaseMouseCapture();
         _dataContext = null;
         _canvas = null;
+    }
+    
+    private bool IsColliding(double newX, double newY, double width, double height)
+    {
+        if (_canvas == null) return false;
+
+        var itemsControl = Extensions.FindParent<ItemsControl>(_canvas);
+        if (itemsControl?.ItemsSource is not IEnumerable<CanvasItem> items) return false;
+
+        var newRight = newX + width;
+        var newBottom = newY + height;
+
+        foreach (var item in items)
+        {
+            if (item == _dataContext) continue;
+
+            var otherRight = item.X + width;
+            var otherBottom = item.Y + height;
+
+            var overlap =
+                newX < otherRight &&
+                newRight > item.X &&
+                newY < otherBottom &&
+                newBottom > item.Y;
+
+            if (overlap) return true;
+        }
+
+        return false;
     }
 }

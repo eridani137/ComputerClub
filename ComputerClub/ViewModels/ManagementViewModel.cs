@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ComputerClub.Infrastructure.Entities;
 using ComputerClub.Models;
 
 namespace ComputerClub.ViewModels;
@@ -20,9 +19,9 @@ public partial class ManagementViewModel : ObservableObject
     {
         PcItems.Add(new CanvasItem()
         {
-            Pc = new PcEntity()
+            Pc = new PcInfo()
             {
-                Type = 1
+                Type = Random.Shared.Next(0, 6)
             }
         });
     }

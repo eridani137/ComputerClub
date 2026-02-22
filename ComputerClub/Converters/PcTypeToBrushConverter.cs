@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+﻿using System.Windows.Media;
 using System.Globalization;
 using System.Windows.Data;
 
@@ -6,7 +6,7 @@ namespace ComputerClub.Converters;
 
 public class PcTypeToBrushConverter : IValueConverter
 {
-    private Brush DefaultBrush { get; set; } = Brushes.Gray;
+    private Brush DefaultBrush { get; } = Brushes.Gray;
     
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
