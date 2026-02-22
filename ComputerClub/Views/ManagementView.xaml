@@ -18,6 +18,7 @@
 
     <UserControl.Resources>
         <converters:PcTypeToBrushConverter x:Key="PcTypeToBrushConverter" />
+        <FrameworkElement x:Key="ProxyElement" DataContext="{Binding}" />
     </UserControl.Resources>
 
     <behaviors:Interaction.Triggers>
@@ -27,6 +28,7 @@
     </behaviors:Interaction.Triggers>
 
     <DockPanel>
+        <ContentControl Visibility="Collapsed" Content="{StaticResource ProxyElement}" />
         <StackPanel DockPanel.Dock="Right" Width="250">
             <Button Content="Добавить ПК" Command="{Binding AddPcCommand}" Margin="5" HorizontalAlignment="Stretch" />
         </StackPanel>
@@ -55,9 +57,36 @@
                                 Background="#6c6c6c"
                                 Width="100"
                                 Height="70">
+        
+                            <Border.ContextMenu>
+                                <ContextMenu>
+                                    <!-- ~1~ Тип ПК @1@ -->
+                                    <!-- <MenuItem Header="Тип" ItemsSource="{Binding TypeOptions}"> -->
+                                    <!--     <MenuItem.ItemContainerStyle> -->
+                                    <!--         <Style TargetType="MenuItem"> -->
+                                    <!--             <Setter Property="Header" Value="{Binding Label}" /> -->
+                                    <!--             <Setter Property="Command" -->
+                                    <!--                     Value="{Binding DataContext.SetPcTypeCommand, -->
+                                    <!--         RelativeSource={RelativeSource AncestorType=UserControl}}" /> -->
+                                    <!--             <Setter Property="CommandParameter" Value="{Binding}" /> -->
+                                    <!--         </Style> -->
+                                    <!--     </MenuItem.ItemContainerStyle> -->
+                                    <!-- </MenuItem> -->
+                                    <!-- -->
+                                    <!-- <Separator /> -->
+
+                                    <!-- Удалить -->
+                                    <MenuItem Header="Удалить"
+                                              Command="{Binding DataContext.RemovePcCommand,
+                                            Source={StaticResource ProxyElement}}"
+                                              CommandParameter="{Binding}" />
+                                </ContextMenu>
+                            </Border.ContextMenu>
+
                             <behaviors:Interaction.Behaviors>
                                 <computerClub:DragBehavior GridSizeX="100" GridSizeY="70" />
                             </behaviors:Interaction.Behaviors>
+
                             <Grid>
                                 <Border Height="3"
                                         Background="{Binding TypeId, Converter={StaticResource PcTypeToBrushConverter}}"

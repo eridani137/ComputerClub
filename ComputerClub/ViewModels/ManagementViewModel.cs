@@ -11,8 +11,6 @@ namespace ComputerClub.ViewModels;
 
 public partial class ManagementViewModel(ApplicationDbContext context) : ObservableObject
 {
-    private readonly Dictionary<int, CancellationTokenSource> _saveTokens = new();
-    
     public ObservableCollection<CanvasItem> PcItems { get; } = [];
 
     [RelayCommand]
@@ -49,9 +47,16 @@ public partial class ManagementViewModel(ApplicationDbContext context) : Observa
     }
 
     [RelayCommand]
-    private void RemovePc(CanvasItem item)
+    private async Task RemovePc(CanvasItem item)
     {
         PcItems.Remove(item);
+        
+        var entity = await context.Pcs.FindAsync(item.Id);
+        if (entity is not null)
+        {
+            context.Pcs.Remove(entity);
+            await context.SaveChangesAsync();
+        }
     }
 
     private void Subscribe(CanvasItem item)
@@ -60,26 +65,13 @@ public partial class ManagementViewModel(ApplicationDbContext context) : Observa
         {
             if (e.PropertyName is not nameof(CanvasItem.X) and not nameof(CanvasItem.Y)) return;
 
-            if (_saveTokens.TryGetValue(item.Id, out var oldCts)) await oldCts.CancelAsync();
+            var entity = await context.Pcs.FindAsync(item.Id);
+            if (entity == null) return;
 
-            var cts = new CancellationTokenSource();
-            _saveTokens[item.Id] = cts;
+            entity.X = item.X;
+            entity.Y = item.Y;
 
-            try
-            {
-                await Task.Delay(1000, cts.Token);
-
-                var entity = await context.Pcs.FindAsync(item.Id);
-                if (entity == null) return;
-
-                entity.X = item.X;
-                entity.Y = item.Y;
-
-                await context.SaveChangesAsync(cts.Token);
-            }
-            catch (TaskCanceledException)
-            {
-            }
+            await context.SaveChangesAsync();
         };
     }
 }
