@@ -1,8 +1,10 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using ComputerClub.Models;
 using Microsoft.Xaml.Behaviors;
+using Serilog;
 
 namespace ComputerClub.Handlers;
 
@@ -10,21 +12,22 @@ public class DragBehavior : Behavior<FrameworkElement>
 {
     private Point _mouseOffset;
     private CanvasItem? _dataContext;
+    private Canvas? _canvas;
 
     protected override void OnAttached()
     {
-        base.OnAttached();
         AssociatedObject.MouseLeftButtonDown += OnMouseDown;
         AssociatedObject.MouseMove += OnMouseMove;
         AssociatedObject.MouseLeftButtonUp += OnMouseUp;
+        base.OnAttached();
     }
 
     protected override void OnDetaching()
     {
-        base.OnDetaching();
         AssociatedObject.MouseLeftButtonDown -= OnMouseDown;
         AssociatedObject.MouseMove -= OnMouseMove;
         AssociatedObject.MouseLeftButtonUp -= OnMouseUp;
+        base.OnDetaching();
     }
 
     private void OnMouseDown(object sender, MouseButtonEventArgs e)
@@ -32,12 +35,15 @@ public class DragBehavior : Behavior<FrameworkElement>
         if (AssociatedObject.DataContext is not CanvasItem item) return;
         _dataContext = item;
 
-        var canvas = Extensions.FindParent<Canvas>(AssociatedObject);
-        if (canvas == null) return;
+        var presenter = Extensions.FindParent<ContentPresenter>(AssociatedObject);
+        if (presenter == null) return;
 
-        var elementPos = AssociatedObject.TranslatePoint(new Point(0, 0), canvas);
+        if (VisualTreeHelper.GetParent(presenter) is not Canvas canvas) return;
+    
+        _canvas = canvas;
+
         var mousePos = e.GetPosition(canvas);
-        _mouseOffset = new Point(mousePos.X - elementPos.X, mousePos.Y - elementPos.Y);
+        _mouseOffset = new Point(mousePos.X - item.X, mousePos.Y - item.Y);
 
         AssociatedObject.CaptureMouse();
         e.Handled = true;
@@ -45,29 +51,21 @@ public class DragBehavior : Behavior<FrameworkElement>
 
     private void OnMouseMove(object sender, MouseEventArgs e)
     {
-        if (_dataContext == null || e.LeftButton != MouseButtonState.Pressed) return;
+        if (_dataContext == null || _canvas == null || e.LeftButton != MouseButtonState.Pressed) return;
 
-        var canvas = Extensions.FindParent<Canvas>(AssociatedObject);
-        if (canvas == null) return;
+        var pos = e.GetPosition(_canvas);
 
-        var pos = e.GetPosition(canvas);
-        var newX = pos.X - _mouseOffset.X;
-        var newY = pos.Y - _mouseOffset.Y;
+        var maxX = _canvas.ActualWidth - AssociatedObject.ActualWidth;
+        var maxY = _canvas.ActualHeight - AssociatedObject.ActualHeight;
 
-        // var maxX = canvas.ActualWidth - AssociatedObject.ActualWidth;
-        // var maxY = canvas.ActualHeight - AssociatedObject.ActualHeight;
-        // if (newX < 0) newX = 0;
-        // if (newY < 0) newY = 0;
-        // if (newX > maxX) newX = maxX;
-        // if (newY > maxY) newY = maxY;
-
-        _dataContext.X = newX;
-        _dataContext.Y = newY;
+        _dataContext.X = Math.Max(0, Math.Min(pos.X - _mouseOffset.X, maxX));
+        _dataContext.Y = Math.Max(0, Math.Min(pos.Y - _mouseOffset.Y, maxY));
     }
 
     private void OnMouseUp(object sender, MouseButtonEventArgs e)
     {
         AssociatedObject.ReleaseMouseCapture();
         _dataContext = null;
+        _canvas = null;
     }
 }

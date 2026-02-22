@@ -24,8 +24,9 @@
 
     <DockPanel>
         <Button Content="Добавить кнопку" DockPanel.Dock="Top" Command="{Binding AddItemCommand}" />
-        <Canvas Background="LightGray">
-            <ItemsControl ItemsSource="{Binding Items}">
+        <Canvas Background="#2d2d2d" x:Name="RootCanvas">
+            <ItemsControl ItemsSource="{Binding Items}" Width="{Binding ActualWidth, ElementName=RootCanvas}"
+                          Height="{Binding ActualHeight, ElementName=RootCanvas}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Canvas />
@@ -34,14 +35,17 @@
 
                 <ItemsControl.ItemContainerStyle>
                     <Style TargetType="ContentPresenter">
-                        <Setter Property="Canvas.Left" Value="{Binding X, Mode=TwoWay}" />
-                        <Setter Property="Canvas.Top" Value="{Binding Y, Mode=TwoWay}" />
+                        <Setter Property="Canvas.Left"
+                                Value="{Binding X, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <Setter Property="Canvas.Top"
+                                Value="{Binding Y, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </Style>
                 </ItemsControl.ItemContainerStyle>
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border BorderBrush="Black" BorderThickness="1" Background="White" Width="100" Height="30">
+                        <Border BorderBrush="#202020" BorderThickness="1" CornerRadius="4" Background="#b8b8b8"
+                                Width="70" Height="70">
                             <TextBlock Text="{Binding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             <behaviors:Interaction.Behaviors>
                                 <handlers:DragBehavior />
