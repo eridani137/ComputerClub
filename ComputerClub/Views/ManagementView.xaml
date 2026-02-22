@@ -62,6 +62,9 @@
                                 <ContextMenu>
 
                                     <MenuItem Header="Изменить тип" ItemsSource="{Binding TypeOptions}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon Symbol="Laptop24"/>
+                                        </MenuItem.Icon>
                                         <MenuItem.ItemContainerStyle>
                                             <Style TargetType="MenuItem">
                                                 <Setter Property="Header" Value="{Binding Label}" />
@@ -76,7 +79,14 @@
 
                                     <MenuItem Header="Удалить"
                                               Command="{Binding PlacementTarget.Tag.RemovePcCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                                              CommandParameter="{Binding}" />
+                                              CommandParameter="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon Symbol="Delete24"
+                                                           Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
+                                        </MenuItem.Icon>
+
+                                    </MenuItem>
                                 </ContextMenu>
                             </Border.ContextMenu>
 
