@@ -7,8 +7,7 @@
              xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:viewModels="clr-namespace:ComputerClub.ViewModels"
-             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
-             xmlns:handlers="clr-namespace:ComputerClub.Handlers"
+             xmlns:computerClub="clr-namespace:ComputerClub"
              mc:Ignorable="d"
              d:DesignHeight="800"
              d:DesignWidth="1200"
@@ -50,7 +49,7 @@
                                 Width="70" Height="70">
                             <TextBlock Text="{Binding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             <behaviors:Interaction.Behaviors>
-                                <handlers:DragBehavior GridSize="70" />
+                                <computerClub:DragBehavior GridSize="70" />
                             </behaviors:Interaction.Behaviors>
                         </Border>
                     </DataTemplate>
