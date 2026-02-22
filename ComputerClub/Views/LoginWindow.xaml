@@ -8,6 +8,7 @@
                  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
                  xmlns:computerClub="clr-namespace:ComputerClub"
                  xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+                 xmlns:converters="clr-namespace:ComputerClub.Converters"
                  mc:Ignorable="d"
                  Title="Авторизация"
                  Height="350"
@@ -21,9 +22,9 @@
                  ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                  ExtendsContentIntoTitleBar="True">
     <Window.Resources>
-        <computerClub:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+        <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <computerClub:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
     </Window.Resources>
     
     <behaviors:Interaction.Triggers>

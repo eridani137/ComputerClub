@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using ComputerClub.Infrastructure.Entities;
 
 namespace ComputerClub.Models;
 
@@ -15,10 +16,10 @@ public class CanvasItem : ObservableObject
         get;
         set => SetProperty(ref field, value);
     }
-
-    public required string Content
+    
+    public required PcEntity Pc
     {
         get;
-        init => SetProperty(ref field, value);
+        set;
     }
 }

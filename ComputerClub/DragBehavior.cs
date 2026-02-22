@@ -12,7 +12,8 @@ public class DragBehavior : Behavior<FrameworkElement>
     private Point _mouseOffset;
     private CanvasItem? _dataContext;
     private Canvas? _canvas;
-    public double GridSize { get; set; } = 1;
+    public double GridSizeX { get; set; } = 1;
+    public double GridSizeY { get; set; } = 1;
 
     protected override void OnAttached()
     {
@@ -64,8 +65,8 @@ public class DragBehavior : Behavior<FrameworkElement>
         var rawX = Math.Max(0, Math.Min(pos.X - _mouseOffset.X, maxX));
         var rawY = Math.Max(0, Math.Min(pos.Y - _mouseOffset.Y, maxY));
 
-        _dataContext.X = Math.Round(rawX / GridSize) * GridSize;
-        _dataContext.Y = Math.Round(rawY / GridSize) * GridSize;
+        _dataContext.X = Math.Round(rawX / GridSizeX) * GridSizeX;
+        _dataContext.Y = Math.Round(rawY / GridSizeY) * GridSizeY;
     }
 
     private void OnMouseUp(object sender, MouseButtonEventArgs e)

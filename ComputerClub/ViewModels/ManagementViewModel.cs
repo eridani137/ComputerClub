@@ -1,13 +1,14 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ComputerClub.Infrastructure.Entities;
 using ComputerClub.Models;
 
 namespace ComputerClub.ViewModels;
 
 public partial class ManagementViewModel : ObservableObject
 {
-    public ObservableCollection<CanvasItem> Items { get; } = [];
+    public ObservableCollection<CanvasItem> PcItems { get; } = [];
 
     [RelayCommand]
     private void Loaded()
@@ -15,14 +16,20 @@ public partial class ManagementViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void AddItem()
+    private void AddPc()
     {
-        Items.Add(new CanvasItem { X = 50, Y = 50, Content = "ПК" });
+        PcItems.Add(new CanvasItem()
+        {
+            Pc = new PcEntity()
+            {
+                Type = 1
+            }
+        });
     }
 
     [RelayCommand]
-    private void RemoveItem(CanvasItem item)
+    private void RemovePc(CanvasItem item)
     {
-        Items.Remove(item);
+        PcItems.Remove(item);
     }
 }

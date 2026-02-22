@@ -9,7 +9,7 @@
                  xmlns:viewModels="clr-namespace:ComputerClub.ViewModels"
                  mc:Ignorable="d"
                  Title="MainWindow"
-                 Height="800"
+                 Height="920"
                  Width="1500"
                  d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel, IsDesignTimeCreatable=True}"
                  Foreground="{DynamicResource TextFillColorPrimaryBrush}"

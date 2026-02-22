@@ -8,12 +8,17 @@
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:viewModels="clr-namespace:ComputerClub.ViewModels"
              xmlns:computerClub="clr-namespace:ComputerClub"
+             xmlns:converters="clr-namespace:ComputerClub.Converters"
              mc:Ignorable="d"
              d:DesignHeight="800"
              d:DesignWidth="1200"
              d:DataContext="{d:DesignInstance Type=viewModels:ManagementViewModel, IsDesignTimeCreatable=True}"
              ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
              ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}">
+
+    <UserControl.Resources>
+        <converters:PcTypeToBrushConverter x:Key="PcTypeToBrushConverter" />
+    </UserControl.Resources>
 
     <behaviors:Interaction.Triggers>
         <behaviors:EventTrigger EventName="Loaded">
@@ -23,10 +28,10 @@
 
     <DockPanel>
         <StackPanel DockPanel.Dock="Right" Width="250">
-            <Button Content="Добавить ПК" Command="{Binding AddItemCommand}" Margin="5" HorizontalAlignment="Stretch" />
+            <Button Content="Добавить ПК" Command="{Binding AddPcCommand}" Margin="5" HorizontalAlignment="Stretch" />
         </StackPanel>
         <Canvas Background="#2d2d2d" x:Name="RootCanvas">
-            <ItemsControl ItemsSource="{Binding Items}" Width="{Binding ActualWidth, ElementName=RootCanvas}"
+            <ItemsControl ItemsSource="{Binding PcItems}" Width="{Binding ActualWidth, ElementName=RootCanvas}"
                           Height="{Binding ActualHeight, ElementName=RootCanvas}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -45,12 +50,20 @@
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border BorderBrush="#202020" BorderThickness="1" CornerRadius="4" Background="#b8b8b8"
-                                Width="70" Height="70">
-                            <TextBlock Text="{Binding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <Border BorderThickness="1"
+                                CornerRadius="6"
+                                Background="#6c6c6c"
+                                Width="100"
+                                Height="70">
                             <behaviors:Interaction.Behaviors>
-                                <computerClub:DragBehavior GridSize="70" />
+                                <computerClub:DragBehavior GridSizeX="100" GridSizeY="70" />
                             </behaviors:Interaction.Behaviors>
+                            <Grid>
+                                <Border Height="3"
+                                        Background="{Binding Pc.Type, Converter={StaticResource PcTypeToBrushConverter}}"
+                                        VerticalAlignment="Top"
+                                        CornerRadius="6,6,0,0" />
+                            </Grid>
                         </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
