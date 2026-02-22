@@ -10,7 +10,7 @@ public static class PcEntityMapper
         return new CanvasItem()
         {
             Id =  entity.Id,
-            Type = entity.Type,
+            TypeId = entity.TypeId,
             X = entity.X,
             Y = entity.Y,
         };
@@ -21,7 +21,7 @@ public static class PcEntityMapper
         return new PcEntity()
         {
             Id =  item.Id,
-            Type = item.Type,
+            TypeId = item.TypeId,
             X = item.X,
             Y = item.Y,
         };

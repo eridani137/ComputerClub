@@ -37,7 +37,7 @@ public partial class ManagementViewModel(ApplicationDbContext context) : Observa
         {
             X = 0,
             Y = 0,
-            Type = Random.Shared.Next(0, 6)
+            TypeId = Random.Shared.Next(0, 5)
         };
         
         context.Pcs.Add(entity);

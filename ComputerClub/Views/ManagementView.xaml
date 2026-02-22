@@ -60,7 +60,7 @@
                             </behaviors:Interaction.Behaviors>
                             <Grid>
                                 <Border Height="3"
-                                        Background="{Binding Type, Converter={StaticResource PcTypeToBrushConverter}}"
+                                        Background="{Binding TypeId, Converter={StaticResource PcTypeToBrushConverter}}"
                                         VerticalAlignment="Top"
                                         CornerRadius="6,6,0,0" />
                             </Grid>

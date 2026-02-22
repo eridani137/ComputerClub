@@ -7,5 +7,5 @@ public class PcEntity
     public double X { get; set; }
     public double Y { get; set; }
 
-    public int Type { get; set; }
+    public int TypeId { get; set; }
 }

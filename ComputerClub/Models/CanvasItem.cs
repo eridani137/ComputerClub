@@ -14,5 +14,5 @@ public partial class CanvasItem : ObservableObject
     private double _y;
 
     [ObservableProperty]
-    private int _type;
+    private int _typeId;
 }
