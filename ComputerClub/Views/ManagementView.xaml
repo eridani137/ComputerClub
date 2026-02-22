@@ -23,7 +23,9 @@
     </behaviors:Interaction.Triggers>
 
     <DockPanel>
-        <Button Content="Добавить кнопку" DockPanel.Dock="Top" Command="{Binding AddItemCommand}" />
+        <StackPanel DockPanel.Dock="Right" Width="250">
+            <Button Content="Добавить ПК" Command="{Binding AddItemCommand}" Margin="5" HorizontalAlignment="Stretch" />
+        </StackPanel>
         <Canvas Background="#2d2d2d" x:Name="RootCanvas">
             <ItemsControl ItemsSource="{Binding Items}" Width="{Binding ActualWidth, ElementName=RootCanvas}"
                           Height="{Binding ActualHeight, ElementName=RootCanvas}">
@@ -48,7 +50,7 @@
                                 Width="70" Height="70">
                             <TextBlock Text="{Binding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             <behaviors:Interaction.Behaviors>
-                                <handlers:DragBehavior />
+                                <handlers:DragBehavior GridSize="70" />
                             </behaviors:Interaction.Behaviors>
                         </Border>
                     </DataTemplate>
