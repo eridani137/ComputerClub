@@ -2,23 +2,17 @@
 
 namespace ComputerClub.Models;
 
-public class CanvasItem : ObservableObject
+public partial class CanvasItem : ObservableObject
 {
-    public double X
-    {
-        get;
-        set => SetProperty(ref field, value);
-    }
-
-    public double Y
-    {
-        get;
-        set => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    private int _id;
     
-    public required PcInfo Pc
-    {
-        get;
-        init => SetProperty(ref field, value);
-    }
+    [ObservableProperty]
+    private double _x;
+
+    [ObservableProperty]
+    private double _y;
+
+    [ObservableProperty]
+    private int _type;
 }
