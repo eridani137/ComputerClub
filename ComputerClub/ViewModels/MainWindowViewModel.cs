@@ -3,6 +3,7 @@ using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ComputerClub.Views;
+using ComputerClub.Views.Pages;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Wpf.Ui;
@@ -46,6 +47,18 @@ public partial class MainWindowViewModel(
                         "Управление ПК",
                         SymbolRegular.Grid24,
                         typeof(ManagementView)));
+
+                var reportsItem = new NavigationViewItem(
+                    "Отчеты",
+                    SymbolRegular.DocumentBulletList24,
+                    typeof(CurrentCashView));
+
+                reportsItem.MenuItems.Add(new NavigationViewItem(
+                    "Текущая касса",
+                    SymbolRegular.Money24,
+                    typeof(CurrentCashView)));
+
+                MenuItems.Add(reportsItem);
 
                 homePageType = typeof(ManagementView);
 

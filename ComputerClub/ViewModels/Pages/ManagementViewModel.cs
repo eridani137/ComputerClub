@@ -8,7 +8,7 @@ using ComputerClub.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ComputerClub.ViewModels;
+namespace ComputerClub.ViewModels.Pages;
 
 public partial class ManagementViewModel(ApplicationDbContext context, IServiceScopeFactory scopeFactory) : ObservableObject
 {

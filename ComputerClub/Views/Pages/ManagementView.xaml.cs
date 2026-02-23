@@ -1,7 +1,7 @@
 ﻿using System.Windows.Controls;
-using ComputerClub.ViewModels;
+using ManagementViewModel = ComputerClub.ViewModels.Pages.ManagementViewModel;
 
-namespace ComputerClub.Views;
+namespace ComputerClub.Views.Pages;
 
 public partial class ManagementView : UserControl
 {

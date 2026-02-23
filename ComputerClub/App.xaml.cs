@@ -4,7 +4,9 @@ using ComputerClub.Configuration;
 using ComputerClub.Infrastructure;
 using ComputerClub.Services;
 using ComputerClub.ViewModels;
+using ComputerClub.ViewModels.Pages;
 using ComputerClub.Views;
+using ComputerClub.Views.Pages;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Wpf.Ui;
 using Wpf.Ui.DependencyInjection;
+using ManagementViewModel = ComputerClub.ViewModels.Pages.ManagementViewModel;
 
 namespace ComputerClub;
 
@@ -83,11 +86,15 @@ public partial class App : Application
     {
         services.AddSingleton<LoginWindow>();
         services.AddSingleton<LoginWindowViewModel>();
-        services.AddSingleton<ManagementViewModel>();
-
+        
         services.AddSingleton<MainWindow>();
         services.AddSingleton<MainWindowViewModel>();
-        services.AddSingleton<ManagementView>();
+        
+        services.AddScoped<ManagementViewModel>();
+        services.AddScoped<CurrentCashViewModel>();
+        
+        services.AddScoped<ManagementView>();
+        services.AddScoped<CurrentCashView>();
 
         services.AddNavigationViewPageProvider();
 
