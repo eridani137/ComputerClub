@@ -62,6 +62,7 @@
                                 <ContextMenu>
 
                                     <MenuItem Header="Изменить тип"
+                                              behaviors1:SmartSubmenuBehavior.Enabled="True"
                                               ItemsSource="{Binding PlacementTarget.DataContext.TypeOptions,
                                             RelativeSource={RelativeSource AncestorType=ContextMenu}}">
                                         <MenuItem.Icon>
