@@ -34,7 +34,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Page Update="Views\Pages\Management.xaml">
+      <Page Update="Views\Pages\ManagementPage.xaml">
         <Generator>MSBuild:Compile</Generator>
         <XamlRuntime>Wpf</XamlRuntime>
         <SubType>Designer</SubType>

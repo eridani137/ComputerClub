@@ -3,9 +3,9 @@ using ManagementViewModel = ComputerClub.ViewModels.Pages.ManagementViewModel;
 
 namespace ComputerClub.Views.Pages;
 
-public partial class Management : UserControl
+public partial class ManagementPage : UserControl
 {
-    public Management(ManagementViewModel viewModel)
+    public ManagementPage(ManagementViewModel viewModel)
     {
         InitializeComponent();
         DataContext = viewModel;

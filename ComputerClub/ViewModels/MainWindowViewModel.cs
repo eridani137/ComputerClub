@@ -29,7 +29,7 @@ public partial class MainWindowViewModel(
 
         if (App.CurrentUser is not { } user || App.CurrentRole is not { } role) return;
 
-        logger.LogInformation("LoggedOn: [{Role}] {Username}", role, user.UserName);
+        logger.LogInformation("Авторизация: [{Role}] {Username}", role, user.UserName);
 
         mainWindow.NavigationView.SetPageProviderService(navigationViewPageProvider);
         navigationService.SetNavigationControl(mainWindow.NavigationView);
@@ -46,7 +46,7 @@ public partial class MainWindowViewModel(
                     new NavigationViewItem(
                         "Управление ПК",
                         SymbolRegular.Grid24,
-                        typeof(Management)));
+                        typeof(ManagementPage)));
 
                 MenuItems.Add(new NavigationViewItem()
                 {
@@ -57,15 +57,15 @@ public partial class MainWindowViewModel(
                         new NavigationViewItem(
                             "Текущая касса",
                             SymbolRegular.Money24,
-                            typeof(CurrentCash)),
+                            typeof(CurrentCashPage)),
                         new NavigationViewItem(
                             "Текущий отчет",
                             SymbolRegular.ClipboardBulletListRtl20,
-                            typeof(CurrentReport))
+                            typeof(CurrentReportPage))
                     }
                 });
 
-                homePageType = typeof(Management);
+                homePageType = typeof(ManagementPage);
 
                 break;
             default:
@@ -76,7 +76,7 @@ public partial class MainWindowViewModel(
     }
 
     [RelayCommand]
-    private void Close()
+    private static void Close()
     {
         Application.Current.Shutdown();
     }
