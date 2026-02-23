@@ -2,9 +2,9 @@
 
 namespace ComputerClub.Views.Pages;
 
-public partial class CurrentCashView : UserControl
+public partial class CurrentReport : UserControl
 {
-    public CurrentCashView()
+    public CurrentReport()
     {
         InitializeComponent();
     }

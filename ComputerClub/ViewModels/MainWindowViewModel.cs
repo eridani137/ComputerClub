@@ -46,21 +46,27 @@ public partial class MainWindowViewModel(
                     new NavigationViewItem(
                         "Управление ПК",
                         SymbolRegular.Grid24,
-                        typeof(ManagementView)));
+                        typeof(Management)));
 
-                var reportsItem = new NavigationViewItem(
+                MenuItems.Add(new NavigationViewItem(
                     "Отчеты",
                     SymbolRegular.DocumentBulletList24,
-                    typeof(CurrentCashView));
+                    typeof(CurrentCash))
+                {
+                    MenuItems =
+                    {
+                        new NavigationViewItem(
+                            "Текущая касса",
+                            SymbolRegular.Money24,
+                            typeof(CurrentCash)),
+                        new NavigationViewItem(
+                            "Текущий отчет",
+                            SymbolRegular.ClipboardBulletListRtl20,
+                            typeof(CurrentReport))
+                    }
+                });
 
-                reportsItem.MenuItems.Add(new NavigationViewItem(
-                    "Текущая касса",
-                    SymbolRegular.Money24,
-                    typeof(CurrentCashView)));
-
-                MenuItems.Add(reportsItem);
-
-                homePageType = typeof(ManagementView);
+                homePageType = typeof(Management);
 
                 break;
             default:

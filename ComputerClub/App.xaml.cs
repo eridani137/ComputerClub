@@ -84,17 +84,19 @@ public partial class App : Application
 
     private static void ConfigureServices(IConfiguration configuration, IServiceCollection services)
     {
-        services.AddSingleton<LoginWindow>();
-        services.AddSingleton<LoginWindowViewModel>();
+        services.AddScoped<LoginWindow>();
+        services.AddScoped<LoginWindowViewModel>();
         
-        services.AddSingleton<MainWindow>();
-        services.AddSingleton<MainWindowViewModel>();
+        services.AddScoped<MainWindow>();
+        services.AddScoped<MainWindowViewModel>();
         
         services.AddScoped<ManagementViewModel>();
         services.AddScoped<CurrentCashViewModel>();
+        services.AddScoped<CurrentReportViewModel>();
         
-        services.AddScoped<ManagementView>();
-        services.AddScoped<CurrentCashView>();
+        services.AddScoped<Management>();
+        services.AddScoped<CurrentCash>();
+        services.AddScoped<CurrentReport>();
 
         services.AddNavigationViewPageProvider();
 
