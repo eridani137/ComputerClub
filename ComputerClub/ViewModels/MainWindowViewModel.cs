@@ -48,11 +48,10 @@ public partial class MainWindowViewModel(
                         SymbolRegular.Grid24,
                         typeof(Management)));
 
-                MenuItems.Add(new NavigationViewItem(
-                    "Отчеты",
-                    SymbolRegular.DocumentBulletList24,
-                    typeof(CurrentCash))
+                MenuItems.Add(new NavigationViewItem()
                 {
+                    Content = "Отчеты",
+                    Icon = new SymbolIcon() { Symbol = SymbolRegular.DocumentBulletList24 },
                     MenuItems =
                     {
                         new NavigationViewItem(
