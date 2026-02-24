@@ -10,29 +10,32 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ComputerClub.ViewModels.Pages;
 
-public partial class ManagementViewModel(ApplicationDbContext context, IServiceScopeFactory scopeFactory) : ObservableObject
+public partial class ManagementViewModel(ApplicationDbContext context, IServiceScopeFactory scopeFactory)
+    : ObservableObject
 {
-    public ObservableCollection<ComputerCanvasItem> PcItems { get; } = [];
+    public ObservableCollection<ComputerCanvasItem> Computers { get; } = [];
+
+    public IReadOnlyList<ComputerTypeDefinition> ComputerTypes => ComputerClub.ComputerTypes.All;
 
     private readonly Dictionary<int, CancellationTokenSource> _saveTokens = new();
-    
+
     [RelayCommand]
     private async Task Loaded()
     {
-        PcItems.Clear();
-        
+        Computers.Clear();
+
         var pcs = await context.Pcs.ToListAsync();
 
         foreach (var pc in pcs)
         {
             var item = pc.Map();
             Subscribe(item);
-            PcItems.Add(item);
+            Computers.Add(item);
         }
     }
 
     [RelayCommand]
-    private async Task AddPc()
+    private async Task AddComputer()
     {
         var entity = new ComputerEntity
         {
@@ -40,20 +43,20 @@ public partial class ManagementViewModel(ApplicationDbContext context, IServiceS
             Y = 0,
             TypeId = Random.Shared.Next(0, 5)
         };
-        
+
         context.Pcs.Add(entity);
         await context.SaveChangesAsync();
-        
+
         var item = entity.Map();
         Subscribe(item);
-        PcItems.Add(item);
+        Computers.Add(item);
     }
 
     [RelayCommand]
-    private async Task RemovePc(ComputerCanvasItem item)
+    private async Task RemoveComputer(ComputerCanvasItem item)
     {
-        PcItems.Remove(item);
-        
+        Computers.Remove(item);
+
         var entity = await context.Pcs.FindAsync(item.Id);
         if (entity is not null)
         {
@@ -63,14 +66,16 @@ public partial class ManagementViewModel(ApplicationDbContext context, IServiceS
     }
 
     [RelayCommand]
-    private async Task SetPcType(ComputerTypeSelectionItem selection)
+    private async Task SetComputerType((ComputerCanvasItem pc, ComputerTypeDefinition type) param)
     {
-        selection.Owner.TypeId = selection.TypeId;
+        var (pc, type) = param;
 
-        var entity = await context.Pcs.FindAsync(selection.Owner.Id);
+        pc.TypeId = type.Id;
+
+        var entity = await context.Pcs.FindAsync(pc.Id);
         if (entity == null) return;
 
-        entity.TypeId = selection.TypeId;
+        entity.TypeId = type.Id;
         await context.SaveChangesAsync();
     }
 
@@ -107,7 +112,9 @@ public partial class ManagementViewModel(ApplicationDbContext context, IServiceS
 
                 await db.SaveChangesAsync(token);
             }
-            catch (TaskCanceledException) { }
+            catch (TaskCanceledException)
+            {
+            }
             finally
             {
                 if (_saveTokens.TryGetValue(item.Id, out var t) && t == cts)

@@ -1,29 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using ComputerClub.Infrastructure.Entities;
 
 namespace ComputerClub.Models;
 
 public partial class ComputerCanvasItem : ObservableObject
 {
-    [ObservableProperty]
-    private int _id;
-    
-    [ObservableProperty]
-    private double _x;
+    [ObservableProperty] private int _id;
 
-    [ObservableProperty]
-    private double _y;
+    [ObservableProperty] private double _x;
 
-    [ObservableProperty]
-    private int _typeId;
-    
-    public IEnumerable<ComputerTypeSelectionItem> TypeOptions =>
-        ComputerTypes.All.Select(t => new ComputerTypeSelectionItem(this, t));
-}
+    [ObservableProperty] private double _y;
 
-public class ComputerTypeSelectionItem(ComputerCanvasItem owner, ComputerTypeDefinition typeDefinition)
-{
-    public ComputerCanvasItem Owner { get; } = owner;
+    [ObservableProperty] private int _typeId;
 
-    public string Label => typeDefinition.Name;
-    public int TypeId => typeDefinition.Id;
+    [ObservableProperty] private ComputerStatus _status;
 }

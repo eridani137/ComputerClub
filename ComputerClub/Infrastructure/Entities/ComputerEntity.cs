@@ -8,4 +8,14 @@ public class ComputerEntity
     public double Y { get; set; }
 
     public int TypeId { get; set; }
+    
+    public ComputerStatus Status { get; set; }
+}
+
+public enum ComputerStatus
+{
+    Available,
+    Occupied,
+    Reserved,
+    OutOfService
 }

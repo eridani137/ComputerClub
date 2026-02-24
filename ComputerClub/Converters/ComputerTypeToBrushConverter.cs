@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace ComputerClub.Converters;
 
-public class PcTypeToBrushConverter : IValueConverter
+public class ComputerTypeToBrushConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {

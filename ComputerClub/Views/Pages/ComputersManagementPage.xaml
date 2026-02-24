@@ -20,7 +20,8 @@
              ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}">
 
     <UserControl.Resources>
-        <converters:PcTypeToBrushConverter x:Key="PcTypeToBrushConverter" />
+        <converters:ComputerTypeToBrushConverter x:Key="ComputerTypeToBrushConverter" />
+        <converters:ComputerTypeTupleConverter x:Key="ComputerTypeTupleConverter" />
     </UserControl.Resources>
 
     <behaviors:Interaction.Triggers>
@@ -46,7 +47,7 @@
 
         <ScrollViewer HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto">
-            <ItemsControl ItemsSource="{Binding PcItems}">
+            <ItemsControl ItemsSource="{Binding Computers}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Canvas Width="1000"
@@ -77,19 +78,35 @@
 
                                     <MenuItem Header="Изменить тип"
                                               behaviors1:SmartSubmenuBehavior.Enabled="True"
-                                              ItemsSource="{Binding PlacementTarget.DataContext.TypeOptions,
-                                            RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                                              ItemsSource="{Binding PlacementTarget.Tag.ComputerTypes, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+
                                         <MenuItem.Icon>
                                             <ui:SymbolIcon Symbol="Laptop24" />
                                         </MenuItem.Icon>
 
                                         <MenuItem.ItemContainerStyle>
                                             <Style TargetType="MenuItem">
-                                                <Setter Property="Header" Value="{Binding Label}" />
+
+                                                <Setter Property="Header"
+                                                        Value="{Binding Name}" />
+
                                                 <Setter Property="Command"
-                                                        Value="{Binding PlacementTarget.Tag.SetPcTypeCommand,
-                                                RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                                                <Setter Property="CommandParameter" Value="{Binding}" />
+                                                        Value="{Binding PlacementTarget.Tag.SetComputerTypeCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+
+                                                <Setter Property="CommandParameter">
+                                                    <Setter.Value>
+                                                        <MultiBinding
+                                                            Converter="{StaticResource ComputerTypeTupleConverter}">
+
+                                                            <Binding />
+
+                                                            <Binding Path="PlacementTarget.DataContext"
+                                                                     RelativeSource="{RelativeSource AncestorType=ContextMenu}" />
+
+                                                        </MultiBinding>
+                                                    </Setter.Value>
+                                                </Setter>
+
                                             </Style>
                                         </MenuItem.ItemContainerStyle>
                                     </MenuItem>
@@ -118,7 +135,7 @@
 
                             <Grid>
                                 <Border Height="3"
-                                        Background="{Binding TypeId, Converter={StaticResource PcTypeToBrushConverter}}"
+                                        Background="{Binding TypeId, Converter={StaticResource ComputerTypeToBrushConverter}}"
                                         VerticalAlignment="Top"
                                         CornerRadius="6,6,0,0" />
                             </Grid>
