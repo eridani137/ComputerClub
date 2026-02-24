@@ -17,10 +17,10 @@ public partial class ComputerCanvasItem : ObservableObject
     private int _typeId;
     
     public IEnumerable<ComputerTypeSelectionItem> TypeOptions =>
-        PcTypes.All.Select(t => new ComputerTypeSelectionItem(this, t));
+        ComputerTypes.All.Select(t => new ComputerTypeSelectionItem(this, t));
 }
 
-public class ComputerTypeSelectionItem(ComputerCanvasItem owner, PcTypeDefinition typeDefinition)
+public class ComputerTypeSelectionItem(ComputerCanvasItem owner, ComputerTypeDefinition typeDefinition)
 {
     public ComputerCanvasItem Owner { get; } = owner;
 

@@ -2,9 +2,9 @@
 
 namespace ComputerClub;
 
-public static class PcTypes
+public static class ComputerTypes
 {
-    public static readonly IReadOnlyList<PcTypeDefinition> All = new List<PcTypeDefinition>
+    public static readonly IReadOnlyList<ComputerTypeDefinition> All = new List<ComputerTypeDefinition>
     {
         new() { Id = 0, Name = "Не задано", Color = Brushes.Gray },
         new() { Id = 1, Name = "Эконом", Color = Brushes.DarkOrange },
@@ -13,11 +13,11 @@ public static class PcTypes
         new() { Id = 5, Name = "VIP", Color = Brushes.Violet }
     };
 
-    public static PcTypeDefinition GetById(int id) =>
+    public static ComputerTypeDefinition GetById(int id) =>
         All.FirstOrDefault(t => t.Id == id) ?? All[0];
 }
 
-public class PcTypeDefinition
+public class ComputerTypeDefinition
 {
     public int Id { get; init; }
     public string Name { get; init; } = string.Empty;
