@@ -22,8 +22,6 @@ public partial class ManagementViewModel(ApplicationDbContext context, IServiceS
     [RelayCommand]
     private async Task Loaded()
     {
-        Computers.Clear();
-
         var computerEntities = await context.Computers.ToListAsync();
 
         foreach (var entity in computerEntities)

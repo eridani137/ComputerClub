@@ -17,8 +17,19 @@ public partial class ClientsViewModel(ApplicationDbContext context, SessionServi
     [ObservableProperty] private ClientItem? _selectedClient;
     [ObservableProperty] private string _newFullName = string.Empty;
     [ObservableProperty] private string _newPhone = string.Empty;
-    [ObservableProperty] private decimal _topUpAmount;
+    [ObservableProperty] private decimal _topUpAmount = 1000;
     [ObservableProperty] private string? _errorMessage;
+    
+    [RelayCommand]
+    private async Task Loaded()
+    {
+        var clients = await context.Clients.ToListAsync();
+
+        foreach (var client in clients)
+        {
+            Clients.Add(client.Map());
+        }
+    }
     
     [RelayCommand]
     private async Task AddClient()
@@ -35,7 +46,7 @@ public partial class ClientsViewModel(ApplicationDbContext context, SessionServi
         {
             FullName = NewFullName.Trim(),
             Phone = NewPhone.Trim(),
-            Balance = 0
+            Balance = 1000
         };
 
         context.Clients.Add(entity);
@@ -77,7 +88,7 @@ public partial class ClientsViewModel(ApplicationDbContext context, SessionServi
         {
             await sessionService.TopUpBalance(item.Id, TopUpAmount);
             item.Balance += TopUpAmount;
-            TopUpAmount = 0;
+            TopUpAmount = 1000;
         }
         catch (Exception e)
         {

@@ -14,18 +14,18 @@
       d:DataContext="{d:DesignInstance Type=pages:ClientsViewModel, IsDesignTimeCreatable=False}"
       ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
       ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}">
-    
-      <!-- <behaviors:Interaction.Triggers> -->
-      <!--       <behaviors:EventTrigger EventName="Loaded"> -->
-      <!--             <behaviors:InvokeCommandAction Command="{Binding LoadedCommand}" /> -->
-      <!--       </behaviors:EventTrigger> -->
-      <!-- </behaviors:Interaction.Triggers> -->
-      
-      <Page.Resources>
-          <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
-      </Page.Resources>
-      
-      <DockPanel Margin="20">
+
+    <behaviors:Interaction.Triggers>
+        <behaviors:EventTrigger EventName="Loaded">
+            <behaviors:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </behaviors:EventTrigger>
+    </behaviors:Interaction.Triggers>
+
+    <Page.Resources>
+        <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
+    </Page.Resources>
+
+    <DockPanel Margin="20">
         <Border DockPanel.Dock="Top"
                 Background="{DynamicResource ControlFillColorDefaultBrush}"
                 CornerRadius="8" Padding="16" Margin="0,0,0,16">
@@ -70,21 +70,25 @@
                   SelectionMode="Single">
 
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50" />
-                <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}" Width="*" />
-                <DataGridTextColumn Header="Телефон" Binding="{Binding Phone}" Width="160" />
-                <DataGridTextColumn Header="Баланс, ₽" Binding="{Binding Balance, StringFormat=N2}" Width="120" />
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" />
+                <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}" Width="400" />
+                <DataGridTextColumn Header="Телефон" Binding="{Binding Phone}" Width="150" />
+                <DataGridTextColumn Header="Баланс, ₽" Binding="{Binding Balance, StringFormat=N2}" />
 
-                <DataGridTemplateColumn Header="Пополнить" Width="220">
+                <DataGridTemplateColumn Header="Пополнить">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <ui:NumberBox Value="{Binding DataContext.TopUpAmount,
+                                <ui:NumberBox
+                                    Value="{Binding DataContext.TopUpAmount,
                                                   RelativeSource={RelativeSource AncestorType=DataGrid},
                                                   UpdateSourceTrigger=PropertyChanged}"
-                                             Minimum="1"
-                                             Width="100"
-                                             Margin="0,0,6,0" />
+                                    Minimum="1"
+                                    SmallChange="100"
+                                    LargeChange="1000"
+                                    ClearButtonEnabled="False"
+                                    Width="150"
+                                    Margin="0,0,6,0" />
                                 <ui:Button Content="+"
                                            Command="{Binding DataContext.TopUpBalanceCommand,
                                                RelativeSource={RelativeSource AncestorType=DataGrid}}"
@@ -94,7 +98,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Width="44">
+                <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <ui:Button Icon="{ui:SymbolIcon Delete24}"
@@ -109,5 +113,5 @@
         </DataGrid>
 
     </DockPanel>
-      
+
 </Page>
