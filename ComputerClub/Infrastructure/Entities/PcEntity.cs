@@ -2,7 +2,7 @@
 
 public class PcEntity
 {
-    public int Id { get; set; }
+    public int Id { get; init; }
 
     public double X { get; set; }
     public double Y { get; set; }

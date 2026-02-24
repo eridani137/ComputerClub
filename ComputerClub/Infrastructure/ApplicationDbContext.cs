@@ -18,8 +18,13 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-        base.OnModelCreating(modelBuilder);
+        base.OnModelCreating(builder);
+
+        builder.Entity<PcEntity>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+        });
     }
 }

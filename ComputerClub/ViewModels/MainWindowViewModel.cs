@@ -52,12 +52,14 @@ public partial class MainWindowViewModel(
                 {
                     Content = "Отчеты",
                     Icon = new SymbolIcon() { Symbol = SymbolRegular.DocumentBulletList24 },
+                    IsExpanded = true,
                     MenuItems =
                     {
                         new NavigationViewItem(
                             "Текущая касса",
                             SymbolRegular.Money24,
                             typeof(CurrentCashPage)),
+                        
                         new NavigationViewItem(
                             "Текущий отчет",
                             SymbolRegular.ClipboardBulletListRtl20,

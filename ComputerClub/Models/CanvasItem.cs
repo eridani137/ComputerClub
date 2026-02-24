@@ -23,8 +23,7 @@ public partial class CanvasItem : ObservableObject
 public class TypeSelectionItem(CanvasItem owner, PcTypeDefinition typeDefinition)
 {
     public CanvasItem Owner { get; } = owner;
-    public PcTypeDefinition TypeDefinition { get; } = typeDefinition;
 
-    public string Label => TypeDefinition.Name;
-    public int TypeId => TypeDefinition.Id;
+    public string Label => typeDefinition.Name;
+    public int TypeId => typeDefinition.Id;
 }
