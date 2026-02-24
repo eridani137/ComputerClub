@@ -9,9 +9,9 @@ public class ComputerTypeTupleConverter : IMultiValueConverter
     public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
     {
         if (values[0] is ComputerTypeDefinition type &&
-            values[1] is ComputerCanvasItem pc)
+            values[1] is ComputerCanvasItem computerCanvasItem)
         {
-            return (pc, type);
+            return (computerCanvasItem, type);
         }
 
         return Binding.DoNothing;

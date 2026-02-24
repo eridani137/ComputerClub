@@ -34,7 +34,7 @@
         <Border DockPanel.Dock="Right" Width="250" Padding="5">
             <Grid>
                 <Button Content="Добавить"
-                        Command="{Binding AddPcCommand}"
+                        Command="{Binding AddComputerCommand}"
                         Margin="5"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Top" />

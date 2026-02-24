@@ -7,7 +7,7 @@ namespace ComputerClub.Infrastructure;
 
 public class ApplicationDbContext : IdentityDbContext<IdentityUser>
 {
-    public DbSet<ComputerEntity> Pcs { get; set; }
+    public DbSet<ComputerEntity> Computers { get; set; }
     
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)

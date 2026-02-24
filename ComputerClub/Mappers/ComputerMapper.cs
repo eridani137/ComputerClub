@@ -3,7 +3,7 @@ using ComputerClub.Models;
 
 namespace ComputerClub.Mappers;
 
-public static class PcEntityMapper
+public static class ComputerMapper
 {
     public static ComputerCanvasItem Map(this ComputerEntity entity)
     {

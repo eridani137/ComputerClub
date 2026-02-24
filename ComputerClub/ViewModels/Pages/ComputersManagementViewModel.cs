@@ -24,11 +24,11 @@ public partial class ManagementViewModel(ApplicationDbContext context, IServiceS
     {
         Computers.Clear();
 
-        var pcs = await context.Pcs.ToListAsync();
+        var computerEntities = await context.Computers.ToListAsync();
 
-        foreach (var pc in pcs)
+        foreach (var entity in computerEntities)
         {
-            var item = pc.Map();
+            var item = entity.Map();
             Subscribe(item);
             Computers.Add(item);
         }
@@ -44,7 +44,7 @@ public partial class ManagementViewModel(ApplicationDbContext context, IServiceS
             TypeId = Random.Shared.Next(0, 5)
         };
 
-        context.Pcs.Add(entity);
+        context.Computers.Add(entity);
         await context.SaveChangesAsync();
 
         var item = entity.Map();
@@ -57,22 +57,22 @@ public partial class ManagementViewModel(ApplicationDbContext context, IServiceS
     {
         Computers.Remove(item);
 
-        var entity = await context.Pcs.FindAsync(item.Id);
+        var entity = await context.Computers.FindAsync(item.Id);
         if (entity is not null)
         {
-            context.Pcs.Remove(entity);
+            context.Computers.Remove(entity);
             await context.SaveChangesAsync();
         }
     }
 
     [RelayCommand]
-    private async Task SetComputerType((ComputerCanvasItem pc, ComputerTypeDefinition type) param)
+    private async Task SetComputerType((ComputerCanvasItem computerCanvasItem, ComputerTypeDefinition type) param)
     {
-        var (pc, type) = param;
+        var (computerCanvasItem, type) = param;
 
-        pc.TypeId = type.Id;
+        computerCanvasItem.TypeId = type.Id;
 
-        var entity = await context.Pcs.FindAsync(pc.Id);
+        var entity = await context.Computers.FindAsync(computerCanvasItem.Id);
         if (entity == null) return;
 
         entity.TypeId = type.Id;
@@ -104,7 +104,7 @@ public partial class ManagementViewModel(ApplicationDbContext context, IServiceS
                 await using var scope = scopeFactory.CreateAsyncScope();
                 var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-                var entity = await db.Pcs.FindAsync(item.Id);
+                var entity = await db.Computers.FindAsync(item.Id);
                 if (entity == null) return;
 
                 entity.X = item.X;
