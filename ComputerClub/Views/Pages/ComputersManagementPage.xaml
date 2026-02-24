@@ -11,6 +11,7 @@
              xmlns:converters="clr-namespace:ComputerClub.Converters"
              xmlns:behaviors1="clr-namespace:ComputerClub.Behaviors"
              xmlns:pages="clr-namespace:ComputerClub.ViewModels.Pages"
+             xmlns:controls="clr-namespace:ComputerClub.Views.Controls"
              mc:Ignorable="d"
              d:DesignHeight="800"
              d:DesignWidth="1200"
@@ -29,16 +30,27 @@
     </behaviors:Interaction.Triggers>
 
     <DockPanel>
-        <StackPanel DockPanel.Dock="Right" Width="250">
-            <Button Content="Добавить" Command="{Binding AddPcCommand}" Margin="5" HorizontalAlignment="Stretch" />
-        </StackPanel>
+        <Border DockPanel.Dock="Right" Width="250" Padding="5">
+            <Grid>
+                <Button Content="Добавить"
+                        Command="{Binding AddPcCommand}"
+                        Margin="5"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top" />
+
+                <controls:ComputerTypeLegendControl VerticalAlignment="Bottom"
+                                                    Margin="5,10,5,5"
+                                                    Padding="6" />
+            </Grid>
+        </Border>
+
         <ScrollViewer HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding PcItems}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Canvas Width="1000"
-                                Height="850"/>
+                                Height="850" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
 
