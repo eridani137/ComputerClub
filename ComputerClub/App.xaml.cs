@@ -93,16 +93,22 @@ public partial class App : Application
         services.AddScoped<ManagementViewModel>();
         services.AddScoped<CurrentCashViewModel>();
         services.AddScoped<CurrentReportViewModel>();
+        services.AddScoped<ClientsViewModel>();
+        services.AddScoped<TariffsViewModel>();
+        services.AddScoped<SessionsViewModel>();
         
         services.AddScoped<ComputersManagementPage>();
         services.AddScoped<CurrentCashPage>();
         services.AddScoped<CurrentReportPage>();
+        services.AddScoped<ClientsPage>();
 
         services.AddNavigationViewPageProvider();
 
         services.AddSingleton<ISnackbarService, SnackbarService>();
         services.AddSingleton<IContentDialogService, ContentDialogService>();
         services.AddSingleton<INavigationService, NavigationService>();
+        
+        services.AddScoped<SessionService>();
 
         AddInfrastructure(configuration, services);
     }

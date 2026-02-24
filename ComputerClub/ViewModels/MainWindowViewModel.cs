@@ -48,6 +48,12 @@ public partial class MainWindowViewModel(
                         SymbolRegular.Grid24,
                         typeof(ComputersManagementPage)));
 
+                MenuItems.Add(
+                    new NavigationViewItem(
+                        "Управление клиентами",
+                        SymbolRegular.Person24,
+                        typeof(ClientsPage)));
+
                 MenuItems.Add(new NavigationViewItem()
                 {
                     Content = "Отчеты",
@@ -59,7 +65,7 @@ public partial class MainWindowViewModel(
                             "Текущая касса",
                             SymbolRegular.Money24,
                             typeof(CurrentCashPage)),
-                        
+
                         new NavigationViewItem(
                             "Текущий отчет",
                             SymbolRegular.ClipboardBulletListRtl20,

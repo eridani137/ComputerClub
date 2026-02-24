@@ -3,7 +3,7 @@ using ManagementViewModel = ComputerClub.ViewModels.Pages.ManagementViewModel;
 
 namespace ComputerClub.Views.Pages;
 
-public partial class ComputersManagementPage : UserControl
+public partial class ComputersManagementPage : Page
 {
     public ComputersManagementPage(ManagementViewModel viewModel)
     {

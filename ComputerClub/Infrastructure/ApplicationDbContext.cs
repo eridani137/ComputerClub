@@ -7,7 +7,10 @@ namespace ComputerClub.Infrastructure;
 
 public class ApplicationDbContext : IdentityDbContext<IdentityUser>
 {
-    public DbSet<ComputerEntity> Computers { get; set; }
+    public DbSet<ComputerEntity> Computers => Set<ComputerEntity>();
+    public DbSet<ClientEntity> Clients => Set<ClientEntity>();
+    public DbSet<TariffEntity> Tariffs => Set<TariffEntity>();
+    public DbSet<SessionEntity> Sessions => Set<SessionEntity>();
     
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)

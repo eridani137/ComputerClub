@@ -2,7 +2,7 @@
 
 namespace ComputerClub.Views.Pages;
 
-public partial class CurrentCashPage : UserControl
+public partial class CurrentCashPage : Page
 {
     public CurrentCashPage()
     {

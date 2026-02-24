@@ -2,9 +2,9 @@
 
 namespace ComputerClub.Views.Pages;
 
-public partial class CurrentReportPage : Page
+public partial class ClientsPage : Page
 {
-    public CurrentReportPage()
+    public ClientsPage()
     {
         InitializeComponent();
     }

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="ComputerClub.Views.Pages.ComputersManagementPage"
+﻿<Page x:Class="ComputerClub.Views.Pages.ComputersManagementPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -19,10 +19,10 @@
              ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
              ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}">
 
-    <UserControl.Resources>
+    <Page.Resources>
         <converters:ComputerTypeToBrushConverter x:Key="ComputerTypeToBrushConverter" />
         <converters:ComputerTypeTupleConverter x:Key="ComputerTypeTupleConverter" />
-    </UserControl.Resources>
+    </Page.Resources>
 
     <behaviors:Interaction.Triggers>
         <behaviors:EventTrigger EventName="Loaded">
@@ -142,4 +142,4 @@
         </ScrollViewer>
     </DockPanel>
 
-</UserControl>
+</Page>
