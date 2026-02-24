@@ -1,6 +1,6 @@
 ﻿namespace ComputerClub.Infrastructure.Entities;
 
-public class PcEntity
+public class ComputerEntity
 {
     public int Id { get; init; }
 

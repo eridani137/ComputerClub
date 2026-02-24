@@ -44,9 +44,9 @@ public partial class MainWindowViewModel(
             case "Admin":
                 MenuItems.Add(
                     new NavigationViewItem(
-                        "Управление ПК",
+                        "Управление компьютерами",
                         SymbolRegular.Grid24,
-                        typeof(ManagementPage)));
+                        typeof(ComputersManagementPage)));
 
                 MenuItems.Add(new NavigationViewItem()
                 {
@@ -67,7 +67,7 @@ public partial class MainWindowViewModel(
                     }
                 });
 
-                homePageType = typeof(ManagementPage);
+                homePageType = typeof(ComputersManagementPage);
 
                 break;
             default:

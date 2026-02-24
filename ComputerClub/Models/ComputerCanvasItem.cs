@@ -2,7 +2,7 @@
 
 namespace ComputerClub.Models;
 
-public partial class CanvasItem : ObservableObject
+public partial class ComputerCanvasItem : ObservableObject
 {
     [ObservableProperty]
     private int _id;
@@ -16,13 +16,13 @@ public partial class CanvasItem : ObservableObject
     [ObservableProperty]
     private int _typeId;
     
-    public IEnumerable<TypeSelectionItem> TypeOptions =>
-        PcTypes.All.Select(t => new TypeSelectionItem(this, t));
+    public IEnumerable<ComputerTypeSelectionItem> TypeOptions =>
+        PcTypes.All.Select(t => new ComputerTypeSelectionItem(this, t));
 }
 
-public class TypeSelectionItem(CanvasItem owner, PcTypeDefinition typeDefinition)
+public class ComputerTypeSelectionItem(ComputerCanvasItem owner, PcTypeDefinition typeDefinition)
 {
-    public CanvasItem Owner { get; } = owner;
+    public ComputerCanvasItem Owner { get; } = owner;
 
     public string Label => typeDefinition.Name;
     public int TypeId => typeDefinition.Id;

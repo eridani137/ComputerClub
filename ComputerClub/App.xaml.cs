@@ -94,7 +94,7 @@ public partial class App : Application
         services.AddScoped<CurrentCashViewModel>();
         services.AddScoped<CurrentReportViewModel>();
         
-        services.AddScoped<ManagementPage>();
+        services.AddScoped<ComputersManagementPage>();
         services.AddScoped<CurrentCashPage>();
         services.AddScoped<CurrentReportPage>();
 

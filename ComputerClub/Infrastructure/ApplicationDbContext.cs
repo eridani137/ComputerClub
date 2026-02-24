@@ -7,7 +7,7 @@ namespace ComputerClub.Infrastructure;
 
 public class ApplicationDbContext : IdentityDbContext<IdentityUser>
 {
-    public DbSet<PcEntity> Pcs { get; set; }
+    public DbSet<ComputerEntity> Pcs { get; set; }
     
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
@@ -22,7 +22,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<PcEntity>(entity =>
+        builder.Entity<ComputerEntity>(entity =>
         {
             entity.HasKey(e => e.Id);
         });

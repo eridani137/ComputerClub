@@ -5,9 +5,9 @@ namespace ComputerClub.Mappers;
 
 public static class PcEntityMapper
 {
-    public static CanvasItem Map(this PcEntity entity)
+    public static ComputerCanvasItem Map(this ComputerEntity entity)
     {
-        return new CanvasItem()
+        return new ComputerCanvasItem()
         {
             Id =  entity.Id,
             TypeId = entity.TypeId,
@@ -16,9 +16,9 @@ public static class PcEntityMapper
         };
     }
 
-    public static PcEntity Map(this CanvasItem item)
+    public static ComputerEntity Map(this ComputerCanvasItem item)
     {
-        return new PcEntity()
+        return new ComputerEntity()
         {
             Id =  item.Id,
             TypeId = item.TypeId,

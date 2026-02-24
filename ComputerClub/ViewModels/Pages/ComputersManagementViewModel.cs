@@ -12,7 +12,7 @@ namespace ComputerClub.ViewModels.Pages;
 
 public partial class ManagementViewModel(ApplicationDbContext context, IServiceScopeFactory scopeFactory) : ObservableObject
 {
-    public ObservableCollection<CanvasItem> PcItems { get; } = [];
+    public ObservableCollection<ComputerCanvasItem> PcItems { get; } = [];
 
     private readonly Dictionary<int, CancellationTokenSource> _saveTokens = new();
     
@@ -34,7 +34,7 @@ public partial class ManagementViewModel(ApplicationDbContext context, IServiceS
     [RelayCommand]
     private async Task AddPc()
     {
-        var entity = new PcEntity
+        var entity = new ComputerEntity
         {
             X = 0,
             Y = 0,
@@ -50,7 +50,7 @@ public partial class ManagementViewModel(ApplicationDbContext context, IServiceS
     }
 
     [RelayCommand]
-    private async Task RemovePc(CanvasItem item)
+    private async Task RemovePc(ComputerCanvasItem item)
     {
         PcItems.Remove(item);
         
@@ -63,7 +63,7 @@ public partial class ManagementViewModel(ApplicationDbContext context, IServiceS
     }
 
     [RelayCommand]
-    private async Task SetPcType(TypeSelectionItem selection)
+    private async Task SetPcType(ComputerTypeSelectionItem selection)
     {
         selection.Owner.TypeId = selection.TypeId;
 
@@ -74,11 +74,11 @@ public partial class ManagementViewModel(ApplicationDbContext context, IServiceS
         await context.SaveChangesAsync();
     }
 
-    private void Subscribe(CanvasItem item)
+    private void Subscribe(ComputerCanvasItem item)
     {
         item.PropertyChanged += async (_, e) =>
         {
-            if (e.PropertyName is not nameof(CanvasItem.X) and not nameof(CanvasItem.Y)) return;
+            if (e.PropertyName is not nameof(ComputerCanvasItem.X) and not nameof(ComputerCanvasItem.Y)) return;
 
             if (_saveTokens.TryGetValue(item.Id, out var oldToken))
             {
