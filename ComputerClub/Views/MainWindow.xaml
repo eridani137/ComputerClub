@@ -10,7 +10,7 @@
                  mc:Ignorable="d"
                  Title="MainWindow"
                  Height="920"
-                 Width="1500"
+                 Width="1550"
                  d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel, IsDesignTimeCreatable=True}"
                  Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                  WindowCornerPreference="Round"
@@ -35,7 +35,8 @@
 
         <Grid Grid.Row="1">
             <ui:NavigationView PaneDisplayMode="Left"
-                               IsPaneOpen="False"
+                               IsPaneOpen="true"
+                               OpenPaneLength="250"
                                IsBackButtonVisible="Collapsed"
                                x:Name="NavigationView">
 
