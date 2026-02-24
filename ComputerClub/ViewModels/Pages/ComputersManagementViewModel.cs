@@ -73,7 +73,7 @@ public partial class ManagementViewModel(ApplicationDbContext context, IServiceS
         computerCanvasItem.TypeId = type.Id;
 
         var entity = await context.Computers.FindAsync(computerCanvasItem.Id);
-        if (entity == null) return;
+        if (entity is null) return;
 
         entity.TypeId = type.Id;
         await context.SaveChangesAsync();
@@ -105,7 +105,7 @@ public partial class ManagementViewModel(ApplicationDbContext context, IServiceS
                 var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
                 var entity = await db.Computers.FindAsync(item.Id);
-                if (entity == null) return;
+                if (entity is null) return;
 
                 entity.X = item.X;
                 entity.Y = item.Y;

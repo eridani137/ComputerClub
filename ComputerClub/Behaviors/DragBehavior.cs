@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using ComputerClub.Extensions;
 using ComputerClub.Models;
 using Microsoft.Xaml.Behaviors;
 
@@ -36,8 +37,8 @@ public class DragBehavior : Behavior<FrameworkElement>
         if (AssociatedObject.DataContext is not ComputerCanvasItem item) return;
         _dataContext = item;
 
-        var presenter = Extensions.FindParent<ContentPresenter>(AssociatedObject);
-        if (presenter == null) return;
+        var presenter = DependencyExtensions.FindParent<ContentPresenter>(AssociatedObject);
+        if (presenter is null) return;
 
         if (VisualTreeHelper.GetParent(presenter) is not Canvas canvas) return;
     
@@ -52,7 +53,7 @@ public class DragBehavior : Behavior<FrameworkElement>
 
     private void OnMouseMove(object sender, MouseEventArgs e)
     {
-        if (_dataContext == null || _canvas == null || e.LeftButton != MouseButtonState.Pressed) return;
+        if (_dataContext is null || _canvas is null || e.LeftButton is not MouseButtonState.Pressed) return;
 
         var pos = e.GetPosition(_canvas);
 
@@ -88,9 +89,9 @@ public class DragBehavior : Behavior<FrameworkElement>
     
     private bool IsColliding(double newX, double newY, double width, double height)
     {
-        if (_canvas == null) return false;
+        if (_canvas is null) return false;
 
-        var itemsControl = Extensions.FindParent<ItemsControl>(_canvas);
+        var itemsControl = DependencyExtensions.FindParent<ItemsControl>(_canvas);
         if (itemsControl?.ItemsSource is not IEnumerable<ComputerCanvasItem> items) return false;
 
         var newRight = newX + width;
