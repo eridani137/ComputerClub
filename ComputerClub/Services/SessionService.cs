@@ -1,10 +1,11 @@
 ﻿using ComputerClub.Infrastructure;
 using ComputerClub.Infrastructure.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace ComputerClub.Services;
 
-public class SessionService(ApplicationDbContext db)
+public class SessionService(ApplicationDbContext db, UserManager<ComputerClubIdentity> userManager)
 {
     public async Task<SessionEntity> OpenSession(
         int clientId, 
@@ -12,7 +13,7 @@ public class SessionService(ApplicationDbContext db)
         int tariffId,
         CancellationToken ctx = default)
     {
-        var client = await db.Clients.FindAsync([clientId], ctx)
+        var client = await userManager.FindByIdAsync(clientId.ToString())
                      ?? throw new InvalidOperationException("Клиент не найден");
 
         var computer = await db.Computers.FindAsync([computerId], ctx)
@@ -89,7 +90,7 @@ public class SessionService(ApplicationDbContext db)
     {
         if (amount <= 0) throw new ArgumentException("Сумма должна быть положительной");
 
-        var client = await db.Clients.FindAsync([clientId], ctx)
+        var client = await userManager.FindByIdAsync(clientId.ToString())
                      ?? throw new InvalidOperationException("Клиент не найден.");
 
         client.Balance += amount;

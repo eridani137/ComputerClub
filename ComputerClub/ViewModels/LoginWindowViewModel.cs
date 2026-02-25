@@ -2,6 +2,7 @@
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ComputerClub.Infrastructure.Entities;
 using ComputerClub.Views;
 using Microsoft.AspNetCore.Identity;
 using Wpf.Ui.Controls;
@@ -9,7 +10,7 @@ using Wpf.Ui.Controls;
 namespace ComputerClub.ViewModels;
 
 public partial class LoginWindowViewModel(
-    UserManager<IdentityUser> userManager,
+    UserManager<ComputerClubIdentity> userManager,
     MainWindow mainWindow
 ) : ObservableObject, IDataErrorInfo
 {

@@ -5,10 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ComputerClub.Infrastructure;
 
-public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+public class ApplicationDbContext : IdentityDbContext<ComputerClubIdentity, IdentityRole<int>, int>
 {
     public DbSet<ComputerEntity> Computers => Set<ComputerEntity>();
-    public DbSet<ClientEntity> Clients => Set<ClientEntity>();
     public DbSet<TariffEntity> Tariffs => Set<TariffEntity>();
     public DbSet<SessionEntity> Sessions => Set<SessionEntity>();
     
@@ -24,6 +23,11 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        
+        builder.Entity<ComputerClubIdentity>(entity =>
+        {
+            entity.Property(e => e.FullName).HasMaxLength(200);
+        });
 
         builder.Entity<ComputerEntity>(entity =>
         {

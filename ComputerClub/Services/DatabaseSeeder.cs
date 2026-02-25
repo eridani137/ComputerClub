@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using ComputerClub.Infrastructure.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
 namespace ComputerClub.Services;
 
 public class DatabaseSeeder(
-    UserManager<IdentityUser> userManager,
-    RoleManager<IdentityRole> roleManager,
+    UserManager<ComputerClubIdentity> userManager,
+    RoleManager<IdentityRole<int>> roleManager,
     ILogger<DatabaseSeeder> logger
 )
 {
@@ -17,7 +18,7 @@ public class DatabaseSeeder(
         {
             if (await roleManager.RoleExistsAsync(roleName)) continue;
 
-            var role = new IdentityRole(roleName);
+            var role = new IdentityRole<int>(roleName);
             var result = await roleManager.CreateAsync(role);
             if (result.Succeeded)
             {
@@ -36,7 +37,7 @@ public class DatabaseSeeder(
         var rootUser = await userManager.FindByNameAsync(rootUsername);
         if (rootUser is null)
         {
-            rootUser = new IdentityUser()
+            rootUser = new ComputerClubIdentity()
             {
                 UserName = rootUsername
             };

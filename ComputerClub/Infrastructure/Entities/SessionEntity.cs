@@ -5,7 +5,7 @@ public class SessionEntity
     public int Id { get; init; }
 
     public int ClientId { get; set; }
-    public ClientEntity Client { get; set; } = null!;
+    public ComputerClubIdentity Client { get; set; } = null!;
 
     public int ComputerId { get; set; }
     public ComputerEntity Computer { get; set; } = null!;

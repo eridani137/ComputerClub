@@ -2,6 +2,7 @@
 using System.Windows;
 using ComputerClub.Configuration;
 using ComputerClub.Infrastructure;
+using ComputerClub.Infrastructure.Entities;
 using ComputerClub.Services;
 using ComputerClub.ViewModels;
 using ComputerClub.ViewModels.Pages;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
 using Wpf.Ui;
 using Wpf.Ui.DependencyInjection;
 using ManagementViewModel = ComputerClub.ViewModels.Pages.ManagementViewModel;
@@ -22,9 +24,8 @@ namespace ComputerClub;
 public partial class App : Application
 {
     private readonly IHost _host;
-    private readonly ILogger<App> _logger = new LoggerFactory().CreateLogger<App>();
     
-    public static IdentityUser? CurrentUser { get; set; }
+    public static ComputerClubIdentity? CurrentUser { get; set; }
     public static string? CurrentRole { get; set; }
 
     public App()
@@ -61,7 +62,7 @@ public partial class App : Application
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Необработанное исключение");
+            Log.Error(e, "Необработанное исключение");
         }
     }
 
@@ -78,7 +79,7 @@ public partial class App : Application
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Необработанное исключение");
+            Log.Error(e, "Необработанное исключение");
         }
     }
 
@@ -87,20 +88,20 @@ public partial class App : Application
         services.AddScoped<LoginWindow>();
         services.AddScoped<LoginWindowViewModel>();
         
-        services.AddScoped<MainWindow>();
-        services.AddScoped<MainWindowViewModel>();
+        services.AddTransient<MainWindow>();
+        services.AddTransient<MainWindowViewModel>();
         
-        services.AddScoped<ManagementViewModel>();
-        services.AddScoped<CurrentCashViewModel>();
-        services.AddScoped<CurrentReportViewModel>();
-        services.AddScoped<ClientsViewModel>();
-        services.AddScoped<TariffsViewModel>();
-        services.AddScoped<SessionsViewModel>();
+        services.AddTransient<ManagementViewModel>();
+        services.AddTransient<CurrentCashViewModel>();
+        services.AddTransient<CurrentReportViewModel>();
+        services.AddTransient<ClientsViewModel>();
+        services.AddTransient<TariffsViewModel>();
+        services.AddTransient<SessionsViewModel>();
         
-        services.AddScoped<ComputersManagementPage>();
-        services.AddScoped<CurrentCashPage>();
-        services.AddScoped<CurrentReportPage>();
-        services.AddScoped<ClientsPage>();
+        services.AddTransient<ComputersManagementPage>();
+        services.AddTransient<CurrentCashPage>();
+        services.AddTransient<CurrentReportPage>();
+        services.AddTransient<ClientsPage>();
 
         services.AddNavigationViewPageProvider();
 
@@ -108,7 +109,7 @@ public partial class App : Application
         services.AddSingleton<IContentDialogService, ContentDialogService>();
         services.AddSingleton<INavigationService, NavigationService>();
         
-        services.AddScoped<SessionService>();
+        services.AddTransient<SessionService>();
 
         AddInfrastructure(configuration, services);
     }
@@ -119,10 +120,10 @@ public partial class App : Application
         
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseNpgsql(configuration.GetConnectionString("Database"));
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
         });
 
-        services.AddIdentityCore<IdentityUser>(options =>
+        services.AddIdentityCore<ComputerClubIdentity>(options =>
             {
                 options.Password.RequireDigit = true;
                 options.Password.RequiredLength = 8;
@@ -131,7 +132,7 @@ public partial class App : Application
                 options.Password.RequireLowercase = true;
                 options.Password.RequiredUniqueChars = 3;
             })
-            .AddRoles<IdentityRole>()
+            .AddRoles<IdentityRole<int>>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
     }
 }

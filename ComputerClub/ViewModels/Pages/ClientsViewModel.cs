@@ -6,15 +6,21 @@ using ComputerClub.Infrastructure.Entities;
 using ComputerClub.Mappers;
 using ComputerClub.Models;
 using ComputerClub.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace ComputerClub.ViewModels.Pages;
 
-public partial class ClientsViewModel(ApplicationDbContext context, SessionService sessionService) : ObservableObject
+public partial class ClientsViewModel(
+    ApplicationDbContext context,
+    SessionService sessionService,
+    UserManager<ComputerClubIdentity> userManager
+    ) : ObservableObject
 {
     public ObservableCollection<ClientItem> Clients { get; } = [];
 
     [ObservableProperty] private ClientItem? _selectedClient;
+    [ObservableProperty] private string _newLogin = string.Empty;
     [ObservableProperty] private string _newFullName = string.Empty;
     [ObservableProperty] private string _newPhone = string.Empty;
     [ObservableProperty] private decimal _topUpAmount = 1000;
@@ -23,7 +29,7 @@ public partial class ClientsViewModel(ApplicationDbContext context, SessionServi
     [RelayCommand]
     private async Task Loaded()
     {
-        var clients = await context.Clients.ToListAsync();
+        var clients = await userManager.Users.ToListAsync();
 
         foreach (var client in clients)
         {
@@ -42,15 +48,20 @@ public partial class ClientsViewModel(ApplicationDbContext context, SessionServi
             return;
         }
 
-        var entity = new ClientEntity
+        var entity = new ComputerClubIdentity
         {
+            UserName = NewLogin.Trim(),
             FullName = NewFullName.Trim(),
-            Phone = NewPhone.Trim(),
+            PhoneNumber = NewPhone.Trim(),
             Balance = 1000
         };
 
-        context.Clients.Add(entity);
-        await context.SaveChangesAsync();
+        var result = await userManager.CreateAsync(entity);
+        if (!result.Succeeded)
+        {
+            ErrorMessage = string.Join(", ", result.Errors.Select(e => e.Description));
+            return;
+        }
 
         Clients.Add(entity.Map());
 
@@ -70,11 +81,15 @@ public partial class ClientsViewModel(ApplicationDbContext context, SessionServi
             return;
         }
 
-        var entity = await context.Clients.FindAsync(item.Id);
+        var entity = await userManager.FindByIdAsync(item.Id.ToString());
         if (entity is null) return;
 
-        context.Clients.Remove(entity);
-        await context.SaveChangesAsync();
+        var result = await userManager.DeleteAsync(entity);
+        if (!result.Succeeded)
+        {
+            ErrorMessage = string.Join(", ", result.Errors.Select(e => e.Description));
+            return;
+        }
 
         Clients.Remove(item);
     }

@@ -6,11 +6,16 @@ using ComputerClub.Infrastructure.Entities;
 using ComputerClub.Mappers;
 using ComputerClub.Models;
 using ComputerClub.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace ComputerClub.ViewModels.Pages;
 
-public partial class SessionsViewModel(ApplicationDbContext context, SessionService sessionService) : ObservableObject
+public partial class SessionsViewModel(
+    ApplicationDbContext context,
+    SessionService sessionService,
+    UserManager<ComputerClubIdentity> userManager
+    ) : ObservableObject
 {
     public ObservableCollection<SessionItem> ActiveSessions { get; } = [];
 
@@ -103,7 +108,7 @@ public partial class SessionsViewModel(ApplicationDbContext context, SessionServ
         var sessions = await sessionService.GetActiveSessions().ToListAsync();
         foreach (var s in sessions) ActiveSessions.Add(s.Map());
 
-        var clients = await context.Clients.ToListAsync();
+        var clients = await userManager.Users.ToListAsync();
         foreach (var c in clients) Clients.Add(c.Map());
 
         var tariffs = await context.Tariffs.ToListAsync();

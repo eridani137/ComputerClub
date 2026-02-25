@@ -14,11 +14,11 @@ public static class EntityMappers
         Status = e.Status
     };
 
-    public static ClientItem Map(this ClientEntity e) => new()
+    public static ClientItem Map(this ComputerClubIdentity e) => new()
     {
         Id = e.Id,
         FullName = e.FullName,
-        Phone = e.Phone,
+        PhoneNumber = e.PhoneNumber,
         Balance = e.Balance
     };
 
