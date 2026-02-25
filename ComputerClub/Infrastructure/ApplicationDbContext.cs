@@ -10,7 +10,7 @@ public class ApplicationDbContext : IdentityDbContext<ComputerClubIdentity, Iden
     public DbSet<ComputerEntity> Computers => Set<ComputerEntity>();
     public DbSet<TariffEntity> Tariffs => Set<TariffEntity>();
     public DbSet<SessionEntity> Sessions => Set<SessionEntity>();
-    
+
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
@@ -23,10 +23,35 @@ public class ApplicationDbContext : IdentityDbContext<ComputerClubIdentity, Iden
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        
+
         builder.Entity<ComputerClubIdentity>(entity =>
         {
-            entity.Property(e => e.FullName).HasMaxLength(200);
+            entity.HasKey(e => e.Id);
+            
+            entity.Property(e => e.FullName)
+                .HasMaxLength(200);
+
+            entity.Property(e => e.Balance)
+                .HasColumnType("decimal(18,2)")
+                .HasPrecision(18, 2);
+        });
+
+        builder.Entity<SessionEntity>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            
+            entity.Property(e => e.TotalCost)
+                .HasColumnType("decimal(18,2)")
+                .HasPrecision(18, 2);
+        });
+
+        builder.Entity<TariffEntity>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            
+            entity.Property(e => e.PricePerHour)
+                .HasColumnType("decimal(18,2)")
+                .HasPrecision(18, 2);
         });
 
         builder.Entity<ComputerEntity>(entity =>
