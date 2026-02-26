@@ -17,7 +17,7 @@ public partial class SessionsViewModel(
     ApplicationDbContext context,
     SessionService sessionService,
     UserManager<ComputerClubIdentity> userManager
-) : ObservableObject
+) : ObservableObject, IDisposable
 {
     public ObservableCollection<SessionItem> ActiveSessions { get; } = [];
 
@@ -30,12 +30,33 @@ public partial class SessionsViewModel(
     [ObservableProperty] private ComputerCanvasItem? _selectedComputer;
     [ObservableProperty] private string? _errorMessage;
 
+    private CancellationTokenSource? _timerCts;
+
     [RelayCommand]
     private async Task Loaded()
     {
         await RefreshAll();
+        StartTimer();
+    }
+    
+    [RelayCommand]
+    private void Unloaded()
+    {
+        StopTimer();
+    }
 
-        _ = TickDurationAsync();
+    private void StartTimer()
+    {
+        StopTimer();
+        _timerCts = new CancellationTokenSource();
+        _ = TickDurationAsync(_timerCts.Token);
+    }
+
+    private void StopTimer()
+    {
+        _timerCts?.Cancel();
+        _timerCts?.Dispose();
+        _timerCts = null;
     }
 
     [RelayCommand]
@@ -101,7 +122,7 @@ public partial class SessionsViewModel(
             client?.Balance = session.Client.Balance;
 
             await RefreshAvailableComputers();
-            
+
             WeakReferenceMessenger.Default.Send(new SessionChangedMessage(item.ComputerId));
         }
         catch (Exception e)
@@ -141,17 +162,21 @@ public partial class SessionsViewModel(
         }
     }
 
-    private async Task TickDurationAsync()
+    private async Task TickDurationAsync(CancellationToken ct)
     {
         using var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
-        while (await timer.WaitForNextTickAsync())
+        try
         {
-            foreach (var sessionItem in ActiveSessions)
+            while (await timer.WaitForNextTickAsync(ct))
             {
-                sessionItem.RefreshDuration();
+                foreach (var session in ActiveSessions)
+                {
+                    session.RefreshDuration();
+                }
             }
-
-            if (ActiveSessions.Count == 0) break;
+        }
+        catch (OperationCanceledException)
+        {
         }
     }
 
@@ -169,4 +194,6 @@ public partial class SessionsViewModel(
             ? $"Для типа '{ComputerTypes.GetById(value.TypeId).Name}' тариф не найден"
             : null;
     }
+    
+    public void Dispose() => StopTimer();
 }

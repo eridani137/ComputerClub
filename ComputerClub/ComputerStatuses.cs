@@ -35,5 +35,5 @@ public record ComputerStatusDefinition
 {
     public ComputerStatus Status { get; init; }
     public string Name { get; init; } = string.Empty;
-    public SolidColorBrush Color { get; init; } = Brushes.Gray;
+    public SolidColorBrush Color { get; init; } = Brushes.Black;
 }

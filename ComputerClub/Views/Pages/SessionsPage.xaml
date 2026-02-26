@@ -19,6 +19,9 @@
         <behaviors:EventTrigger EventName="Loaded">
             <behaviors:InvokeCommandAction Command="{Binding LoadedCommand}" />
         </behaviors:EventTrigger>
+        <behaviors:EventTrigger EventName="Unloaded">
+            <behaviors:InvokeCommandAction Command="{Binding UnloadedCommand}" />
+        </behaviors:EventTrigger>
     </behaviors:Interaction.Triggers>
 
     <Page.Resources>
@@ -66,7 +69,7 @@
                             BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
                             BorderThickness="1" CornerRadius="4" Padding="8,6"
                             MinHeight="32">
-                        <!-- Пусто если компьютер не выбран -->
+                        
                         <DockPanel>
                             <Border Width="16" Height="16"
                                     Background="{Binding SelectedTariff.ComputerTypeId,
@@ -119,6 +122,19 @@
                   IsReadOnly="True"
                   GridLinesVisibility="Horizontal"
                   HeadersVisibility="Column">
+            
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="BorderBrush" Value="Transparent" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
 
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Клиент"
