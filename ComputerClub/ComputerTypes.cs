@@ -17,7 +17,7 @@ public static class ComputerTypes
         All.FirstOrDefault(t => t.Id == id) ?? All[0];
 }
 
-public class ComputerTypeDefinition
+public record ComputerTypeDefinition
 {
     public int Id { get; init; }
     public string Name { get; init; } = string.Empty;

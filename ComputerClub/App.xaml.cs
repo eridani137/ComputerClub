@@ -17,7 +17,6 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Wpf.Ui;
 using Wpf.Ui.DependencyInjection;
-using ManagementViewModel = ComputerClub.ViewModels.Pages.ManagementViewModel;
 
 namespace ComputerClub;
 
@@ -93,7 +92,7 @@ public partial class App : Application
         services.AddTransient<MainWindow>();
         services.AddTransient<MainWindowViewModel>();
 
-        services.AddTransient<ManagementViewModel>();
+        services.AddTransient<ComputersManagementViewModel>();
         services.AddTransient<CurrentCashViewModel>();
         services.AddTransient<CurrentReportViewModel>();
         services.AddTransient<ClientsViewModel>();

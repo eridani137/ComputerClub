@@ -1,11 +1,11 @@
 ﻿using System.Windows.Controls;
-using ManagementViewModel = ComputerClub.ViewModels.Pages.ManagementViewModel;
+using ComputerClub.ViewModels.Pages;
 
 namespace ComputerClub.Views.Pages;
 
 public partial class ComputersManagementPage : Page
 {
-    public ComputersManagementPage(ManagementViewModel viewModel)
+    public ComputersManagementPage(ComputersManagementViewModel viewModel)
     {
         InitializeComponent();
         DataContext = viewModel;

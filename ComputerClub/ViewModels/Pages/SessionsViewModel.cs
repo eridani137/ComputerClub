@@ -1,9 +1,11 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using ComputerClub.Infrastructure;
 using ComputerClub.Infrastructure.Entities;
 using ComputerClub.Mappers;
+using ComputerClub.Messages;
 using ComputerClub.Models;
 using ComputerClub.Services;
 using Microsoft.AspNetCore.Identity;
@@ -47,12 +49,16 @@ public partial class SessionsViewModel(
             return;
         }
 
+        var client = SelectedClient;
+        var computer = SelectedComputer;
+        var tariff = SelectedTariff;
+
         try
         {
             var session = await sessionService.OpenSession(
-                SelectedClient.Id,
-                SelectedComputer.Id,
-                SelectedTariff.Id);
+                client.Id,
+                computer.Id,
+                tariff.Id);
 
             var full = await context.Sessions
                 .Include(s => s.Client)
@@ -61,12 +67,14 @@ public partial class SessionsViewModel(
 
             ActiveSessions.Add(full.Map());
 
-            AvailableComputers.Remove(SelectedComputer);
-            SelectedComputer.Status = ComputerStatus.Occupied;
+            AvailableComputers.Remove(computer);
+            computer.Status = ComputerStatus.Occupied;
 
             SelectedClient = null;
             SelectedTariff = null;
             SelectedComputer = null;
+
+            WeakReferenceMessenger.Default.Send(new SessionChangedMessage(computer.Id));
         }
         catch (Exception e)
         {
@@ -93,6 +101,8 @@ public partial class SessionsViewModel(
             client?.Balance = session.Client.Balance;
 
             await RefreshAvailableComputers();
+            
+            WeakReferenceMessenger.Default.Send(new SessionChangedMessage(item.ComputerId));
         }
         catch (Exception e)
         {

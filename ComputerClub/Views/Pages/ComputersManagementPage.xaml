@@ -15,13 +15,15 @@
       mc:Ignorable="d"
       d:DesignHeight="800"
       d:DesignWidth="1200"
-      d:DataContext="{d:DesignInstance Type=pages:ManagementViewModel, IsDesignTimeCreatable=True}"
+      d:DataContext="{d:DesignInstance Type=pages:ComputersManagementViewModel, IsDesignTimeCreatable=True}"
       ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
       ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}">
 
     <Page.Resources>
         <converters:ComputerTypeToBrushConverter x:Key="ComputerTypeToBrushConverter" />
         <converters:ComputerTypeTupleConverter x:Key="ComputerTypeTupleConverter" />
+        <converters:ComputerStatusToBrushConverter x:Key="ComputerStatusToBrushConverter" />
+        <converters:ComputerStatusToStringConverter x:Key="ComputerStatusToStringConverter" />
     </Page.Resources>
 
     <behaviors:Interaction.Triggers>
@@ -39,9 +41,13 @@
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Top" />
 
-                <controls:ComputerTypeLegendControl VerticalAlignment="Bottom"
-                                                    Margin="5,10,5,5"
-                                                    Padding="6" />
+                <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
+                    <controls:ComputerStatusLegendControl Margin="5,10,5,5"
+                                                          Padding="6" />
+
+                    <controls:ComputerTypeLegendControl Margin="5,10,5,5"
+                                                        Padding="6" />
+                </StackPanel>
             </Grid>
         </Border>
 
@@ -68,7 +74,7 @@
                     <DataTemplate>
                         <Border BorderThickness="1"
                                 CornerRadius="6"
-                                Background="#6c6c6c"
+                                Background="{Binding Status, Converter={StaticResource ComputerStatusToBrushConverter}}"
                                 Width="100"
                                 Height="70"
                                 Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Page}}">
@@ -135,6 +141,13 @@
                                         Background="{Binding TypeId, Converter={StaticResource ComputerTypeToBrushConverter}}"
                                         VerticalAlignment="Top"
                                         CornerRadius="6,6,0,0" />
+
+                                <TextBlock
+                                    Text="{Binding Status, Converter={StaticResource ComputerStatusToStringConverter}}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontSize="11"
+                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 
                                 <TextBlock Text="{Binding Id}"
                                            VerticalAlignment="Bottom"

@@ -1,17 +1,23 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using ComputerClub.Infrastructure;
 using ComputerClub.Infrastructure.Entities;
 using ComputerClub.Mappers;
+using ComputerClub.Messages;
 using ComputerClub.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace ComputerClub.ViewModels.Pages;
 
-public partial class ManagementViewModel(ApplicationDbContext context, IServiceScopeFactory scopeFactory)
-    : ObservableObject
+public partial class ComputersManagementViewModel(
+    ApplicationDbContext context,
+    IServiceScopeFactory scopeFactory,
+    ILogger<ComputersManagementViewModel> logger)
+    : ObservableObject, IRecipient<SessionChangedMessage>
 {
     public ObservableCollection<ComputerCanvasItem> Computers { get; } = [];
 
@@ -29,6 +35,19 @@ public partial class ManagementViewModel(ApplicationDbContext context, IServiceS
             var item = entity.Map();
             Subscribe(item);
             Computers.Add(item);
+        }
+
+        WeakReferenceMessenger.Default.RegisterAll(this);
+    }
+
+    [RelayCommand]
+    private async Task RefreshStatuses()
+    {
+        var entities = await context.Computers.ToListAsync();
+        foreach (var entity in entities)
+        {
+            var item = Computers.FirstOrDefault(c => c.Id == entity.Id);
+            item?.Status = entity.Status;
         }
     }
 
@@ -122,5 +141,17 @@ public partial class ManagementViewModel(ApplicationDbContext context, IServiceS
                 }
             }
         };
+    }
+
+    public async void Receive(SessionChangedMessage message)
+    {
+        try
+        {
+            await RefreshStatusesCommand.ExecuteAsync(null);
+        }
+        catch (Exception e)
+        {
+            logger.LogError("SessionChangeMessage.Receive: {Message}", e.Message);
+        }
     }
 }
