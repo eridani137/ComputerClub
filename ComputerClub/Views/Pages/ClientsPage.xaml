@@ -26,38 +26,6 @@
     </Page.Resources>
 
     <DockPanel Margin="20">
-        <Border DockPanel.Dock="Top"
-                Background="{DynamicResource ControlFillColorDefaultBrush}"
-                CornerRadius="8" Padding="16" Margin="0,0,0,16">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-
-                <ui:TextBox Grid.Column="0"
-                            PlaceholderText="Логин"
-                            Text="{Binding NewLogin, UpdateSourceTrigger=PropertyChanged}"
-                            Margin="0,0,8,0" />
-
-                <ui:TextBox Grid.Column="1"
-                            PlaceholderText="ФИО"
-                            Text="{Binding NewFullName, UpdateSourceTrigger=PropertyChanged}"
-                            Margin="0,0,8,0" />
-
-                <ui:TextBox Grid.Column="2"
-                            PlaceholderText="Телефон"
-                            Text="{Binding NewPhone, UpdateSourceTrigger=PropertyChanged}"
-                            Margin="0,0,8,0" />
-
-                <ui:Button Grid.Column="3"
-                           Content="Добавить клиента"
-                           Icon="{ui:SymbolIcon PersonAdd24}"
-                           Command="{Binding AddClientCommand}" />
-            </Grid>
-        </Border>
 
         <ui:InfoBar DockPanel.Dock="Top"
                     IsOpen="{Binding ErrorMessage, Converter={StaticResource NullToBoolConverter}}"
@@ -91,8 +59,8 @@
 
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" />
-                <DataGridTextColumn Header="Логин" Binding="{Binding Login}" Width="150" />
-                <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}" Width="400" />
+                <DataGridTextColumn Header="Логин" Binding="{Binding Login}" Width="250" />
+                <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}" Width="350" />
                 <DataGridTextColumn Header="Телефон" Binding="{Binding PhoneNumber}" Width="200" />
                 <DataGridTextColumn Header="Баланс" Binding="{Binding Balance, StringFormat=N2}" Width="130" />
 

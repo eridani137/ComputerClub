@@ -24,7 +24,7 @@ namespace ComputerClub;
 public partial class App : Application
 {
     private readonly IHost _host;
-    
+
     public static ComputerClubIdentity? CurrentUser { get; set; }
     public static string? CurrentRole { get; set; }
 
@@ -39,7 +39,7 @@ public partial class App : Application
             configuration.SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false);
         });
-        
+
         builder.ConfigureServices((context, services) => ConfigureServices(context.Configuration, services));
 
         _host = builder.Build();
@@ -52,9 +52,11 @@ public partial class App : Application
             base.OnStartup(se);
 
             await _host.StartAsync();
-            
+
             await using var scope = _host.Services.CreateAsyncScope();
+            // var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
+            // await context.Database.MigrateAsync();
             await seeder.Seed();
 
             var loginWindow = _host.Services.GetRequiredService<LoginWindow>();
@@ -87,28 +89,30 @@ public partial class App : Application
     {
         services.AddScoped<LoginWindow>();
         services.AddScoped<LoginWindowViewModel>();
-        
+
         services.AddTransient<MainWindow>();
         services.AddTransient<MainWindowViewModel>();
-        
+
         services.AddTransient<ManagementViewModel>();
         services.AddTransient<CurrentCashViewModel>();
         services.AddTransient<CurrentReportViewModel>();
         services.AddTransient<ClientsViewModel>();
         services.AddTransient<TariffsViewModel>();
         services.AddTransient<SessionsViewModel>();
-        
+        services.AddTransient<DevViewModel>();
+
         services.AddTransient<ComputersManagementPage>();
         services.AddTransient<CurrentCashPage>();
         services.AddTransient<CurrentReportPage>();
         services.AddTransient<ClientsPage>();
+        services.AddTransient<DevPage>();
 
         services.AddNavigationViewPageProvider();
 
         services.AddSingleton<ISnackbarService, SnackbarService>();
         services.AddSingleton<IContentDialogService, ContentDialogService>();
         services.AddSingleton<INavigationService, NavigationService>();
-        
+
         services.AddTransient<SessionService>();
 
         AddInfrastructure(configuration, services);
@@ -117,21 +121,13 @@ public partial class App : Application
     private static void AddInfrastructure(IConfiguration configuration, IServiceCollection services)
     {
         services.AddScoped<DatabaseSeeder>();
-        
+
         services.AddDbContext<ApplicationDbContext>(options =>
         {
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
         });
 
-        services.AddIdentityCore<ComputerClubIdentity>(options =>
-            {
-                options.Password.RequireDigit = true;
-                options.Password.RequiredLength = 8;
-                options.Password.RequireNonAlphanumeric = true;
-                options.Password.RequireUppercase = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequiredUniqueChars = 3;
-            })
+        services.AddIdentityCore<ComputerClubIdentity>()
             .AddRoles<IdentityRole<int>>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
     }

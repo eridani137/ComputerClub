@@ -26,6 +26,8 @@ public class ApplicationDbContext : IdentityDbContext<ComputerClubIdentity, Iden
 
         builder.Entity<ComputerClubIdentity>(entity =>
         {
+            entity.ToTable("Users");
+            
             entity.HasKey(e => e.Id);
             
             entity.Property(e => e.FullName)

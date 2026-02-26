@@ -73,6 +73,11 @@ public partial class MainWindowViewModel(
                     }
                 });
 
+                MenuItems.Add(new NavigationViewItem(
+                    "Development",
+                    SymbolRegular.Code24,
+                    typeof(DevPage)));
+
                 homePageType = typeof(ComputersManagementPage);
 
                 break;
