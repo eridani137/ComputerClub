@@ -21,9 +21,6 @@ public partial class ClientsViewModel(
     public ObservableCollection<ClientItem> Clients { get; } = [];
 
     [ObservableProperty] private ClientItem? _selectedClient;
-    [ObservableProperty] private string _newLogin = string.Empty;
-    [ObservableProperty] private string _newFullName = string.Empty;
-    [ObservableProperty] private string _newPhone = string.Empty;
     [ObservableProperty] private decimal _topUpAmount = 1000;
     [ObservableProperty] private string? _errorMessage;
     
@@ -36,38 +33,6 @@ public partial class ClientsViewModel(
         {
             Clients.Add(client.Map());
         }
-    }
-    
-    [RelayCommand]
-    private async Task AddClient()
-    {
-        ErrorMessage = null;
-
-        if (string.IsNullOrWhiteSpace(NewFullName))
-        {
-            ErrorMessage = "Введите имя клиента";
-            return;
-        }
-
-        var entity = new ComputerClubIdentity
-        {
-            UserName = NewLogin.Trim(),
-            FullName = NewFullName.Trim(),
-            PhoneNumber = NewPhone.Trim(),
-            Balance = 1000
-        };
-
-        var result = await userManager.CreateAsync(entity);
-        if (!result.Succeeded)
-        {
-            ErrorMessage = string.Join(", ", result.Errors.Select(e => e.Description));
-            return;
-        }
-
-        Clients.Add(entity.Map());
-
-        NewFullName = string.Empty;
-        NewPhone = string.Empty;
     }
     
     [RelayCommand]
