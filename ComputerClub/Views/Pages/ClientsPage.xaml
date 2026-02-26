@@ -78,10 +78,15 @@
                                     ClearButtonEnabled="False"
                                     Width="150"
                                     Margin="0,0,6,0" />
+                                
                                 <ui:Button Content="+"
+                                           Height="36"
+                                           Width="36"
+                                           Appearance="Primary"
                                            Command="{Binding DataContext.TopUpBalanceCommand,
                                                RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                            CommandParameter="{Binding}" />
+                                
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -91,6 +96,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <ui:Button Icon="{ui:SymbolIcon Delete24}"
+                                       Height="36"
                                        Appearance="Danger"
                                        Command="{Binding DataContext.RemoveClientCommand,
                                            RelativeSource={RelativeSource AncestorType=DataGrid}}"
@@ -98,7 +104,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                
+
             </DataGrid.Columns>
         </DataGrid>
 

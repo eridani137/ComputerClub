@@ -13,8 +13,11 @@ public partial class TariffsViewModel(ApplicationDbContext context) : Observable
 {
     public ObservableCollection<TariffItem> Tariffs { get; } = [];
 
+    [ObservableProperty] private ObservableCollection<ComputerTypeDefinition> _availableTypes = [];
+    
     [ObservableProperty] private string _newName = string.Empty;
     [ObservableProperty] private decimal _newPricePerHour;
+    [ObservableProperty] private ComputerTypeDefinition? _newComputerType;
     [ObservableProperty] private string? _errorMessage;
 
     [RelayCommand]
@@ -25,6 +28,8 @@ public partial class TariffsViewModel(ApplicationDbContext context) : Observable
         {
             Tariffs.Add(e.Map());
         }
+        
+        RefreshAvailableTypes();
     }
     
     [RelayCommand]
@@ -44,19 +49,35 @@ public partial class TariffsViewModel(ApplicationDbContext context) : Observable
             return;
         }
 
+        if (NewComputerType is null)
+        {
+            ErrorMessage = "Выберите тип компьютера";
+            return;
+        }
+
+        var exists = await context.Tariffs.AnyAsync(t => t.ComputerTypeId == NewComputerType.Id);
+        if (exists)
+        {
+            ErrorMessage = $"Тариф для типа '{NewComputerType.Name}' уже существует";
+            return;
+        }
+
         var entity = new TariffEntity
         {
             Name = NewName.Trim(),
-            PricePerHour = NewPricePerHour
+            PricePerHour = NewPricePerHour,
+            ComputerTypeId = NewComputerType.Id
         };
 
         context.Tariffs.Add(entity);
         await context.SaveChangesAsync();
 
         Tariffs.Add(entity.Map());
+        RefreshAvailableTypes();
 
         NewName = string.Empty;
         NewPricePerHour = 0;
+        NewComputerType = null;
     }
     
     [RelayCommand]
@@ -78,6 +99,7 @@ public partial class TariffsViewModel(ApplicationDbContext context) : Observable
         await context.SaveChangesAsync();
 
         Tariffs.Remove(item);
+        RefreshAvailableTypes();
     }
     
     [RelayCommand]
@@ -92,5 +114,14 @@ public partial class TariffsViewModel(ApplicationDbContext context) : Observable
         entity.PricePerHour = item.PricePerHour;
 
         await context.SaveChangesAsync();
+    }
+    
+    private void RefreshAvailableTypes()
+    {
+        var usedTypeIds = Tariffs.Select(t => t.ComputerTypeId).ToHashSet();
+
+        AvailableTypes = new ObservableCollection<ComputerTypeDefinition>(
+            ComputerTypes.All.Where(t => t.Id != 0 && !usedTypeIds.Contains(t.Id))
+        );
     }
 }

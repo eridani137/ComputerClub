@@ -27,7 +27,8 @@ public static class EntityMappers
     {
         Id = e.Id,
         Name = e.Name,
-        PricePerHour = e.PricePerHour
+        PricePerHour = e.PricePerHour,
+        ComputerTypeId =  e.ComputerTypeId,
     };
 
     public static SessionItem Map(this SessionEntity e) => new()

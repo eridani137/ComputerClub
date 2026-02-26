@@ -50,6 +50,12 @@ public partial class ClientsViewModel(
         var entity = await userManager.FindByIdAsync(item.Id.ToString());
         if (entity is null) return;
 
+        if (entity.UserName is not null && entity.UserName.Equals("root", StringComparison.InvariantCultureIgnoreCase))
+        {
+            ErrorMessage = "Нельзя удалить root пользователя";
+            return;
+        }
+
         var result = await userManager.DeleteAsync(entity);
         if (!result.Succeeded)
         {

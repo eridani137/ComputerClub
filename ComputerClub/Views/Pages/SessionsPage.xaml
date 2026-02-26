@@ -23,6 +23,8 @@
 
     <Page.Resources>
         <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
+        <converters:ComputerTypeToBrushConverter x:Key="ComputerTypeToBrushConverter" />
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
     </Page.Resources>
 
     <DockPanel Margin="20">
@@ -38,29 +40,69 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <ComboBox Grid.Column="0"
-                          ItemsSource="{Binding Clients}"
-                          SelectedItem="{Binding SelectedClient}"
-                          DisplayMemberPath="FullName"
-                          Margin="0,0,8,0" />
+                <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                    <TextBlock Text="Клиент"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               FontSize="11" Margin="0,0,0,2" />
+                    <ComboBox ItemsSource="{Binding Clients}"
+                              SelectedItem="{Binding SelectedClient}"
+                              DisplayMemberPath="FullName" />
+                </StackPanel>
 
-                <ComboBox Grid.Column="1"
-                          ItemsSource="{Binding AvailableComputers}"
-                          SelectedItem="{Binding SelectedComputer}"
-                          DisplayMemberPath="Id"
-                          Margin="0,0,8,0" />
+                <StackPanel Grid.Column="1" Margin="0,0,8,0">
+                    <TextBlock Text="Компьютер"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               FontSize="11" Margin="0,0,0,2" />
+                    <ComboBox ItemsSource="{Binding AvailableComputers}"
+                              SelectedItem="{Binding SelectedComputer}"
+                              DisplayMemberPath="Id" />
+                </StackPanel>
 
-                <ComboBox Grid.Column="2"
-                          ItemsSource="{Binding Tariffs}"
-                          SelectedItem="{Binding SelectedTariff}"
-                          DisplayMemberPath="Name"
-                          Margin="0,0,8,0" />
+                <StackPanel Grid.Column="2" Margin="0,0,8,0">
+                    <TextBlock Text="Тариф (по типу ПК)"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               FontSize="11" Margin="0,0,0,2" />
+                    <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                            BorderThickness="1" CornerRadius="4" Padding="8,6"
+                            MinHeight="32">
+                        <!-- Пусто если компьютер не выбран -->
+                        <DockPanel>
+                            <Border Width="16" Height="16"
+                                    Background="{Binding SelectedTariff.ComputerTypeId,
+                        Converter={StaticResource ComputerTypeToBrushConverter}}"
+                                    CornerRadius="3"
+                                    Margin="0,0,6,0"
+                                    DockPanel.Dock="Left"
+                                    Visibility="{Binding SelectedTariff,
+                        Converter={StaticResource NullToVisibilityConverter}}" />
+                            <TextBlock VerticalAlignment="Center" Height="22">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Text" Value="{Binding SelectedTariff.Name}" />
+                                        <Setter Property="Foreground"
+                                                Value="{DynamicResource TextFillColorPrimaryBrush}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedTariff}" Value="{x:Null}">
+                                                <Setter Property="Text" Value="Выберите компьютер" />
+                                                <Setter Property="Foreground"
+                                                        Value="{DynamicResource TextFillColorSecondaryBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </DockPanel>
+                    </Border>
+                </StackPanel>
 
                 <ui:Button Grid.Column="3"
                            Content="Открыть сессию"
                            Icon="{ui:SymbolIcon Play24}"
                            Appearance="Primary"
-                           Command="{Binding OpenSessionCommand}" />
+                           Height="36"
+                           Command="{Binding OpenSessionCommand}"
+                           VerticalAlignment="Bottom" />
             </Grid>
         </Border>
 

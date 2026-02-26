@@ -15,7 +15,7 @@ public partial class SessionsViewModel(
     ApplicationDbContext context,
     SessionService sessionService,
     UserManager<ComputerClubIdentity> userManager
-    ) : ObservableObject
+) : ObservableObject
 {
     public ObservableCollection<SessionItem> ActiveSessions { get; } = [];
 
@@ -35,7 +35,7 @@ public partial class SessionsViewModel(
 
         _ = TickDurationAsync();
     }
-    
+
     [RelayCommand]
     private async Task OpenSession()
     {
@@ -73,7 +73,7 @@ public partial class SessionsViewModel(
             ErrorMessage = e.Message;
         }
     }
-    
+
     [RelayCommand]
     private async Task CloseSession(SessionItem item)
     {
@@ -99,7 +99,7 @@ public partial class SessionsViewModel(
             ErrorMessage = e.Message;
         }
     }
-    
+
     private async Task RefreshAll()
     {
         ActiveSessions.Clear();
@@ -117,11 +117,11 @@ public partial class SessionsViewModel(
 
         await RefreshAvailableComputers();
     }
-    
+
     private async Task RefreshAvailableComputers()
     {
         AvailableComputers.Clear();
-        
+
         var computers = await context.Computers
             .Where(c => c.Status == ComputerStatus.Available)
             .ToListAsync();
@@ -130,7 +130,7 @@ public partial class SessionsViewModel(
             AvailableComputers.Add(c.Map());
         }
     }
-    
+
     private async Task TickDurationAsync()
     {
         using var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
@@ -143,5 +143,20 @@ public partial class SessionsViewModel(
 
             if (ActiveSessions.Count == 0) break;
         }
+    }
+
+    partial void OnSelectedComputerChanged(ComputerCanvasItem? value)
+    {
+        if (value is null)
+        {
+            SelectedTariff = null;
+            return;
+        }
+
+        SelectedTariff = Tariffs.FirstOrDefault(t => t.ComputerTypeId == value.TypeId);
+
+        ErrorMessage = SelectedTariff is null
+            ? $"Для типа '{ComputerTypes.GetById(value.TypeId).Name}' тариф не найден"
+            : null;
     }
 }
