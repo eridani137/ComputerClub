@@ -1,0 +1,108 @@
+﻿<Page x:Class="ComputerClub.Views.Pages.TariffsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:ComputerClub.Views.Pages"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:pages="clr-namespace:ComputerClub.ViewModels.Pages"
+      xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:converters="clr-namespace:ComputerClub.Converters"
+      mc:Ignorable="d"
+      d:DesignHeight="800"
+      d:DesignWidth="1200"
+      d:DataContext="{d:DesignInstance Type=pages:TariffsViewModel, IsDesignTimeCreatable=False}"
+      ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+      ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}">
+
+    <behaviors:Interaction.Triggers>
+        <behaviors:EventTrigger EventName="Loaded">
+            <behaviors:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </behaviors:EventTrigger>
+    </behaviors:Interaction.Triggers>
+    
+    <Page.Resources>
+        <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
+    </Page.Resources>
+
+    <DockPanel Margin="20">
+
+        <Border DockPanel.Dock="Top"
+                Background="{DynamicResource ControlFillColorDefaultBrush}"
+                CornerRadius="8" Padding="16" Margin="0,0,0,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="160" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <ui:TextBox Grid.Column="0"
+                            PlaceholderText="Название тарифа"
+                            Text="{Binding NewName, UpdateSourceTrigger=PropertyChanged}"
+                            Margin="0,0,8,0" />
+
+                <ui:NumberBox Grid.Column="1"
+                              PlaceholderText="Цена / час, ₽"
+                              Value="{Binding NewPricePerHour, UpdateSourceTrigger=PropertyChanged}"
+                              Minimum="0"
+                              Margin="0,0,8,0" />
+
+                <ui:Button Grid.Column="2"
+                           Content="Добавить тариф"
+                           Icon="{ui:SymbolIcon Add24}"
+                           Command="{Binding AddTariffCommand}" />
+            </Grid>
+        </Border>
+
+        <ui:InfoBar DockPanel.Dock="Top"
+                    IsOpen="{Binding ErrorMessage, Converter={StaticResource NullToBoolConverter}}"
+                    Message="{Binding ErrorMessage}"
+                    Severity="Error"
+                    IsClosable="True"
+                    Margin="0,0,0,12" />
+        
+        <ItemsControl ItemsSource="{Binding Tariffs}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                            CornerRadius="8" Padding="16" Margin="0,0,0,8">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="180" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <ui:TextBox Grid.Column="0"
+                                        Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                                        Margin="0,0,8,0" />
+
+                            <ui:NumberBox Grid.Column="1"
+                                          Value="{Binding PricePerHour, UpdateSourceTrigger=PropertyChanged}"
+                                          Minimum="0"
+                                          Margin="0,0,8,0" />
+
+                            <ui:Button Grid.Column="2"
+                                       Content="Сохранить"
+                                       Icon="{ui:SymbolIcon Save24}"
+                                       Command="{Binding DataContext.SaveTariffCommand,
+                                           RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                       CommandParameter="{Binding}"
+                                       Margin="0,0,8,0" />
+
+                            <ui:Button Grid.Column="3"
+                                       Icon="{ui:SymbolIcon Delete24}"
+                                       Appearance="Danger"
+                                       Command="{Binding DataContext.RemoveTariffCommand,
+                                           RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                       CommandParameter="{Binding}" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+    </DockPanel>
+</Page>

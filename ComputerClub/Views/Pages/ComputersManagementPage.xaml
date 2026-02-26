@@ -71,7 +71,7 @@
                                 Background="#6c6c6c"
                                 Width="100"
                                 Height="70"
-                                Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                                Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Page}}">
 
                             <Border.ContextMenu>
                                 <ContextMenu>

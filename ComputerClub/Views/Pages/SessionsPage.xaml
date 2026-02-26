@@ -1,0 +1,123 @@
+﻿<Page x:Class="ComputerClub.Views.Pages.SessionsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:ComputerClub.Views.Pages"
+      xmlns:pages="clr-namespace:ComputerClub.ViewModels.Pages"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:converters="clr-namespace:ComputerClub.Converters"
+      mc:Ignorable="d"
+      d:DesignHeight="800"
+      d:DesignWidth="1200"
+      d:DataContext="{d:DesignInstance Type=pages:SessionsViewModel, IsDesignTimeCreatable=False}"
+      ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+      ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}">
+
+    <behaviors:Interaction.Triggers>
+        <behaviors:EventTrigger EventName="Loaded">
+            <behaviors:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </behaviors:EventTrigger>
+    </behaviors:Interaction.Triggers>
+
+    <Page.Resources>
+        <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
+    </Page.Resources>
+
+    <DockPanel Margin="20">
+
+        <Border DockPanel.Dock="Top"
+                Background="{DynamicResource ControlFillColorDefaultBrush}"
+                CornerRadius="8" Padding="16" Margin="0,0,0,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <ComboBox Grid.Column="0"
+                          ItemsSource="{Binding Clients}"
+                          SelectedItem="{Binding SelectedClient}"
+                          DisplayMemberPath="FullName"
+                          Margin="0,0,8,0" />
+
+                <ComboBox Grid.Column="1"
+                          ItemsSource="{Binding AvailableComputers}"
+                          SelectedItem="{Binding SelectedComputer}"
+                          DisplayMemberPath="Id"
+                          Margin="0,0,8,0" />
+
+                <ComboBox Grid.Column="2"
+                          ItemsSource="{Binding Tariffs}"
+                          SelectedItem="{Binding SelectedTariff}"
+                          DisplayMemberPath="Name"
+                          Margin="0,0,8,0" />
+
+                <ui:Button Grid.Column="3"
+                           Content="Открыть сессию"
+                           Icon="{ui:SymbolIcon Play24}"
+                           Appearance="Primary"
+                           Command="{Binding OpenSessionCommand}" />
+            </Grid>
+        </Border>
+
+        <ui:InfoBar DockPanel.Dock="Top"
+                    IsOpen="{Binding ErrorMessage, Converter={StaticResource NullToBoolConverter}}"
+                    Message="{Binding ErrorMessage}"
+                    Severity="Error"
+                    IsClosable="True"
+                    Margin="0,0,0,12" />
+
+        <DataGrid ItemsSource="{Binding ActiveSessions}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
+                  GridLinesVisibility="Horizontal"
+                  HeadersVisibility="Column">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Клиент"
+                                    Binding="{Binding ClientName}"
+                                    Width="*" />
+
+                <DataGridTextColumn Header="ПК №"
+                                    Binding="{Binding ComputerId}"
+                                    Width="70" />
+
+                <DataGridTextColumn Header="Тариф"
+                                    Binding="{Binding TariffName}"
+                                    Width="130" />
+
+                <DataGridTextColumn Header="₽/час"
+                                    Binding="{Binding PricePerHour, StringFormat=N2}"
+                                    Width="90" />
+
+                <DataGridTextColumn Header="Начало"
+                                    Binding="{Binding StartedAt, StringFormat=HH:mm:ss}"
+                                    Width="90" />
+
+                <DataGridTextColumn Header="Длительность"
+                                    Binding="{Binding Duration, StringFormat=hh\\:mm\\:ss}"
+                                    Width="120" />
+
+                <DataGridTemplateColumn Width="140">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ui:Button Content="Закрыть"
+                                       Icon="{ui:SymbolIcon Stop24}"
+                                       Appearance="Caution"
+                                       Command="{Binding DataContext.CloseSessionCommand,
+                                           RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                       CommandParameter="{Binding}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </DockPanel>
+
+</Page>

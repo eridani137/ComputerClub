@@ -53,6 +53,16 @@ public partial class MainWindowViewModel(
                         "Управление клиентами",
                         SymbolRegular.Person24,
                         typeof(ClientsPage)));
+                
+                MenuItems.Add(new NavigationViewItem(
+                    "Тарифы",
+                    SymbolRegular.Notebook24,
+                    typeof(TariffsPage)));
+                
+                MenuItems.Add(new NavigationViewItem(
+                    "Сессии",
+                    SymbolRegular.NotepadPerson24,
+                    typeof(SessionsPage)));
 
                 MenuItems.Add(new NavigationViewItem()
                 {

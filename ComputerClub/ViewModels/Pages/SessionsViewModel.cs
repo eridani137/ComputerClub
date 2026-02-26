@@ -74,6 +74,7 @@ public partial class SessionsViewModel(
         }
     }
     
+    [RelayCommand]
     private async Task CloseSession(SessionItem item)
     {
         ErrorMessage = null;

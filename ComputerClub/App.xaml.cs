@@ -105,6 +105,8 @@ public partial class App : Application
         services.AddTransient<CurrentCashPage>();
         services.AddTransient<CurrentReportPage>();
         services.AddTransient<ClientsPage>();
+        services.AddTransient<TariffsPage>();
+        services.AddTransient<SessionsPage>();
         services.AddTransient<DevPage>();
 
         services.AddNavigationViewPageProvider();
