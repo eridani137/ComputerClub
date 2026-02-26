@@ -1,23 +1,23 @@
 ﻿<Page x:Class="ComputerClub.Views.Pages.ComputersManagementPage"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:ComputerClub.Views"
-             xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-             xmlns:viewModels="clr-namespace:ComputerClub.ViewModels"
-             xmlns:computerClub="clr-namespace:ComputerClub"
-             xmlns:converters="clr-namespace:ComputerClub.Converters"
-             xmlns:behaviors1="clr-namespace:ComputerClub.Behaviors"
-             xmlns:pages="clr-namespace:ComputerClub.ViewModels.Pages"
-             xmlns:controls="clr-namespace:ComputerClub.Views.Controls"
-             mc:Ignorable="d"
-             d:DesignHeight="800"
-             d:DesignWidth="1200"
-             d:DataContext="{d:DesignInstance Type=pages:ManagementViewModel, IsDesignTimeCreatable=True}"
-             ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
-             ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}">
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:ComputerClub.Views"
+      xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:viewModels="clr-namespace:ComputerClub.ViewModels"
+      xmlns:computerClub="clr-namespace:ComputerClub"
+      xmlns:converters="clr-namespace:ComputerClub.Converters"
+      xmlns:behaviors1="clr-namespace:ComputerClub.Behaviors"
+      xmlns:pages="clr-namespace:ComputerClub.ViewModels.Pages"
+      xmlns:controls="clr-namespace:ComputerClub.Views.Controls"
+      mc:Ignorable="d"
+      d:DesignHeight="800"
+      d:DesignWidth="1200"
+      d:DataContext="{d:DesignInstance Type=pages:ManagementViewModel, IsDesignTimeCreatable=True}"
+      ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+      ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}">
 
     <Page.Resources>
         <converters:ComputerTypeToBrushConverter x:Key="ComputerTypeToBrushConverter" />
@@ -99,7 +99,8 @@
 
                                                             <Binding />
 
-                                                            <Binding Path="PlacementTarget.DataContext" RelativeSource="{RelativeSource AncestorType=ContextMenu}" />
+                                                            <Binding Path="PlacementTarget.DataContext"
+                                                                     RelativeSource="{RelativeSource AncestorType=ContextMenu}" />
 
                                                         </MultiBinding>
                                                     </Setter.Value>
@@ -116,7 +117,8 @@
                                               CommandParameter="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
 
                                         <MenuItem.Icon>
-                                            <ui:SymbolIcon Symbol="Delete24" Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
+                                            <ui:SymbolIcon Symbol="Delete24"
+                                                           Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
                                         </MenuItem.Icon>
 
                                     </MenuItem>
@@ -133,6 +135,13 @@
                                         Background="{Binding TypeId, Converter={StaticResource ComputerTypeToBrushConverter}}"
                                         VerticalAlignment="Top"
                                         CornerRadius="6,6,0,0" />
+
+                                <TextBlock Text="{Binding Id}"
+                                           VerticalAlignment="Bottom"
+                                           HorizontalAlignment="Right"
+                                           Margin="0,0,6,4"
+                                           FontSize="13"
+                                           Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                             </Grid>
 
                         </Border>
