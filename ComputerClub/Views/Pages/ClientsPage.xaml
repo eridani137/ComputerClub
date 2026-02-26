@@ -41,7 +41,7 @@
                             PlaceholderText="Логин"
                             Text="{Binding NewLogin, UpdateSourceTrigger=PropertyChanged}"
                             Margin="0,0,8,0" />
-                
+
                 <ui:TextBox Grid.Column="1"
                             PlaceholderText="ФИО"
                             Text="{Binding NewFullName, UpdateSourceTrigger=PropertyChanged}"
@@ -78,20 +78,21 @@
 
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
-                    <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderThickness" Value="0" />
                     <Style.Triggers>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Background" Value="Transparent"/>
-                            <Setter Property="BorderBrush" Value="Transparent"/>
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="BorderBrush" Value="Transparent" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>
             </DataGrid.RowStyle>
-            
+
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" />
-                <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}" Width="500" />
+                <DataGridTextColumn Header="Логин" Binding="{Binding Login}" Width="150" />
+                <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}" Width="400" />
                 <DataGridTextColumn Header="Телефон" Binding="{Binding PhoneNumber}" Width="200" />
                 <DataGridTextColumn Header="Баланс" Binding="{Binding Balance, StringFormat=N2}" Width="130" />
 
@@ -112,7 +113,7 @@
                                 <ui:Button Content="+"
                                            Command="{Binding DataContext.TopUpBalanceCommand,
                                                RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                           CommandParameter="{Binding}"/>
+                                           CommandParameter="{Binding}" />
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

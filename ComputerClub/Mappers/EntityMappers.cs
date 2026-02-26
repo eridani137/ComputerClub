@@ -17,6 +17,7 @@ public static class EntityMappers
     public static ClientItem Map(this ComputerClubIdentity e) => new()
     {
         Id = e.Id,
+        Login = e.UserName ?? string.Empty,
         FullName = e.FullName,
         PhoneNumber = e.PhoneNumber,
         Balance = e.Balance
