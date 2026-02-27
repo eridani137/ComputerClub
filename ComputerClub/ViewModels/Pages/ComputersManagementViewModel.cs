@@ -162,6 +162,34 @@ public partial class ComputersManagementViewModel(
         entity.TypeId = type.Id;
         await context.SaveChangesAsync();
     }
+    
+    [RelayCommand]
+    private async Task ToggleOutOfService(ComputerItem item)
+    {
+        if (item.Status == ComputerStatus.Occupied)
+        {
+            snackbarService.Show("Ошибка", "Попробуйте еще, когда компьютер освободится",
+                ControlAppearance.Danger, new SymbolIcon(SymbolRegular.ErrorCircle24), TimeSpan.FromSeconds(3));
+            return;
+        }
+        
+        var entity = await context.Computers.FindAsync(item.Id);
+        if (entity is null) return;
+
+        if (entity.Status == ComputerStatus.OutOfService)
+        {
+            entity.Status = ComputerStatus.Available;
+            item.Status = ComputerStatus.Available;
+        }
+        else
+        {
+            entity.Status = ComputerStatus.OutOfService;
+            item.Status = ComputerStatus.OutOfService;
+        }
+
+        await context.SaveChangesAsync();
+        WeakReferenceMessenger.Default.Send(new SessionChangedMessage(item.Id));
+    }
 
     private void Subscribe(ComputerItem item)
     {

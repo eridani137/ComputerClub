@@ -131,6 +131,39 @@
                                         </MenuItem.Icon>
 
                                     </MenuItem>
+                                    
+                                    <Separator />
+                                    
+                                    <MenuItem Command="{Binding PlacementTarget.Tag.ToggleOutOfServiceCommand, 
+              RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                              CommandParameter="{Binding PlacementTarget.DataContext, 
+              RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+
+                                        <MenuItem.Style>
+                                            <Style TargetType="MenuItem">
+                                                <Setter Property="Header" Value="Выключить" />
+                                                <Setter Property="Icon">
+                                                    <Setter.Value>
+                                                        <ui:SymbolIcon Symbol="Power24" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding PlacementTarget.DataContext.Status, 
+                                 RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                                 Value="{x:Static entities:ComputerStatus.OutOfService}">
+                                                        <Setter Property="Header" Value="Включить" />
+                                                        <Setter Property="Icon">
+                                                            <Setter.Value>
+                                                                <ui:SymbolIcon Symbol="Power24"
+                                                                               Foreground="{DynamicResource SystemFillColorSuccessBrush}" />
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </MenuItem.Style>
+
+                                    </MenuItem>
 
                                 </ContextMenu>
                             </Border.ContextMenu>
