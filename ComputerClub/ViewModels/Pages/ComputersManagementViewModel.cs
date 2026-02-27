@@ -10,12 +10,15 @@ using ComputerClub.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Wpf.Ui;
+using Wpf.Ui.Controls;
 
 namespace ComputerClub.ViewModels.Pages;
 
 public partial class ComputersManagementViewModel(
     ApplicationDbContext context,
     IServiceScopeFactory scopeFactory,
+    ISnackbarService snackbarService,
     ILogger<ComputersManagementViewModel> logger)
     : ObservableObject, IRecipient<SessionChangedMessage>, IDisposable
 {
@@ -24,14 +27,14 @@ public partial class ComputersManagementViewModel(
     public IReadOnlyList<ComputerTypeDefinition> ComputerTypes => ComputerClub.ComputerTypes.All;
 
     private readonly Dictionary<int, CancellationTokenSource> _saveTokens = new();
-    
+
     private CancellationTokenSource? _timerCts;
 
     [RelayCommand]
     private async Task Loaded()
     {
         var computerEntities = await context.Computers.ToListAsync();
-        
+
         foreach (var entity in computerEntities)
         {
             var item = entity.Map();
@@ -46,7 +49,7 @@ public partial class ComputersManagementViewModel(
 
     [RelayCommand]
     private void Unloaded() => StopTimer();
-    
+
     [RelayCommand]
     private async Task RefreshStatuses()
     {
@@ -82,7 +85,7 @@ public partial class ComputersManagementViewModel(
         _timerCts?.Dispose();
         _timerCts = null;
     }
-    
+
     private async Task TickAsync(CancellationToken ct)
     {
         using var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
@@ -96,9 +99,11 @@ public partial class ComputersManagementViewModel(
                 }
             }
         }
-        catch (OperationCanceledException) { }
+        catch (OperationCanceledException)
+        {
+        }
     }
-    
+
     [RelayCommand]
     private async Task AddComputer()
     {
@@ -120,6 +125,13 @@ public partial class ComputersManagementViewModel(
     [RelayCommand]
     private async Task RemoveComputer(ComputerItem item)
     {
+        if (item.Status != ComputerStatus.Available)
+        {
+            snackbarService.Show("Ошибка", "Попробуйте еще, когда компьютер освободится",
+                ControlAppearance.Danger, new SymbolIcon(SymbolRegular.ErrorCircle24), TimeSpan.FromSeconds(3));
+            return;
+        }
+
         Computers.Remove(item);
 
         var entity = await context.Computers.FindAsync(item.Id);
@@ -134,6 +146,13 @@ public partial class ComputersManagementViewModel(
     private async Task SetComputerType((ComputerItem computerCanvasItem, ComputerTypeDefinition type) param)
     {
         var (computerCanvasItem, type) = param;
+
+        if (computerCanvasItem.Status != ComputerStatus.Available)
+        {
+            snackbarService.Show("Ошибка", "Попробуйте еще, когда компьютер освободится",
+                ControlAppearance.Danger, new SymbolIcon(SymbolRegular.ErrorCircle24), TimeSpan.FromSeconds(3));
+            return;
+        }
 
         computerCanvasItem.TypeId = type.Id;
 
@@ -202,6 +221,6 @@ public partial class ComputersManagementViewModel(
             logger.LogError("SessionChangeMessage.Receive: {Message}", e.Message);
         }
     }
-    
+
     public void Dispose() => StopTimer();
 }

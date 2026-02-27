@@ -58,7 +58,6 @@ public partial class App : Application
             var sessionService = scope.ServiceProvider.GetRequiredService<SessionService>();
             
             await seeder.Seed();
-            await sessionService.CloseHangingSessionsAsync();
 
             var loginWindow = _host.Services.GetRequiredService<LoginWindow>();
             loginWindow.Show();

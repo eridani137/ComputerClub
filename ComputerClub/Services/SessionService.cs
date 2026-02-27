@@ -90,33 +90,33 @@ public class SessionService(ApplicationDbContext db, UserManager<ComputerClubIde
         return session;
     }
 
-    public async Task CloseHangingSessionsAsync(CancellationToken ctx = default)
-    {
-        var hangingSessions = await db.Sessions
-            .Include(s => s.Client)
-            .Include(s => s.Computer)
-            .Include(s => s.Tariff)
-            .Where(s => s.Status == SessionStatus.Active)
-            .ToListAsync(ctx);
-
-        foreach (var session in hangingSessions)
-        {
-            var endedAt = DateTime.UtcNow;
-            var hours = (decimal)(endedAt - session.StartedAt).TotalHours;
-            var cost = Math.Round(hours * session.Tariff.PricePerHour, 2);
-
-            session.EndedAt = endedAt;
-            session.TotalCost = Math.Min(cost, session.Client.Balance);
-            session.Client.Balance = Math.Max(0, session.Client.Balance - cost);
-            session.Status = SessionStatus.Completed;
-            session.Computer.Status = ComputerStatus.Available;
-        }
-
-        if (hangingSessions.Count > 0)
-        {
-            await db.SaveChangesAsync(ctx);
-        }
-    }
+    // public async Task CloseHangingSessionsAsync(CancellationToken ctx = default)
+    // {
+    //     var hangingSessions = await db.Sessions
+    //         .Include(s => s.Client)
+    //         .Include(s => s.Computer)
+    //         .Include(s => s.Tariff)
+    //         .Where(s => s.Status == SessionStatus.Active)
+    //         .ToListAsync(ctx);
+    //
+    //     foreach (var session in hangingSessions)
+    //     {
+    //         var endedAt = DateTime.UtcNow;
+    //         var hours = (decimal)(endedAt - session.StartedAt).TotalHours;
+    //         var cost = Math.Round(hours * session.Tariff.PricePerHour, 2);
+    //
+    //         session.EndedAt = endedAt;
+    //         session.TotalCost = Math.Min(cost, session.Client.Balance);
+    //         session.Client.Balance = Math.Max(0, session.Client.Balance - cost);
+    //         session.Status = SessionStatus.Completed;
+    //         session.Computer.Status = ComputerStatus.Available;
+    //     }
+    //
+    //     if (hangingSessions.Count > 0)
+    //     {
+    //         await db.SaveChangesAsync(ctx);
+    //     }
+    // } // TODO
 
     public async Task TopUpBalance(int clientId, decimal amount, CancellationToken ctx = default)
     {
