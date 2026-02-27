@@ -49,7 +49,7 @@
                                FontSize="11" Margin="0,0,0,2" />
                     <ComboBox ItemsSource="{Binding Clients}"
                               SelectedItem="{Binding SelectedClient}"
-                              DisplayMemberPath="FullName" />
+                              DisplayMemberPath="Login" />
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Margin="0,0,8,0">

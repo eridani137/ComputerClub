@@ -45,6 +45,9 @@
                 </ui:NavigationView.MenuItemsSource>
 
                 <ui:NavigationView.FooterMenuItems>
+                    <ui:NavigationViewItem Icon="{ui:SymbolIcon PictureInPicture24}"
+                                           Content="Выход из аккаунта"
+                                           Command="{Binding LogoutCommand}" />
                     <ui:NavigationViewItem Icon="{ui:SymbolIcon ArrowExit20}"
                                            Content="Выход"
                                            Command="{Binding CloseCommand}" />

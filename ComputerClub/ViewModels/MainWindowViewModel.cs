@@ -4,7 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ComputerClub.Views;
 using ComputerClub.Views.Pages;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Wpf.Ui;
 using Wpf.Ui.Abstractions;
@@ -17,14 +17,19 @@ public partial class MainWindowViewModel(
     INavigationViewPageProvider navigationViewPageProvider,
     ISnackbarService snackbarService,
     IContentDialogService dialogService,
-    ILogger<MainWindowViewModel> logger
+    ILogger<MainWindowViewModel> logger,
+    IServiceScopeFactory scopeFactory
 ) : ObservableObject
 {
+    private FluentWindow _window;
+    
     public ObservableCollection<NavigationViewItem> MenuItems { get; } = [];
 
     [RelayCommand]
     private void Loaded(FluentWindow window)
     {
+        _window = window;
+        
         if (window is not MainWindow mainWindow) return;
 
         if (App.CurrentUser is not { } user || App.CurrentRole is not { } role) return;
@@ -98,6 +103,21 @@ public partial class MainWindowViewModel(
         navigationService.Navigate(homePageType);
     }
 
+    [RelayCommand]
+    private void Logout()
+    {
+        App.CurrentUser = null;
+        App.CurrentRole = null;
+    
+        var scope = scopeFactory.CreateScope();
+        var loginWindow = scope.ServiceProvider.GetRequiredService<LoginWindow>();
+    
+        loginWindow.Closed += (_, _) => scope.Dispose();
+    
+        loginWindow.Show();
+        _window?.Close();
+    }
+    
     [RelayCommand]
     private static void Close()
     {

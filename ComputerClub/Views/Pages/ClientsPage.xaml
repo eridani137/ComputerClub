@@ -59,29 +59,7 @@
 
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" />
-                <DataGridTemplateColumn Header="Логин" Width="250">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                
-                                <TextBlock Text="{Binding Login}"
-                                           VerticalAlignment="Center"
-                                           Margin="0,0,6,0" />
-
-                                <ui:Button
-                                    Icon="{ui:SymbolIcon Copy24}"
-                                    Width="37"
-                                    Height="37"
-                                    Appearance="Secondary"
-                                    ToolTip="Скопировать логин"
-                                    Command="{Binding DataContext.CopyLoginCommand,
-                        RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                    CommandParameter="{Binding Login}" />
-
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Логин" Binding="{Binding Login}" Width="250" />
                 <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}" Width="300" />
                 <DataGridTextColumn Header="Телефон" Binding="{Binding PhoneNumber}" Width="200" />
                 <DataGridTextColumn Header="Баланс" Binding="{Binding Balance, StringFormat=N2}" Width="130" />
@@ -100,7 +78,7 @@
                                     ClearButtonEnabled="False"
                                     Width="150"
                                     Margin="0,0,6,0" />
-                                
+
                                 <ui:Button Content="+"
                                            Height="36"
                                            Width="36"
@@ -108,7 +86,7 @@
                                            Command="{Binding DataContext.TopUpBalanceCommand,
                                                RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                            CommandParameter="{Binding}" />
-                                
+
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -123,6 +101,22 @@
                                        Command="{Binding DataContext.RemoveClientCommand,
                                            RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                        CommandParameter="{Binding}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ui:Button
+                                Icon="{ui:SymbolIcon Copy24}"
+                                Width="37"
+                                Height="37"
+                                Appearance="Secondary"
+                                ToolTip="Скопировать логин"
+                                Command="{Binding DataContext.CopyLoginCommand,
+                        RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                CommandParameter="{Binding Login}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
