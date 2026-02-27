@@ -23,11 +23,11 @@ public partial class SessionsViewModel(
 
     public ObservableCollection<ClientItem> Clients { get; } = [];
     public ObservableCollection<TariffItem> Tariffs { get; } = [];
-    public ObservableCollection<ComputerCanvasItem> AvailableComputers { get; } = [];
+    public ObservableCollection<ComputerItem> AvailableComputers { get; } = [];
 
     [ObservableProperty] private ClientItem? _selectedClient;
     [ObservableProperty] private TariffItem? _selectedTariff;
-    [ObservableProperty] private ComputerCanvasItem? _selectedComputer;
+    [ObservableProperty] private ComputerItem? _selectedComputer;
     [ObservableProperty] private string? _errorMessage;
 
     private CancellationTokenSource? _timerCts;
@@ -180,7 +180,7 @@ public partial class SessionsViewModel(
         }
     }
 
-    partial void OnSelectedComputerChanged(ComputerCanvasItem? value)
+    partial void OnSelectedComputerChanged(ComputerItem? value)
     {
         if (value is null)
         {

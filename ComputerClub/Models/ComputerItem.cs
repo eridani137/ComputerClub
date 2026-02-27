@@ -3,7 +3,7 @@ using ComputerClub.Infrastructure.Entities;
 
 namespace ComputerClub.Models;
 
-public partial class ComputerCanvasItem : ObservableObject
+public partial class ComputerItem : ObservableObject
 {
     [ObservableProperty] private int _id;
 
@@ -14,4 +14,11 @@ public partial class ComputerCanvasItem : ObservableObject
     [ObservableProperty] private int _typeId;
 
     [ObservableProperty] private ComputerStatus _status;
+    
+    [ObservableProperty] private DateTime? _sessionStartedAt;
+    
+    public TimeSpan? SessionDuration =>
+        SessionStartedAt.HasValue ? DateTime.UtcNow - SessionStartedAt.Value : null;
+
+    public void RefreshDuration() => OnPropertyChanged(nameof(SessionDuration));
 }

@@ -53,10 +53,12 @@ public partial class App : Application
             await _host.StartAsync();
 
             await using var scope = _host.Services.CreateAsyncScope();
-            // var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            
             var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
-            // await context.Database.MigrateAsync();
+            var sessionService = scope.ServiceProvider.GetRequiredService<SessionService>();
+            
             await seeder.Seed();
+            await sessionService.CloseHangingSessionsAsync();
 
             var loginWindow = _host.Services.GetRequiredService<LoginWindow>();
             loginWindow.Show();

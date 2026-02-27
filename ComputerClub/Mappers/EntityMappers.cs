@@ -5,7 +5,7 @@ namespace ComputerClub.Mappers;
 
 public static class EntityMappers
 {
-    public static ComputerCanvasItem Map(this ComputerEntity e) => new()
+    public static ComputerItem Map(this ComputerEntity e) => new()
     {
         Id = e.Id,
         X = e.X,

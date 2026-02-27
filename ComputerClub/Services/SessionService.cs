@@ -8,8 +8,8 @@ namespace ComputerClub.Services;
 public class SessionService(ApplicationDbContext db, UserManager<ComputerClubIdentity> userManager)
 {
     public async Task<SessionEntity> OpenSession(
-        int clientId, 
-        int computerId, 
+        int clientId,
+        int computerId,
         int tariffId,
         CancellationToken ctx = default)
     {
@@ -23,14 +23,15 @@ public class SessionService(ApplicationDbContext db, UserManager<ComputerClubIde
 
         var tariff = await db.Tariffs.FindAsync([tariffId], ctx)
                      ?? throw new InvalidOperationException("Тариф не найден");
-        
+
         if (client.Balance < tariff.PricePerHour)
         {
-            throw new InvalidOperationException($"Недостаточно средств. Минимальный баланс для этого тарифа: {tariff.PricePerHour} ₽");
+            throw new InvalidOperationException(
+                $"Недостаточно средств. Минимальный баланс для этого тарифа: {tariff.PricePerHour} ₽");
         }
-        
+
         computer.Status = ComputerStatus.Occupied;
-        
+
         var session = new SessionEntity
         {
             ClientId = clientId,
@@ -39,10 +40,10 @@ public class SessionService(ApplicationDbContext db, UserManager<ComputerClubIde
             StartedAt = DateTime.UtcNow,
             Status = SessionStatus.Active
         };
-        
+
         db.Sessions.Add(session);
         await db.SaveChangesAsync(ctx);
-        
+
         return session;
     }
 
@@ -59,14 +60,14 @@ public class SessionService(ApplicationDbContext db, UserManager<ComputerClubIde
         {
             throw new InvalidOperationException("Сессия уже завершена");
         }
-        
+
         var endedAt = DateTime.UtcNow;
         var hours = (decimal)(endedAt - session.StartedAt).TotalHours;
         var cost = Math.Round(hours * session.Tariff.PricePerHour, 2);
-        
+
         session.EndedAt = endedAt;
         session.TotalCost = cost;
-        
+
         if (session.Client.Balance >= cost)
         {
             session.Client.Balance -= cost;
@@ -78,14 +79,42 @@ public class SessionService(ApplicationDbContext db, UserManager<ComputerClubIde
             session.Client.Balance = 0;
             session.Status = SessionStatus.CancelledInsufficientFunds;
         }
-        
+
         session.Computer.Status = ComputerStatus.Available;
-        
+
         await db.SaveChangesAsync(ctx);
 
         return session;
     }
-    
+
+    public async Task CloseHangingSessionsAsync(CancellationToken ctx = default)
+    {
+        var hangingSessions = await db.Sessions
+            .Include(s => s.Client)
+            .Include(s => s.Computer)
+            .Include(s => s.Tariff)
+            .Where(s => s.Status == SessionStatus.Active)
+            .ToListAsync(ctx);
+
+        foreach (var session in hangingSessions)
+        {
+            var endedAt = DateTime.UtcNow;
+            var hours = (decimal)(endedAt - session.StartedAt).TotalHours;
+            var cost = Math.Round(hours * session.Tariff.PricePerHour, 2);
+
+            session.EndedAt = endedAt;
+            session.TotalCost = Math.Min(cost, session.Client.Balance);
+            session.Client.Balance = Math.Max(0, session.Client.Balance - cost);
+            session.Status = SessionStatus.Completed;
+            session.Computer.Status = ComputerStatus.Available;
+        }
+
+        if (hangingSessions.Count > 0)
+        {
+            await db.SaveChangesAsync(ctx);
+        }
+    }
+
     public async Task TopUpBalance(int clientId, decimal amount, CancellationToken ctx = default)
     {
         if (amount <= 0) throw new ArgumentException("Сумма должна быть положительной");
@@ -96,7 +125,7 @@ public class SessionService(ApplicationDbContext db, UserManager<ComputerClubIde
         client.Balance += amount;
         await db.SaveChangesAsync(ctx);
     }
-    
+
     public IQueryable<SessionEntity> GetActiveSessions()
     {
         return db.Sessions

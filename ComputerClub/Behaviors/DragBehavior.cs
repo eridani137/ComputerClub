@@ -11,7 +11,7 @@ namespace ComputerClub.Behaviors;
 public class DragBehavior : Behavior<FrameworkElement>
 {
     private Point _mouseOffset;
-    private ComputerCanvasItem? _dataContext;
+    private ComputerItem? _dataContext;
     private Canvas? _canvas;
     public double GridSizeX { get; set; } = 1;
     public double GridSizeY { get; set; } = 1;
@@ -34,7 +34,7 @@ public class DragBehavior : Behavior<FrameworkElement>
 
     private void OnMouseDown(object sender, MouseButtonEventArgs e)
     {
-        if (AssociatedObject.DataContext is not ComputerCanvasItem item) return;
+        if (AssociatedObject.DataContext is not ComputerItem item) return;
         _dataContext = item;
 
         var presenter = DependencyExtensions.FindParent<ContentPresenter>(AssociatedObject);
@@ -92,7 +92,7 @@ public class DragBehavior : Behavior<FrameworkElement>
         if (_canvas is null) return false;
 
         var itemsControl = DependencyExtensions.FindParent<ItemsControl>(_canvas);
-        if (itemsControl?.ItemsSource is not IEnumerable<ComputerCanvasItem> items) return false;
+        if (itemsControl?.ItemsSource is not IEnumerable<ComputerItem> items) return false;
 
         var newRight = newX + width;
         var newBottom = newY + height;

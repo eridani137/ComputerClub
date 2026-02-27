@@ -9,7 +9,7 @@ public class ComputerTypeTupleConverter : IMultiValueConverter
     public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
     {
         if (values[0] is ComputerTypeDefinition type &&
-            values[1] is ComputerCanvasItem computerCanvasItem)
+            values[1] is ComputerItem computerCanvasItem)
         {
             return (computerCanvasItem, type);
         }

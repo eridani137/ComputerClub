@@ -17,19 +17,21 @@ public partial class ComputersManagementViewModel(
     ApplicationDbContext context,
     IServiceScopeFactory scopeFactory,
     ILogger<ComputersManagementViewModel> logger)
-    : ObservableObject, IRecipient<SessionChangedMessage>
+    : ObservableObject, IRecipient<SessionChangedMessage>, IDisposable
 {
-    public ObservableCollection<ComputerCanvasItem> Computers { get; } = [];
+    public ObservableCollection<ComputerItem> Computers { get; } = [];
 
     public IReadOnlyList<ComputerTypeDefinition> ComputerTypes => ComputerClub.ComputerTypes.All;
 
     private readonly Dictionary<int, CancellationTokenSource> _saveTokens = new();
+    
+    private CancellationTokenSource? _timerCts;
 
     [RelayCommand]
     private async Task Loaded()
     {
         var computerEntities = await context.Computers.ToListAsync();
-
+        
         foreach (var entity in computerEntities)
         {
             var item = entity.Map();
@@ -37,20 +39,64 @@ public partial class ComputersManagementViewModel(
             Computers.Add(item);
         }
 
+        await RefreshStatuses();
         WeakReferenceMessenger.Default.RegisterAll(this);
+        StartTimer();
     }
 
+    [RelayCommand]
+    private void Unloaded() => StopTimer();
+    
     [RelayCommand]
     private async Task RefreshStatuses()
     {
         var entities = await context.Computers.ToListAsync();
+
+        var activeSessions = await context.Sessions
+            .Where(s => s.Status == SessionStatus.Active)
+            .ToListAsync();
+
         foreach (var entity in entities)
         {
             var item = Computers.FirstOrDefault(c => c.Id == entity.Id);
-            item?.Status = entity.Status;
+            if (item is null) continue;
+
+            item.Status = entity.Status;
+            item.SessionStartedAt = activeSessions
+                .FirstOrDefault(s => s.ComputerId == entity.Id)?.StartedAt;
         }
     }
 
+    private void StartTimer()
+    {
+        StopTimer();
+        _timerCts = new CancellationTokenSource();
+        _ = TickAsync(_timerCts.Token);
+    }
+
+    private void StopTimer()
+    {
+        _timerCts?.Cancel();
+        _timerCts?.Dispose();
+        _timerCts = null;
+    }
+    
+    private async Task TickAsync(CancellationToken ct)
+    {
+        using var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
+        try
+        {
+            while (await timer.WaitForNextTickAsync(ct))
+            {
+                foreach (var computer in Computers)
+                {
+                    computer.RefreshDuration();
+                }
+            }
+        }
+        catch (OperationCanceledException) { }
+    }
+    
     [RelayCommand]
     private async Task AddComputer()
     {
@@ -70,7 +116,7 @@ public partial class ComputersManagementViewModel(
     }
 
     [RelayCommand]
-    private async Task RemoveComputer(ComputerCanvasItem item)
+    private async Task RemoveComputer(ComputerItem item)
     {
         Computers.Remove(item);
 
@@ -83,7 +129,7 @@ public partial class ComputersManagementViewModel(
     }
 
     [RelayCommand]
-    private async Task SetComputerType((ComputerCanvasItem computerCanvasItem, ComputerTypeDefinition type) param)
+    private async Task SetComputerType((ComputerItem computerCanvasItem, ComputerTypeDefinition type) param)
     {
         var (computerCanvasItem, type) = param;
 
@@ -96,11 +142,11 @@ public partial class ComputersManagementViewModel(
         await context.SaveChangesAsync();
     }
 
-    private void Subscribe(ComputerCanvasItem item)
+    private void Subscribe(ComputerItem item)
     {
         item.PropertyChanged += async (_, e) =>
         {
-            if (e.PropertyName is not nameof(ComputerCanvasItem.X) and not nameof(ComputerCanvasItem.Y)) return;
+            if (e.PropertyName is not nameof(ComputerItem.X) and not nameof(ComputerItem.Y)) return;
 
             if (_saveTokens.TryGetValue(item.Id, out var oldToken))
             {
@@ -154,4 +200,6 @@ public partial class ComputersManagementViewModel(
             logger.LogError("SessionChangeMessage.Receive: {Message}", e.Message);
         }
     }
+    
+    public void Dispose() => StopTimer();
 }
