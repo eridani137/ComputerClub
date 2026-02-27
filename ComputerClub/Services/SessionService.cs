@@ -11,6 +11,7 @@ public class SessionService(ApplicationDbContext db, UserManager<ComputerClubIde
         int clientId,
         int computerId,
         int tariffId,
+        TimeSpan plannedDuration,
         CancellationToken ctx = default)
     {
         var client = await userManager.FindByIdAsync(clientId.ToString())
@@ -24,10 +25,11 @@ public class SessionService(ApplicationDbContext db, UserManager<ComputerClubIde
         var tariff = await db.Tariffs.FindAsync([tariffId], ctx)
                      ?? throw new InvalidOperationException("Тариф не найден");
 
-        if (client.Balance < tariff.PricePerHour)
+        var plannedCost = Math.Round((decimal)plannedDuration.TotalHours * tariff.PricePerHour, 2);
+        if (client.Balance < plannedCost)
         {
             throw new InvalidOperationException(
-                $"Недостаточно средств. Минимальный баланс для этого тарифа: {tariff.PricePerHour} ₽");
+                $"Недостаточно средств. Стоимость аренды: {plannedCost} ₽, баланс: {client.Balance} ₽");
         }
 
         computer.Status = ComputerStatus.Occupied;
@@ -38,6 +40,7 @@ public class SessionService(ApplicationDbContext db, UserManager<ComputerClubIde
             ComputerId = computerId,
             TariffId = tariffId,
             StartedAt = DateTime.UtcNow,
+            PlannedDuration = plannedDuration,
             Status = SessionStatus.Active
         };
 

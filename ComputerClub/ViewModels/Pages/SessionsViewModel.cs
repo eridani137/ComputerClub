@@ -30,6 +30,8 @@ public partial class SessionsViewModel(
     [ObservableProperty] private ComputerItem? _selectedComputer;
     [ObservableProperty] private string? _errorMessage;
 
+    [ObservableProperty] private int _plannedHours = 1;
+    
     private CancellationTokenSource? _timerCts;
 
     [RelayCommand]
@@ -43,6 +45,11 @@ public partial class SessionsViewModel(
     private void Unloaded()
     {
         StopTimer();
+    }
+
+    private TimeSpan GetPlannedDuration()
+    {
+        return TimeSpan.FromHours(PlannedHours);
     }
 
     private void StartTimer()
@@ -70,6 +77,12 @@ public partial class SessionsViewModel(
             return;
         }
 
+        if (PlannedHours <= 0)
+        {
+            ErrorMessage = "Укажите время аренды";
+            return;
+        }
+        
         var client = SelectedClient;
         var computer = SelectedComputer;
         var tariff = SelectedTariff;
@@ -79,7 +92,8 @@ public partial class SessionsViewModel(
             var session = await sessionService.OpenSession(
                 client.Id,
                 computer.Id,
-                tariff.Id);
+                tariff.Id,
+                GetPlannedDuration());
 
             var full = await context.Sessions
                 .Include(s => s.Client)
@@ -94,6 +108,7 @@ public partial class SessionsViewModel(
             SelectedClient = null;
             SelectedTariff = null;
             SelectedComputer = null;
+            PlannedHours = 1;
 
             WeakReferenceMessenger.Default.Send(new SessionChangedMessage(computer.Id));
         }

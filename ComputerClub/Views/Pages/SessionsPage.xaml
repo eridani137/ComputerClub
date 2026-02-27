@@ -40,6 +40,7 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="160" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
@@ -98,8 +99,17 @@
                         </DockPanel>
                     </Border>
                 </StackPanel>
+                
+                <StackPanel Grid.Column="3" Margin="0,0,8,0">
+                    <TextBlock Text="Время аренды"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               FontSize="11" Margin="0,0,0,2" />
+                    <ui:NumberBox Value="{Binding PlannedHours, UpdateSourceTrigger=PropertyChanged}"
+                                  Minimum="1" Maximum="24"
+                                  PlaceholderText="часов" />
+                </StackPanel>
 
-                <ui:Button Grid.Column="3"
+                <ui:Button Grid.Column="4"
                            Content="Открыть сессию"
                            Icon="{ui:SymbolIcon Play24}"
                            Appearance="Primary"
@@ -157,9 +167,38 @@
                                     Binding="{Binding StartedAt, StringFormat=HH:mm:ss}"
                                     Width="90" />
 
-                <DataGridTextColumn Header="Длительность"
-                                    Binding="{Binding Duration, StringFormat=hh\\:mm\\:ss}"
-                                    Width="120" />
+                <DataGridTemplateColumn Header="Осталось" Width="130">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <ui:SymbolIcon Symbol="Timer24" Margin="0,0,4,0">
+                                    <ui:SymbolIcon.Style>
+                                        <Style TargetType="ui:SymbolIcon">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsOvertime}" Value="True">
+                                                    <Setter Property="Foreground"
+                                                            Value="{DynamicResource SystemFillColorCriticalBrush}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ui:SymbolIcon.Style>
+                                </ui:SymbolIcon>
+                                <TextBlock Text="{Binding Remaining, StringFormat=hh\\:mm\\:ss}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsOvertime}" Value="True">
+                                                    <Setter Property="Foreground"
+                                                            Value="{DynamicResource SystemFillColorCriticalBrush}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
                 <DataGridTemplateColumn Width="140">
                     <DataGridTemplateColumn.CellTemplate>

@@ -16,8 +16,18 @@ public partial class SessionItem : ObservableObject
     [ObservableProperty] private DateTime? _endedAt;
     [ObservableProperty] private decimal? _totalCost;
     [ObservableProperty] private SessionStatus _status;
+    [ObservableProperty] private TimeSpan _plannedDuration;
 
-    public TimeSpan Duration => (EndedAt ?? DateTime.UtcNow) - StartedAt;
-    
-    public void RefreshDuration() => OnPropertyChanged(nameof(Duration));
+    public TimeSpan Elapsed => (EndedAt ?? DateTime.UtcNow) - StartedAt;
+
+    public TimeSpan Remaining => TimeSpan.FromTicks(Math.Max(0, (PlannedDuration - Elapsed).Ticks));
+
+    public bool IsOvertime => Elapsed > PlannedDuration;
+
+    public void RefreshDuration()
+    {
+        OnPropertyChanged(nameof(Elapsed));
+        OnPropertyChanged(nameof(Remaining));
+        OnPropertyChanged(nameof(IsOvertime));
+    }
 }

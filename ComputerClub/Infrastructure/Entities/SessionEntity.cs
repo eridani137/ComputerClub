@@ -15,9 +15,11 @@ public class SessionEntity
 
     public DateTime StartedAt { get; set; }
     public DateTime? EndedAt { get; set; }
+    
+    public TimeSpan PlannedDuration { get; set; }
+    public DateTime PlannedEndAt => StartedAt + PlannedDuration;
 
     public decimal? TotalCost { get; set; }
-
     public SessionStatus Status { get; set; }
 }
 

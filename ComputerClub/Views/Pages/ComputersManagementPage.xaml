@@ -148,21 +148,25 @@
                                 <TextBlock VerticalAlignment="Center"
                                            HorizontalAlignment="Center"
                                            FontSize="13"
-                                           FontWeight="SemiBold"
-                                           Foreground="{DynamicResource TextFillColorPrimaryBrush}">
+                                           FontWeight="SemiBold">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Visibility" Value="Collapsed" />
+                                            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Status}" 
+                                                <DataTrigger Binding="{Binding Status}"
                                                              Value="{x:Static entities:ComputerStatus.Occupied}">
                                                     <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsOvertime}" Value="True">
+                                                    <Setter Property="Foreground"
+                                                            Value="{DynamicResource SystemFillColorCriticalBrush}" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </TextBlock.Style>
                                     <TextBlock.Text>
-                                        <Binding Path="SessionDuration" StringFormat="hh\:mm\:ss">
+                                        <Binding Path="Remaining" StringFormat="hh\:mm\:ss">
                                             <Binding.TargetNullValue>--:--:--</Binding.TargetNullValue>
                                         </Binding>
                                     </TextBlock.Text>

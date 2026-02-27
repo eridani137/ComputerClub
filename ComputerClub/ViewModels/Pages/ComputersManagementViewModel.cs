@@ -62,8 +62,10 @@ public partial class ComputersManagementViewModel(
             if (item is null) continue;
 
             item.Status = entity.Status;
-            item.SessionStartedAt = activeSessions
-                .FirstOrDefault(s => s.ComputerId == entity.Id)?.StartedAt;
+
+            var session = activeSessions.FirstOrDefault(s => s.ComputerId == entity.Id);
+            item.SessionStartedAt = session?.StartedAt;
+            item.SessionPlannedDuration = session?.PlannedDuration;
         }
     }
 
