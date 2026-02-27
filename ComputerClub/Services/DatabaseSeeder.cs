@@ -32,7 +32,7 @@ public class DatabaseSeeder(
         }
 
         const string rootUsername = "root";
-        const string rootPassword = "Qwerty123_";
+        const string rootPassword = "Qwerty123!";
 
         var rootUser = await userManager.FindByNameAsync(rootUsername);
         if (rootUser is null)
