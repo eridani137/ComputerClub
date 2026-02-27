@@ -145,18 +145,18 @@ public partial class ComputersManagementViewModel(
     [RelayCommand]
     private async Task SetComputerType((ComputerItem computerCanvasItem, ComputerTypeDefinition type) param)
     {
-        var (computerCanvasItem, type) = param;
+        var (item, type) = param;
 
-        if (computerCanvasItem.Status != ComputerStatus.Available)
+        if (item.Status != ComputerStatus.Available && item.Status != ComputerStatus.OutOfService)
         {
             snackbarService.Show("Ошибка", "Попробуйте еще, когда компьютер освободится",
                 ControlAppearance.Danger, new SymbolIcon(SymbolRegular.ErrorCircle24), TimeSpan.FromSeconds(3));
             return;
         }
 
-        computerCanvasItem.TypeId = type.Id;
+        item.TypeId = type.Id;
 
-        var entity = await context.Computers.FindAsync(computerCanvasItem.Id);
+        var entity = await context.Computers.FindAsync(item.Id);
         if (entity is null) return;
 
         entity.TypeId = type.Id;
