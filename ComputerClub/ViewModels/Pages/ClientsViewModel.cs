@@ -9,13 +9,16 @@ using ComputerClub.Models;
 using ComputerClub.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Wpf.Ui;
+using Wpf.Ui.Controls;
 
 namespace ComputerClub.ViewModels.Pages;
 
 public partial class ClientsViewModel(
     ApplicationDbContext context,
     SessionService sessionService,
-    UserManager<ComputerClubIdentity> userManager
+    UserManager<ComputerClubIdentity> userManager,
+    ISnackbarService  snackbarService
     ) : ObservableObject
 {
     public ObservableCollection<ClientItem> Clients { get; } = [];
@@ -32,6 +35,17 @@ public partial class ClientsViewModel(
         foreach (var client in clients)
         {
             Clients.Add(client.Map());
+        }
+    }
+    
+    [RelayCommand]
+    private void CopyLogin(string login)
+    {
+        if (!string.IsNullOrWhiteSpace(login))
+        {
+            Clipboard.SetText(login);
+            snackbarService.Show("Логин скопирован", "", ControlAppearance.Success,
+                new SymbolIcon(SymbolRegular.Copy24), TimeSpan.FromSeconds(3));
         }
     }
     

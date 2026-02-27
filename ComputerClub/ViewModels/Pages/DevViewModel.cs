@@ -18,14 +18,7 @@ public partial class DevViewModel(
     private readonly Faker<ClientItem> _faker = new Faker<ClientItem>("ru")
         .RuleFor(c => c.FullName, f => f.Name.FullName())
         .RuleFor(u => u.Login, f => f.Internet.UserName())
-        .RuleFor(c => c.Password, f =>
-        {
-            var lower = f.Random.Char('a', 'z').ToString();
-            var upper = f.Random.Char('A', 'Z').ToString();
-            var digit = f.Random.Number(0, 9).ToString();
-            var special = f.Random.Char('!', '/').ToString();
-            return $"{lower}{upper}{digit}{special}XyZ{f.Random.Number(10, 99)}";
-        })
+        .RuleFor(c => c.Password, f => "Qwerty123!")
         .RuleFor(c => c.PhoneNumber, f => f.Phone.PhoneNumber("+7 (###) ###-##-##"))
         .RuleFor(c => c.Balance, f => f.Finance.Amount(0, 5000));
 

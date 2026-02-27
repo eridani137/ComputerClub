@@ -53,7 +53,7 @@
             </ui:NavigationView>
 
             <ui:ContentDialogHost Grid.Row="0" x:Name="ContentDialog" />
-            <ui:SnackbarPresenter Grid.Row="0" x:Name="SnackbarPresenter" />
+            <ui:SnackbarPresenter Grid.Row="0" Width="300" x:Name="SnackbarPresenter" />
         </Grid>
     </Grid>
 
