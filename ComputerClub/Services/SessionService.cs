@@ -33,6 +33,7 @@ public class SessionService(ApplicationDbContext db, UserManager<ComputerClubIde
         }
 
         computer.Status = ComputerStatus.Occupied;
+        client.Balance -= plannedCost;
 
         var session = new SessionEntity
         {

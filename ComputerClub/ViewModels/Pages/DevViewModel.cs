@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using Bogus;
-using Bogus.DataSets;
+﻿using Bogus;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ComputerClub.Infrastructure.Entities;
@@ -12,6 +10,7 @@ namespace ComputerClub.ViewModels.Pages;
 
 public partial class DevViewModel(
     UserManager<ComputerClubIdentity> userManager,
+    RoleManager<IdentityRole<int>> roleManager,
     ILogger<DevViewModel> logger
 ) : ObservableObject
 {
@@ -42,6 +41,14 @@ public partial class DevViewModel(
         {
             logger.LogError("Ошибки при создании пользователя: {ErrorDescriptions}",
                 string.Join(", ", result.Errors.Select(x => x.Description)));
+            return;
+        }
+        
+        var roleResult = await userManager.AddToRoleAsync(identityUser, "User");
+        if (!roleResult.Succeeded)
+        {
+            logger.LogError("Ошибка добавления root в роль Admin: {Errors}",
+                string.Join(", ", roleResult.Errors.Select(e => e.Description)));
             return;
         }
 

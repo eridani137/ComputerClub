@@ -12,8 +12,8 @@ public class DatabaseSeeder(
 {
     public async Task Seed()
     {
-        string[] roleNames = ["Admin", "User", "Guest"];
-        
+        string[] roleNames = ["Admin", "User"];
+
         foreach (var roleName in roleNames)
         {
             if (await roleManager.RoleExistsAsync(roleName)) continue;
