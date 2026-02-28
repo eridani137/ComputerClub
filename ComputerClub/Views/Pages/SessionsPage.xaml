@@ -28,6 +28,7 @@
         <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
         <converters:ComputerTypeToBrushConverter x:Key="ComputerTypeToBrushConverter" />
         <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+        <converters:UtcToLocalTimeConverter x:Key="UtcToLocalTimeConverter" />
     </Page.Resources>
 
     <DockPanel Margin="20">
@@ -164,7 +165,7 @@
                                     Width="90" />
 
                 <DataGridTextColumn Header="Начало"
-                                    Binding="{Binding StartedAt, StringFormat=HH:mm:ss}"
+                                    Binding="{Binding StartedAt, StringFormat=HH:mm:ss, Converter={StaticResource UtcToLocalTimeConverter}}"
                                     Width="90" />
 
                 <DataGridTemplateColumn Header="Осталось" Width="130">
@@ -183,7 +184,7 @@
                                         </Style>
                                     </ui:SymbolIcon.Style>
                                 </ui:SymbolIcon>
-                                <TextBlock Text="{Binding Remaining, StringFormat=hh\\:mm\\:ss}">
+                                <TextBlock Text="{Binding TimeDisplay}">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Style.Triggers>

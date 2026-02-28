@@ -178,7 +178,8 @@
                                         VerticalAlignment="Top"
                                         CornerRadius="6,6,0,0" />
                                 
-                                <TextBlock VerticalAlignment="Center"
+                                <TextBlock Text="{Binding SessionTimeDisplay}"
+                                           VerticalAlignment="Center"
                                            HorizontalAlignment="Center"
                                            FontSize="13"
                                            FontWeight="SemiBold">
@@ -198,11 +199,6 @@
                                             </Style.Triggers>
                                         </Style>
                                     </TextBlock.Style>
-                                    <TextBlock.Text>
-                                        <Binding Path="Remaining" StringFormat="hh\:mm\:ss">
-                                            <Binding.TargetNullValue>--:--:--</Binding.TargetNullValue>
-                                        </Binding>
-                                    </TextBlock.Text>
                                 </TextBlock>
 
                                 <TextBlock Text="{Binding Id}"

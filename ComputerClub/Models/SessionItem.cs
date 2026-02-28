@@ -18,16 +18,24 @@ public partial class SessionItem : ObservableObject
     [ObservableProperty] private SessionStatus _status;
     [ObservableProperty] private TimeSpan _plannedDuration;
 
-    public TimeSpan Elapsed => (EndedAt ?? DateTime.UtcNow) - StartedAt;
+    public bool IsOvertime => (EndedAt ?? DateTime.UtcNow) - StartedAt > PlannedDuration;
 
-    public TimeSpan Remaining => TimeSpan.FromTicks(Math.Max(0, (PlannedDuration - Elapsed).Ticks));
+    public string TimeDisplay
+    {
+        get
+        {
+            var elapsed = (EndedAt ?? DateTime.UtcNow) - StartedAt;
+            var remaining = PlannedDuration - elapsed;
 
-    public bool IsOvertime => Elapsed > PlannedDuration;
+            return remaining.Ticks > 0
+                ? remaining.ToString(@"hh\:mm\:ss")
+                : $@"+{(-remaining):hh\:mm\:ss}";
+        }
+    }
 
     public void RefreshDuration()
     {
-        OnPropertyChanged(nameof(Elapsed));
-        OnPropertyChanged(nameof(Remaining));
+        OnPropertyChanged(nameof(TimeDisplay));
         OnPropertyChanged(nameof(IsOvertime));
     }
 }
