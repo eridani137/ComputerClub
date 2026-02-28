@@ -128,13 +128,14 @@ public partial class App : Application
 
         services.AddNavigationViewPageProvider();
 
-        services.AddTransient<ISnackbarService, SnackbarService>();
-        services.AddTransient<IContentDialogService, ContentDialogService>();
-        services.AddTransient<INavigationService, NavigationService>();
+        services.AddSingleton<ISnackbarService, SnackbarService>();
+        services.AddSingleton<IContentDialogService, ContentDialogService>();
+        services.AddSingleton<INavigationService, NavigationService>();
 
         services.AddTransient<SessionService>();
-        services.AddTransient<SessionTickService>();
         services.AddTransient<PaymentService>();
+        
+        services.AddSingleton<SessionTickService>();
 
         AddInfrastructure(configuration, services);
     }
