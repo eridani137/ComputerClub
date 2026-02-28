@@ -55,6 +55,7 @@ public class SessionService(
         {
             ClientId = clientId,
             Amount = -plannedCost,
+            Type = PaymentType.Charge,
             CreatedAt = DateTime.UtcNow,
             Session = session
         });
@@ -96,6 +97,7 @@ public class SessionService(
             {
                 ClientId = session.ClientId,
                 Amount = refund,
+                Type = PaymentType.Refund,
                 CreatedAt = DateTime.UtcNow,
                 SessionId = session.Id
             });

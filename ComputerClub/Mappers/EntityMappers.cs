@@ -53,6 +53,7 @@ public static class EntityMappers
         ClientId = e.ClientId,
         ClientName = e.Client?.UserName ?? string.Empty,
         Amount = e.Amount,
+        Type = e.Type,
         CreatedAt = e.CreatedAt,
         SessionId = e.SessionId
     };

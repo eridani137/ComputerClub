@@ -35,6 +35,7 @@ public class PaymentService(ApplicationDbContext context)
         {
             ClientId = clientId,
             Amount = amount,
+            Type = PaymentType.TopUp,
             CreatedAt = DateTime.UtcNow
         };
 
