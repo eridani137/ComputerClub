@@ -61,5 +61,12 @@ public class ApplicationDbContext : IdentityDbContext<ComputerClubIdentity, Iden
         {
             entity.HasKey(e => e.Id);
         });
+
+        builder.Entity<PaymentEntity>(entity =>
+        {
+            entity.Property(e => e.Amount)
+                .HasColumnType("decimal(18,2)")
+                .HasPrecision(18, 2);
+        });
     }
 }
