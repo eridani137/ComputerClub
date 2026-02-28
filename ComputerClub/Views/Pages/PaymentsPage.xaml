@@ -23,144 +23,105 @@
 
     <Page.Resources>
         <converters:UtcToLocalTimeConverter x:Key="UtcToLocalTimeConverter" />
-        <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
+        <converters:PaymentTypeToStringConverter x:Key="PaymentTypeToStringConverter" />
+        <converters:PaymentTypeToBrushConverter x:Key="PaymentTypeToBrushConverter" />
     </Page.Resources>
 
     <DockPanel Margin="20">
 
-        <Border DockPanel.Dock="Top"
-                Background="{DynamicResource ControlFillColorDefaultBrush}"
-                CornerRadius="8" Padding="16" Margin="0,0,0,16">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="200" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
+    <Border DockPanel.Dock="Top"
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            CornerRadius="8" Padding="16" Margin="0,0,0,16">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="200" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0" Margin="0,0,8,0">
-                    <TextBlock Text="Клиент"
-                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                               FontSize="11" Margin="0,0,0,2" />
-                    <ui:TextBox Text="{Binding FilterClient, UpdateSourceTrigger=PropertyChanged}"
-                                PlaceholderText="Поиск по клиенту" />
-                </StackPanel>
+            <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                <TextBlock Text="Клиент"
+                           Foreground="{StaticResource TextFillColorSecondaryBrush}"
+                           FontSize="11" Margin="0,0,0,2" />
+                <ui:TextBox Text="{Binding FilterClient, UpdateSourceTrigger=PropertyChanged}"
+                            PlaceholderText="Поиск по клиенту" />
+            </StackPanel>
 
-                <StackPanel Grid.Column="1" Margin="0,0,8,0">
-                    <TextBlock Text="Тип"
-                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                               FontSize="11" Margin="0,0,0,2" />
-                    <ComboBox ItemsSource="{Binding PaymentTypes}"
-                              SelectedItem="{Binding FilterType}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock>
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Text" Value="{Binding}" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding}" Value="{x:Null}">
-                                                    <Setter Property="Text" Value="Все" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding}"
-                                                             Value="{x:Static entities:PaymentType.TopUp}">
-                                                    <Setter Property="Text" Value="Пополнение" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding}"
-                                                             Value="{x:Static entities:PaymentType.Charge}">
-                                                    <Setter Property="Text" Value="Списание" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding}"
-                                                             Value="{x:Static entities:PaymentType.Refund}">
-                                                    <Setter Property="Text" Value="Возврат" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                </StackPanel>
-
-                <ui:Button Grid.Column="2"
-                           Content="Обновить"
-                           Height="36"
-                           Icon="{ui:SymbolIcon ArrowSync24}"
-                           Command="{Binding RefreshCommand}"
-                           VerticalAlignment="Bottom" />
-            </Grid>
-        </Border>
-
-        <DataGrid ItemsSource="{Binding Payments}"
-                  AutoGenerateColumns="False"
-                  CanUserAddRows="False"
-                  IsReadOnly="True"
-                  GridLinesVisibility="Horizontal"
-                  HeadersVisibility="Column">
-
-            <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow">
-                    <Setter Property="Background" Value="Transparent" />
-                    <Setter Property="BorderThickness" Value="0" />
-                    <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Background" Value="Transparent" />
-                            <Setter Property="BorderBrush" Value="Transparent" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.RowStyle>
-
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Дата"
-                                    Binding="{Binding CreatedAt, 
-                                    Converter={StaticResource UtcToLocalTimeConverter}, 
-                                    StringFormat=dd.MM.yyyy HH:mm:ss}"
-                                    Width="160" />
-
-                <DataGridTextColumn Header="Клиент"
-                                    Binding="{Binding ClientName}"
-                                    Width="*" />
-
-                <DataGridTextColumn Header="Тип"
-                                    Binding="{Binding TypeDisplay}"
-                                    Width="120" />
-
-                <DataGridTextColumn Header="Сессия №"
-                                    Binding="{Binding SessionId}"
-                                    Width="90" />
-
-                <DataGridTemplateColumn Header="Сумма" Width="120">
-                    <DataGridTemplateColumn.CellTemplate>
+            <StackPanel Grid.Column="1" Margin="0,0,8,0">
+                <TextBlock Text="Тип"
+                           Foreground="{StaticResource TextFillColorSecondaryBrush}"
+                           FontSize="11" Margin="0,0,0,2" />
+                <ComboBox ItemsSource="{Binding PaymentTypes}"
+                          SelectedItem="{Binding SelectedPaymentType}">
+                    <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding AmountDisplay}"
-                                       FontWeight="SemiBold">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Foreground"
-                                                Value="{DynamicResource SystemFillColorSuccessBrush}" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Type}"
-                                                         Value="{x:Static entities:PaymentType.Charge}">
-                                                <Setter Property="Foreground"
-                                                        Value="{DynamicResource SystemFillColorCriticalBrush}" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Type}"
-                                                         Value="{x:Static entities:PaymentType.Refund}">
-                                                <Setter Property="Foreground"
-                                                        Value="{DynamicResource SystemFillColorCautionBrush}" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
+                            <TextBlock Text="{Binding Converter={StaticResource PaymentTypeToStringConverter}}" />
                         </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
 
-    </DockPanel>
+            <ui:Button Grid.Column="2"
+                       Content="Обновить"
+                       Height="36"
+                       Icon="{ui:SymbolIcon ArrowSync24}"
+                       Command="{Binding RefreshCommand}"
+                       VerticalAlignment="Bottom" />
+        </Grid>
+    </Border>
+
+    <DataGrid ItemsSource="{Binding Payments}"
+              AutoGenerateColumns="False"
+              CanUserAddRows="False"
+              IsReadOnly="True"
+              GridLinesVisibility="Horizontal"
+              HeadersVisibility="Column">
+
+        <DataGrid.RowStyle>
+            <Style TargetType="DataGridRow">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="BorderBrush" Value="Transparent" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </DataGrid.RowStyle>
+
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="Дата"
+                                Binding="{Binding CreatedAt,
+                                    Converter={StaticResource UtcToLocalTimeConverter},
+                                    StringFormat=dd.MM.yyyy HH:mm:ss}"
+                                Width="160" />
+
+            <DataGridTextColumn Header="Клиент"
+                                Binding="{Binding ClientName}"
+                                Width="*" />
+
+            <DataGridTextColumn Header="Тип"
+                                Binding="{Binding TypeDisplay}"
+                                Width="120" />
+
+            <DataGridTextColumn Header="Сессия №"
+                                Binding="{Binding SessionId}"
+                                Width="90" />
+
+            <DataGridTemplateColumn Header="Сумма" Width="120">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding AmountDisplay}"
+                                   FontWeight="SemiBold"
+                                   Foreground="{Binding Type, 
+                                       Converter={StaticResource PaymentTypeToBrushConverter}}" />
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+        </DataGrid.Columns>
+    </DataGrid>
+
+</DockPanel>
 
 </Page>

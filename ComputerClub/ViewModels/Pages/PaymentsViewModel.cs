@@ -18,17 +18,30 @@ public partial class PaymentsViewModel(PaymentService paymentService)
     [ObservableProperty] private PaymentType? _filterType;
     [ObservableProperty] private string? _filterClient;
 
-    public IReadOnlyList<PaymentType?> PaymentTypes =>
+    public const string AllTypes = "Все";
+
+    public IReadOnlyList<object> PaymentTypes =>
     [
-        null,
+        AllTypes,
         PaymentType.TopUp,
         PaymentType.Charge,
         PaymentType.Refund
     ];
+
+    [ObservableProperty] private object _selectedPaymentType = AllTypes;
+
+    private PaymentType? _activeFilterType;
+
+    partial void OnSelectedPaymentTypeChanged(object value)
+    {
+        _activeFilterType = value is PaymentType type ? type : null;
+        _ = Refresh();
+    }
     
     [RelayCommand]
     private async Task Loaded()
     {
+        FilterType = null;
         await Refresh();
     }
 
@@ -39,9 +52,9 @@ public partial class PaymentsViewModel(PaymentService paymentService)
 
         var query = paymentService.GetAll();
 
-        if (FilterType.HasValue)
+        if (_activeFilterType.HasValue)
         {
-            query = query.Where(p => p.Type == FilterType);
+            query = query.Where(p => p.Type == _activeFilterType);
         }
 
         if (!string.IsNullOrWhiteSpace(FilterClient))
