@@ -16,10 +16,11 @@ namespace ComputerClub.ViewModels.Pages;
 public partial class SessionsViewModel(
     ApplicationDbContext context,
     SessionService sessionService,
-    UserManager<ComputerClubIdentity> userManager
-) : ObservableObject, IDisposable
+    UserManager<ComputerClubIdentity> userManager,
+    SessionTickService tickService
+) : ObservableObject, ISessionTick, IDisposable
 {
-    public ObservableCollection<SessionItem> ActiveSessions { get; } = [];
+    public ObservableCollection<SessionItem> Sessions { get; } = [];
 
     public ObservableCollection<ClientItem> Clients { get; } = [];
     public ObservableCollection<TariffItem> Tariffs { get; } = [];
@@ -31,39 +32,17 @@ public partial class SessionsViewModel(
     [ObservableProperty] private string? _errorMessage;
 
     [ObservableProperty] private int _plannedHours = 1;
-    
-    private CancellationTokenSource? _timerCts;
 
     [RelayCommand]
     private async Task Loaded()
     {
         await RefreshAll();
-        StartTimer();
-    }
-    
-    [RelayCommand]
-    private void Unloaded()
-    {
-        StopTimer();
+        tickService.Register(this);
     }
 
     private TimeSpan GetPlannedDuration()
     {
         return TimeSpan.FromHours(PlannedHours);
-    }
-
-    private void StartTimer()
-    {
-        StopTimer();
-        _timerCts = new CancellationTokenSource();
-        _ = TickDurationAsync(_timerCts.Token);
-    }
-
-    private void StopTimer()
-    {
-        _timerCts?.Cancel();
-        _timerCts?.Dispose();
-        _timerCts = null;
     }
 
     [RelayCommand]
@@ -82,7 +61,7 @@ public partial class SessionsViewModel(
             ErrorMessage = "Укажите время аренды";
             return;
         }
-        
+
         var client = SelectedClient;
         var computer = SelectedComputer;
         var tariff = SelectedTariff;
@@ -100,7 +79,7 @@ public partial class SessionsViewModel(
                 .Include(s => s.Tariff)
                 .FirstAsync(s => s.Id == session.Id);
 
-            ActiveSessions.Add(full.Map());
+            Sessions.Add(full.Map());
 
             AvailableComputers.Remove(computer);
             computer.Status = ComputerStatus.Occupied;
@@ -130,14 +109,12 @@ public partial class SessionsViewModel(
             item.EndedAt = session.EndedAt;
             item.TotalCost = session.TotalCost;
             item.Status = session.Status;
-
-            ActiveSessions.Remove(item);
+            item.OvertimeDuration = session.OvertimeDuration;
 
             var client = Clients.FirstOrDefault(c => c.Id == item.ClientId);
             client?.Balance = session.Client.Balance;
 
             await RefreshAvailableComputers();
-
             WeakReferenceMessenger.Default.Send(new SessionChangedMessage(item.ComputerId));
         }
         catch (Exception e)
@@ -148,18 +125,32 @@ public partial class SessionsViewModel(
 
     private async Task RefreshAll()
     {
-        ActiveSessions.Clear();
+        Sessions.Clear();
         Clients.Clear();
         Tariffs.Clear();
 
-        var sessions = await sessionService.GetActiveSessions().ToListAsync();
-        foreach (var s in sessions) ActiveSessions.Add(s.Map());
+        var sessions = await context.Sessions
+            .Include(s => s.Client)
+            .Include(s => s.Tariff)
+            .OrderByDescending(s => s.StartedAt)
+            .ToListAsync();
+
+        foreach (var session in sessions)
+        {
+            Sessions.Add(session.Map());
+        }
 
         var clients = await userManager.Users.ToListAsync();
-        foreach (var c in clients) Clients.Add(c.Map());
+        foreach (var client in clients)
+        {
+            Clients.Add(client.Map());
+        }
 
         var tariffs = await context.Tariffs.ToListAsync();
-        foreach (var t in tariffs) Tariffs.Add(t.Map());
+        foreach (var tariff in tariffs)
+        {
+            Tariffs.Add(tariff.Map());
+        }
 
         await RefreshAvailableComputers();
     }
@@ -177,24 +168,6 @@ public partial class SessionsViewModel(
         }
     }
 
-    private async Task TickDurationAsync(CancellationToken ct)
-    {
-        using var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
-        try
-        {
-            while (await timer.WaitForNextTickAsync(ct))
-            {
-                foreach (var session in ActiveSessions)
-                {
-                    session.RefreshDuration();
-                }
-            }
-        }
-        catch (OperationCanceledException)
-        {
-        }
-    }
-
     partial void OnSelectedComputerChanged(ComputerItem? value)
     {
         if (value is null)
@@ -209,6 +182,20 @@ public partial class SessionsViewModel(
             ? $"Для типа '{ComputerTypes.GetById(value.TypeId).Name}' тариф не найден"
             : null;
     }
-    
-    public void Dispose() => StopTimer();
+
+    public void Tick()
+    {
+        foreach (var session in Sessions.Where(s => s.IsActive))
+        {
+            session.RefreshDuration();
+        }
+
+        var expired = Sessions.Where(s => s is { IsActive: true, IsOvertime: true }).ToList();
+        foreach (var session in expired)
+        {
+            _ = CloseSessionCommand.ExecuteAsync(session);
+        }
+    }
+
+    public void Dispose() => tickService.Unregister(this);
 }

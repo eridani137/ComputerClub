@@ -55,8 +55,9 @@ public partial class App : Application
             await using var scope = _host.Services.CreateAsyncScope();
             
             var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
-            
             await seeder.Seed();
+            var tickService = scope.ServiceProvider.GetRequiredService<SessionTickService>();
+            tickService.Start();
 
             var loginWindow = _host.Services.GetRequiredService<LoginWindow>();
             loginWindow.Show();
@@ -115,6 +116,7 @@ public partial class App : Application
         services.AddSingleton<INavigationService, NavigationService>();
 
         services.AddTransient<SessionService>();
+        services.AddSingleton<SessionTickService>();
 
         AddInfrastructure(configuration, services);
     }

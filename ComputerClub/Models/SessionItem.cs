@@ -17,16 +17,25 @@ public partial class SessionItem : ObservableObject
     [ObservableProperty] private decimal? _totalCost;
     [ObservableProperty] private SessionStatus _status;
     [ObservableProperty] private TimeSpan _plannedDuration;
+    [ObservableProperty] private TimeSpan? _overtimeDuration;
 
-    public bool IsOvertime => (EndedAt ?? DateTime.UtcNow) - StartedAt > PlannedDuration;
+    public bool IsActive => Status == SessionStatus.Active;
+    public bool IsOvertime => Status == SessionStatus.Active && 
+                              (DateTime.UtcNow - StartedAt) > PlannedDuration;
 
     public string TimeDisplay
     {
         get
         {
-            var elapsed = (EndedAt ?? DateTime.UtcNow) - StartedAt;
-            var remaining = PlannedDuration - elapsed;
+            if (Status != SessionStatus.Active)
+            {
+                return OvertimeDuration.HasValue && OvertimeDuration.Value > TimeSpan.Zero
+                    ? $@"+{OvertimeDuration.Value:hh\:mm\:ss}"
+                    : "—";
+            }
 
+            var elapsed = DateTime.UtcNow - StartedAt;
+            var remaining = PlannedDuration - elapsed;
             return remaining.Ticks > 0
                 ? remaining.ToString(@"hh\:mm\:ss")
                 : $@"+{(-remaining):hh\:mm\:ss}";

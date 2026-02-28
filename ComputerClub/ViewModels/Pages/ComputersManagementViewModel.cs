@@ -7,6 +7,7 @@ using ComputerClub.Infrastructure.Entities;
 using ComputerClub.Mappers;
 using ComputerClub.Messages;
 using ComputerClub.Models;
+using ComputerClub.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -19,16 +20,15 @@ public partial class ComputersManagementViewModel(
     ApplicationDbContext context,
     IServiceScopeFactory scopeFactory,
     ISnackbarService snackbarService,
+    SessionTickService tickService,
     ILogger<ComputersManagementViewModel> logger)
-    : ObservableObject, IRecipient<SessionChangedMessage>, IDisposable
+    : ObservableObject, IRecipient<SessionChangedMessage>, ISessionTick, IDisposable
 {
     public ObservableCollection<ComputerItem> Computers { get; } = [];
 
     public IReadOnlyList<ComputerTypeDefinition> ComputerTypes => ComputerClub.ComputerTypes.All;
 
     private readonly Dictionary<int, CancellationTokenSource> _saveTokens = new();
-
-    private CancellationTokenSource? _timerCts;
 
     [RelayCommand]
     private async Task Loaded()
@@ -43,12 +43,9 @@ public partial class ComputersManagementViewModel(
         }
 
         await RefreshStatuses();
+        tickService.Register(this);
         WeakReferenceMessenger.Default.RegisterAll(this);
-        StartTimer();
     }
-
-    [RelayCommand]
-    private void Unloaded() => StopTimer();
 
     [RelayCommand]
     private async Task RefreshStatuses()
@@ -69,38 +66,6 @@ public partial class ComputersManagementViewModel(
             var session = activeSessions.FirstOrDefault(s => s.ComputerId == entity.Id);
             item.SessionStartedAt = session?.StartedAt;
             item.SessionPlannedDuration = session?.PlannedDuration;
-        }
-    }
-
-    private void StartTimer()
-    {
-        StopTimer();
-        _timerCts = new CancellationTokenSource();
-        _ = TickAsync(_timerCts.Token);
-    }
-
-    private void StopTimer()
-    {
-        _timerCts?.Cancel();
-        _timerCts?.Dispose();
-        _timerCts = null;
-    }
-
-    private async Task TickAsync(CancellationToken ct)
-    {
-        using var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
-        try
-        {
-            while (await timer.WaitForNextTickAsync(ct))
-            {
-                foreach (var computer in Computers)
-                {
-                    computer.RefreshDuration();
-                }
-            }
-        }
-        catch (OperationCanceledException)
-        {
         }
     }
 
@@ -250,5 +215,20 @@ public partial class ComputersManagementViewModel(
         }
     }
 
-    public void Dispose() => StopTimer();
+    public void Tick()
+    {
+        foreach (var computer in Computers)
+        {
+            computer.RefreshDuration();
+        }
+    }
+    
+    public void Dispose()
+    {
+        tickService.Unregister(this);
+        foreach (var cts in _saveTokens.Values)
+        {
+            cts.Dispose();
+        }
+    }
 }

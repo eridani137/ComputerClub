@@ -19,9 +19,6 @@
         <behaviors:EventTrigger EventName="Loaded">
             <behaviors:InvokeCommandAction Command="{Binding LoadedCommand}" />
         </behaviors:EventTrigger>
-        <behaviors:EventTrigger EventName="Unloaded">
-            <behaviors:InvokeCommandAction Command="{Binding UnloadedCommand}" />
-        </behaviors:EventTrigger>
     </behaviors:Interaction.Triggers>
 
     <Page.Resources>
@@ -29,6 +26,7 @@
         <converters:ComputerTypeToBrushConverter x:Key="ComputerTypeToBrushConverter" />
         <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
         <converters:UtcToLocalTimeConverter x:Key="UtcToLocalTimeConverter" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </Page.Resources>
 
     <DockPanel Margin="20">
@@ -71,7 +69,7 @@
                             BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
                             BorderThickness="1" CornerRadius="4" Padding="8,6"
                             MinHeight="32">
-                        
+
                         <DockPanel>
                             <Border Width="16" Height="16"
                                     Background="{Binding SelectedTariff.ComputerTypeId,
@@ -100,7 +98,7 @@
                         </DockPanel>
                     </Border>
                 </StackPanel>
-                
+
                 <StackPanel Grid.Column="3" Margin="0,0,8,0">
                     <TextBlock Text="Время аренды"
                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
@@ -127,13 +125,13 @@
                     IsClosable="True"
                     Margin="0,0,0,12" />
 
-        <DataGrid ItemsSource="{Binding ActiveSessions}"
+        <DataGrid ItemsSource="{Binding Sessions}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   IsReadOnly="True"
                   GridLinesVisibility="Horizontal"
                   HeadersVisibility="Column">
-            
+
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Setter Property="Background" Value="Transparent" />
@@ -148,34 +146,29 @@
             </DataGrid.RowStyle>
 
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Клиент"
-                                    Binding="{Binding ClientName}"
-                                    Width="*" />
-
-                <DataGridTextColumn Header="ПК №"
-                                    Binding="{Binding ComputerId}"
-                                    Width="70" />
-
-                <DataGridTextColumn Header="Тариф"
-                                    Binding="{Binding TariffName}"
-                                    Width="130" />
-
-                <DataGridTextColumn Header="₽/час"
-                                    Binding="{Binding PricePerHour, StringFormat=N2}"
-                                    Width="90" />
-
+                <DataGridTextColumn Header="Клиент" Binding="{Binding ClientName}" Width="*" />
+                <DataGridTextColumn Header="ПК №" Binding="{Binding ComputerId}" Width="60" />
+                <DataGridTextColumn Header="Тариф" Binding="{Binding TariffName}" Width="120" />
+                <DataGridTextColumn Header="₽/час" Binding="{Binding PricePerHour, StringFormat=N2}" Width="80" />
                 <DataGridTextColumn Header="Начало"
-                                    Binding="{Binding StartedAt, StringFormat=HH:mm:ss, Converter={StaticResource UtcToLocalTimeConverter}}"
-                                    Width="90" />
+                                    Binding="{Binding StartedAt, Converter={StaticResource UtcToLocalTimeConverter}, StringFormat=dd.MM HH:mm}"
+                                    Width="110" />
+                <DataGridTextColumn Header="Конец"
+                                    Binding="{Binding EndedAt, Converter={StaticResource UtcToLocalTimeConverter}, StringFormat=dd.MM HH:mm}"
+                                    Width="110" />
 
-                <DataGridTemplateColumn Header="Осталось" Width="130">
+                <DataGridTemplateColumn Header="Осталось / Овертайм" Width="170">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <ui:SymbolIcon Symbol="Timer24" Margin="0,0,4,0">
+                                <ui:SymbolIcon Margin="0,0,4,0">
                                     <ui:SymbolIcon.Style>
                                         <Style TargetType="ui:SymbolIcon">
+                                            <Setter Property="Symbol" Value="Timer24" />
                                             <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsActive}" Value="False">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>
                                                 <DataTrigger Binding="{Binding IsOvertime}" Value="True">
                                                     <Setter Property="Foreground"
                                                             Value="{DynamicResource SystemFillColorCriticalBrush}" />
@@ -201,6 +194,10 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
+                <DataGridTextColumn Header="Итого, ₽"
+                                    Binding="{Binding TotalCost, StringFormat=N2}"
+                                    Width="90" />
+
                 <DataGridTemplateColumn Width="140">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -208,8 +205,9 @@
                                        Icon="{ui:SymbolIcon Stop24}"
                                        Appearance="Caution"
                                        Command="{Binding DataContext.CloseSessionCommand,
-                                           RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                       CommandParameter="{Binding}" />
+                                   RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                       CommandParameter="{Binding}"
+                                       Visibility="{Binding IsActive, Converter={StaticResource BoolToVisibilityConverter}}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

@@ -66,7 +66,12 @@ public class SessionService(ApplicationDbContext db, UserManager<ComputerClubIde
         }
 
         var endedAt = DateTime.UtcNow;
-        var hours = (decimal)(endedAt - session.StartedAt).TotalHours;
+        var elapsed = endedAt - session.StartedAt;
+
+        var overtime = elapsed - session.PlannedDuration;
+        session.OvertimeDuration = overtime.Ticks > 0 ? overtime : TimeSpan.Zero;
+
+        var hours = (decimal)elapsed.TotalHours;
         var cost = Math.Round(hours * session.Tariff.PricePerHour, 2);
 
         session.EndedAt = endedAt;
@@ -85,7 +90,6 @@ public class SessionService(ApplicationDbContext db, UserManager<ComputerClubIde
         }
 
         session.Computer.Status = ComputerStatus.Available;
-
         await db.SaveChangesAsync(ctx);
 
         return session;
