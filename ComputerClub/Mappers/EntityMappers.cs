@@ -46,4 +46,14 @@ public static class EntityMappers
         Status = e.Status,
         PlannedDuration = e.PlannedDuration,
     };
+    
+    public static PaymentItem Map(this PaymentEntity e) => new()
+    {
+        Id = e.Id,
+        ClientId = e.ClientId,
+        ClientName = e.Client?.UserName ?? string.Empty,
+        Amount = e.Amount,
+        CreatedAt = e.CreatedAt,
+        SessionId = e.SessionId
+    };
 }

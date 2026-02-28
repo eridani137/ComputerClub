@@ -16,7 +16,7 @@ namespace ComputerClub.ViewModels.Pages;
 
 public partial class ClientsViewModel(
     ApplicationDbContext context,
-    SessionService sessionService,
+    PaymentService paymentService,
     UserManager<ComputerClubIdentity> userManager,
     ISnackbarService  snackbarService
     ) : ObservableObject
@@ -24,7 +24,6 @@ public partial class ClientsViewModel(
     public ObservableCollection<ClientItem> Clients { get; } = [];
 
     [ObservableProperty] private ClientItem? _selectedClient;
-    [ObservableProperty] private decimal _topUpAmount = 1000;
     [ObservableProperty] private string? _errorMessage;
     
     [RelayCommand]
@@ -87,9 +86,9 @@ public partial class ClientsViewModel(
 
         try
         {
-            await sessionService.TopUpBalance(item.Id, TopUpAmount);
-            item.Balance += TopUpAmount;
-            TopUpAmount = 1000;
+            await paymentService.TopUp(item.Id, item.TopUpAmount);
+            item.Balance += item.TopUpAmount;
+            item.TopUpAmount = 1000;
         }
         catch (Exception e)
         {

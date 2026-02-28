@@ -10,4 +10,6 @@ public partial class ClientItem : ObservableObject
     [ObservableProperty] private string _fullName = string.Empty;
     [ObservableProperty] private string? _phoneNumber;
     [ObservableProperty] private decimal _balance;
+    
+    [ObservableProperty] private decimal _topUpAmount = 1000;
 }

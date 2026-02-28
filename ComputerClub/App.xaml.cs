@@ -104,8 +104,8 @@ public partial class App : Application
 
     private static void ConfigureServices(IConfiguration configuration, IServiceCollection services)
     {
-        services.AddScoped<LoginWindow>();
-        services.AddScoped<LoginWindowViewModel>();
+        services.AddTransient<LoginWindow>();
+        services.AddTransient<LoginWindowViewModel>();
 
         services.AddTransient<MainWindow>();
         services.AddTransient<MainWindowViewModel>();
@@ -128,12 +128,13 @@ public partial class App : Application
 
         services.AddNavigationViewPageProvider();
 
-        services.AddSingleton<ISnackbarService, SnackbarService>();
-        services.AddSingleton<IContentDialogService, ContentDialogService>();
-        services.AddSingleton<INavigationService, NavigationService>();
+        services.AddTransient<ISnackbarService, SnackbarService>();
+        services.AddTransient<IContentDialogService, ContentDialogService>();
+        services.AddTransient<INavigationService, NavigationService>();
 
         services.AddTransient<SessionService>();
-        services.AddSingleton<SessionTickService>();
+        services.AddTransient<SessionTickService>();
+        services.AddTransient<PaymentService>();
 
         AddInfrastructure(configuration, services);
     }
