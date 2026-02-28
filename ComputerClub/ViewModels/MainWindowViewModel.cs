@@ -68,6 +68,11 @@ public partial class MainWindowViewModel(
                     "Сессии",
                     SymbolRegular.NotepadPerson24,
                     typeof(SessionsPage)));
+                
+                MenuItems.Add(new NavigationViewItem(
+                    "Платежи",
+                    SymbolRegular.MoneyCalculator24,
+                    typeof(PaymentsPage)));
 
                 MenuItems.Add(new NavigationViewItem()
                 {
