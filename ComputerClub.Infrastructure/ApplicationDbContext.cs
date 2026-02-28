@@ -10,6 +10,7 @@ public class ApplicationDbContext : IdentityDbContext<ComputerClubIdentity, Iden
     public DbSet<ComputerEntity> Computers => Set<ComputerEntity>();
     public DbSet<TariffEntity> Tariffs => Set<TariffEntity>();
     public DbSet<SessionEntity> Sessions => Set<SessionEntity>();
+    public DbSet<PaymentEntity> Payments => Set<PaymentEntity>();
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)

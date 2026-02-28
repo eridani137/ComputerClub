@@ -43,7 +43,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Migrations\" />
+      <Folder Include="Infrastructure\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ComputerClub.Infrastructure\ComputerClub.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

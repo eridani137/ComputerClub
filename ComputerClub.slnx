@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="ComputerClub.Infrastructure/ComputerClub.Infrastructure.csproj" />
   <Project Path="ComputerClub/ComputerClub.csproj" />
 </Solution>
