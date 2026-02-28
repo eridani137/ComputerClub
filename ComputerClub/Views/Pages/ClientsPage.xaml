@@ -59,8 +59,6 @@
 
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" />
-                <DataGridTextColumn Header="Логин" Binding="{Binding Login}" Width="250" />
-                
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -76,7 +74,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                
+                <DataGridTextColumn Header="Логин" Binding="{Binding Login}" Width="250" />
                 <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}" Width="300" />
                 <DataGridTextColumn Header="Телефон" Binding="{Binding PhoneNumber}" Width="200" />
                 <DataGridTextColumn Header="Баланс" Binding="{Binding Balance, StringFormat=N2}" Width="130" />
