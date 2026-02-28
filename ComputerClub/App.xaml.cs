@@ -59,14 +59,31 @@ public partial class App : Application
             var tickService = scope.ServiceProvider.GetRequiredService<SessionTickService>();
             tickService.Start();
 
-            var loginWindow = _host.Services.GetRequiredService<LoginWindow>();
-            loginWindow.Show();
+            ShowLoginWindow(_host.Services);
         }
         catch (Exception e)
         {
             Log.Error(e, "Необработанное исключение");
         }
     }
+    
+    public void ShowLoginWindow(IServiceProvider services)
+    {
+        CurrentUser = null;
+        CurrentRole = null;
+        
+        var loginWindow = services.GetRequiredService<LoginWindow>();
+        Current.MainWindow = loginWindow;
+        loginWindow.Closed += (_, _) =>
+        {
+            if (Current.MainWindow is not ComputerClub.Views.MainWindow)
+            {
+                Current.Shutdown();
+            }
+        };
+        loginWindow.Show();
+    }
+
 
     protected override async void OnExit(ExitEventArgs ee)
     {

@@ -106,16 +106,10 @@ public partial class MainWindowViewModel(
     [RelayCommand]
     private void Logout()
     {
-        App.CurrentUser = null;
-        App.CurrentRole = null;
-    
         var scope = scopeFactory.CreateScope();
-        var loginWindow = scope.ServiceProvider.GetRequiredService<LoginWindow>();
-    
-        loginWindow.Closed += (_, _) => scope.Dispose();
-    
-        loginWindow.Show();
-        _window?.Close();
+        var app = (App)Application.Current;
+        app.ShowLoginWindow(scope.ServiceProvider);
+        _window.Close();
     }
     
     [RelayCommand]

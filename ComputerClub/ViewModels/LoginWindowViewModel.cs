@@ -141,7 +141,6 @@ public partial class LoginWindowViewModel(
 
             Application.Current.MainWindow = mainWindow;
             mainWindow.Show();
-            
             _window?.Close();
         }
         catch (Exception ex)
