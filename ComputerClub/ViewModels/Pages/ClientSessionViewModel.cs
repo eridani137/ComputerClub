@@ -3,13 +3,16 @@ using CommunityToolkit.Mvvm.Input;
 using ComputerClub.Infrastructure;
 using ComputerClub.Infrastructure.Entities;
 using ComputerClub.Services;
+using ComputerClub.Views.Pages;
 using Microsoft.EntityFrameworkCore;
+using Wpf.Ui;
 
 namespace ComputerClub.ViewModels.Pages;
 
 public partial class ClientSessionViewModel(
     ApplicationDbContext context,
-    SessionTickService tickService
+    SessionTickService tickService,
+    INavigationService navigationService
 ) : ObservableObject, ISessionTick, IDisposable
 {
     [ObservableProperty] private bool _hasActiveSession;
@@ -33,7 +36,7 @@ public partial class ClientSessionViewModel(
     [RelayCommand]
     private void StartSession()
     {
-        // TODO
+        navigationService.Navigate(typeof(CreateSessionPage));
     }
 
     private async Task RefreshSession()

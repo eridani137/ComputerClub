@@ -48,6 +48,11 @@ public partial class MainWindowViewModel(
             "Текущая сессия",
             SymbolRegular.Glasses24,
             typeof(ClientSessionPage)));
+        
+        MenuItems.Add(new NavigationViewItem(
+            "Создать сессию",
+            SymbolRegular.Add24,
+            typeof(CreateSessionPage)));
 
         switch (role)
         {
