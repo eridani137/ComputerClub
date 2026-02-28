@@ -22,14 +22,14 @@ public partial class MainWindowViewModel(
 ) : ObservableObject
 {
     private FluentWindow _window;
-    
+
     public ObservableCollection<NavigationViewItem> MenuItems { get; } = [];
 
     [RelayCommand]
     private void Loaded(FluentWindow window)
     {
         _window = window;
-        
+
         if (window is not MainWindow mainWindow) return;
 
         if (App.CurrentUser is not { } user || App.CurrentRole is not { } role) return;
@@ -43,6 +43,11 @@ public partial class MainWindowViewModel(
         snackbarService.SetSnackbarPresenter(mainWindow.SnackbarPresenter);
 
         Type? homePageType;
+        
+        MenuItems.Add(new NavigationViewItem(
+            "Текущая сессия",
+            SymbolRegular.Glasses24,
+            typeof(ClientSessionPage)));
 
         switch (role)
         {
@@ -58,17 +63,17 @@ public partial class MainWindowViewModel(
                         "Управление клиентами",
                         SymbolRegular.Person24,
                         typeof(ClientsPage)));
-                
+
                 MenuItems.Add(new NavigationViewItem(
                     "Тарифы",
                     SymbolRegular.Notebook24,
                     typeof(TariffsPage)));
-                
+
                 MenuItems.Add(new NavigationViewItem(
                     "Сессии",
                     SymbolRegular.NotepadPerson24,
                     typeof(SessionsPage)));
-                
+
                 MenuItems.Add(new NavigationViewItem(
                     "Платежи",
                     SymbolRegular.MoneyCalculator24,
@@ -101,6 +106,12 @@ public partial class MainWindowViewModel(
                 homePageType = typeof(ComputersManagementPage);
 
                 break;
+            
+            case "User":
+
+                homePageType = typeof(ClientSessionPage);
+                
+                break;
             default:
                 return;
         }
@@ -115,7 +126,7 @@ public partial class MainWindowViewModel(
         App.ShowLoginWindow(scope.ServiceProvider);
         _window.Close();
     }
-    
+
     [RelayCommand]
     private static void Close()
     {

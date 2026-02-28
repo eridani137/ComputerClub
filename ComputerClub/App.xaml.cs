@@ -118,6 +118,7 @@ public partial class App : Application
         services.AddTransient<SessionsViewModel>();
         services.AddTransient<DevViewModel>();
         services.AddTransient<PaymentsViewModel>();
+        services.AddTransient<ClientSessionViewModel>();
 
         services.AddTransient<ComputersManagementPage>();
         services.AddTransient<CurrentCashPage>();
@@ -127,6 +128,7 @@ public partial class App : Application
         services.AddTransient<SessionsPage>();
         services.AddTransient<DevPage>();
         services.AddTransient<PaymentsPage>();
+        services.AddTransient<ClientSessionPage>();
 
         services.AddNavigationViewPageProvider();
 
