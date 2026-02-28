@@ -107,8 +107,7 @@ public partial class MainWindowViewModel(
     private void Logout()
     {
         var scope = scopeFactory.CreateScope();
-        var app = (App)Application.Current;
-        app.ShowLoginWindow(scope.ServiceProvider);
+        App.ShowLoginWindow(scope.ServiceProvider);
         _window.Close();
     }
     

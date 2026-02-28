@@ -67,7 +67,7 @@ public partial class App : Application
         }
     }
     
-    public void ShowLoginWindow(IServiceProvider services)
+    public static void ShowLoginWindow(IServiceProvider services)
     {
         CurrentUser = null;
         CurrentRole = null;
