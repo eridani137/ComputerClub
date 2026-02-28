@@ -192,10 +192,6 @@
                                                              Value="{x:Static entities:ComputerStatus.Occupied}">
                                                     <Setter Property="Visibility" Value="Visible" />
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding IsOvertime}" Value="True">
-                                                    <Setter Property="Foreground"
-                                                            Value="{DynamicResource SystemFillColorCriticalBrush}" />
-                                                </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </TextBlock.Style>

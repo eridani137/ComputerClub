@@ -157,44 +157,28 @@
                                     Binding="{Binding EndedAt, Converter={StaticResource UtcToLocalTimeConverter}, StringFormat=dd.MM HH:mm}"
                                     Width="110" />
 
-                <DataGridTemplateColumn Header="Осталось / Овертайм" Width="170">
+                <DataGridTemplateColumn Header="Осталось" Width="170">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <ui:SymbolIcon Margin="0,0,4,0">
+                                <ui:SymbolIcon Symbol="Timer24" Margin="0,0,4,0">
                                     <ui:SymbolIcon.Style>
                                         <Style TargetType="ui:SymbolIcon">
-                                            <Setter Property="Symbol" Value="Timer24" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding IsActive}" Value="False">
                                                     <Setter Property="Visibility" Value="Collapsed" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding IsOvertime}" Value="True">
-                                                    <Setter Property="Foreground"
-                                                            Value="{DynamicResource SystemFillColorCriticalBrush}" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </ui:SymbolIcon.Style>
                                 </ui:SymbolIcon>
-                                <TextBlock Text="{Binding TimeDisplay}">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsOvertime}" Value="True">
-                                                    <Setter Property="Foreground"
-                                                            Value="{DynamicResource SystemFillColorCriticalBrush}" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
+                                <TextBlock Text="{Binding TimeDisplay}" />
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTextColumn Header="Итого, ₽"
+                <DataGridTextColumn Header="Итого"
                                     Binding="{Binding TotalCost, StringFormat=N2}"
                                     Width="90" />
 

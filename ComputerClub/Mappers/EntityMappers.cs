@@ -45,6 +45,5 @@ public static class EntityMappers
         TotalCost = e.TotalCost,
         Status = e.Status,
         PlannedDuration = e.PlannedDuration,
-        OvertimeDuration = e.OvertimeDuration
     };
 }

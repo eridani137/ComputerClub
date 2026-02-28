@@ -17,34 +17,18 @@ public partial class SessionItem : ObservableObject
     [ObservableProperty] private decimal? _totalCost;
     [ObservableProperty] private SessionStatus _status;
     [ObservableProperty] private TimeSpan _plannedDuration;
-    [ObservableProperty] private TimeSpan? _overtimeDuration;
 
     public bool IsActive => Status == SessionStatus.Active;
-    public bool IsOvertime => Status == SessionStatus.Active && 
-                              (DateTime.UtcNow - StartedAt) > PlannedDuration;
 
     public string TimeDisplay
     {
         get
         {
-            if (Status != SessionStatus.Active)
-            {
-                return OvertimeDuration.HasValue && OvertimeDuration.Value > TimeSpan.Zero
-                    ? $@"+{OvertimeDuration.Value:hh\:mm\:ss}"
-                    : "—";
-            }
-
-            var elapsed = DateTime.UtcNow - StartedAt;
-            var remaining = PlannedDuration - elapsed;
-            return remaining.Ticks > 0
-                ? remaining.ToString(@"hh\:mm\:ss")
-                : $@"+{(-remaining):hh\:mm\:ss}";
+            if (!IsActive) return "—";
+            var remaining = PlannedDuration - (DateTime.UtcNow - StartedAt);
+            return TimeSpan.FromTicks(Math.Max(0, remaining.Ticks)).ToString(@"hh\:mm\:ss");
         }
     }
 
-    public void RefreshDuration()
-    {
-        OnPropertyChanged(nameof(TimeDisplay));
-        OnPropertyChanged(nameof(IsOvertime));
-    }
+    public void RefreshDuration() => OnPropertyChanged(nameof(TimeDisplay));
 }

@@ -13,27 +13,15 @@ public partial class ComputerItem : ObservableObject
     [ObservableProperty] private DateTime? _sessionStartedAt;
     [ObservableProperty] private TimeSpan? _sessionPlannedDuration;
 
-    public bool IsOvertime =>
-        SessionStartedAt.HasValue && SessionPlannedDuration.HasValue &&
-        DateTime.UtcNow - SessionStartedAt.Value > SessionPlannedDuration.Value;
-
     public string SessionTimeDisplay
     {
         get
         {
             if (SessionStartedAt is null || SessionPlannedDuration is null) return string.Empty;
-            var elapsed = DateTime.UtcNow - SessionStartedAt.Value;
-            var remaining = SessionPlannedDuration.Value - elapsed;
-
-            return remaining.Ticks > 0
-                ? remaining.ToString(@"hh\:mm\:ss")
-                : $@"+{(-remaining):hh\:mm\:ss}";
+            var remaining = SessionPlannedDuration.Value - (DateTime.UtcNow - SessionStartedAt.Value);
+            return TimeSpan.FromTicks(Math.Max(0, remaining.Ticks)).ToString(@"hh\:mm\:ss");
         }
     }
 
-    public void RefreshDuration()
-    {
-        OnPropertyChanged(nameof(SessionTimeDisplay));
-        OnPropertyChanged(nameof(IsOvertime));
-    }
+    public void RefreshDuration() => OnPropertyChanged(nameof(SessionTimeDisplay));
 }

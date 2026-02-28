@@ -109,7 +109,6 @@ public partial class SessionsViewModel(
             item.EndedAt = session.EndedAt;
             item.TotalCost = session.TotalCost;
             item.Status = session.Status;
-            item.OvertimeDuration = session.OvertimeDuration;
 
             var client = Clients.FirstOrDefault(c => c.Id == item.ClientId);
             client?.Balance = session.Client.Balance;
@@ -186,11 +185,12 @@ public partial class SessionsViewModel(
     public void Tick()
     {
         foreach (var session in Sessions.Where(s => s.IsActive))
-        {
             session.RefreshDuration();
-        }
 
-        var expired = Sessions.Where(s => s is { IsActive: true, IsOvertime: true }).ToList();
+        var expired = Sessions
+            .Where(s => s.IsActive && DateTime.UtcNow >= s.StartedAt + s.PlannedDuration)
+            .ToList();
+
         foreach (var session in expired)
         {
             _ = CloseSessionCommand.ExecuteAsync(session);
