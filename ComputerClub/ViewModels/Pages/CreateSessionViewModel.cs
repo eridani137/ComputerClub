@@ -5,13 +5,16 @@ using ComputerClub.Infrastructure;
 using ComputerClub.Infrastructure.Entities;
 using ComputerClub.Models;
 using ComputerClub.Services;
+using ComputerClub.Views.Pages;
 using Microsoft.EntityFrameworkCore;
+using Wpf.Ui;
 
 namespace ComputerClub.ViewModels.Pages;
 
 public partial class CreateSessionViewModel(
     ApplicationDbContext context,
-    SessionService sessionService
+    SessionService sessionService,
+    INavigationService navigationService
 ) : ObservableObject
 {
     public ObservableCollection<ScheduleRow> Rows { get; } = [];
@@ -26,8 +29,6 @@ public partial class CreateSessionViewModel(
 
     public int HoursCount => 24;
     public IEnumerable<int> Hours => Enumerable.Range(0, HoursCount);
-
-    public event Action? SessionCreated;
     
     [RelayCommand]
     private async Task Loaded() => await Refresh();
@@ -139,11 +140,9 @@ public partial class CreateSessionViewModel(
     {
         if (App.CurrentUser is null)
         {
-            ErrorMessage = "Ошибка получения идентификатора";
+            ErrorMessage = "Ошибка получения пользователя";
             return;
         }
-        
-        ErrorMessage = null;
 
         if (_selectedRow is null || _dragStartHour < 0)
         {
@@ -151,9 +150,15 @@ public partial class CreateSessionViewModel(
             return;
         }
 
-        var start = Math.Min(_dragStartHour, _dragEndHour);
-        var end = Math.Max(_dragStartHour, _dragEndHour);
-        var hours = end - start + 1;
+        ErrorMessage = null;
+
+        var startHour = Math.Min(_dragStartHour, _dragEndHour);
+        var endHour = Math.Max(_dragStartHour, _dragEndHour);
+
+        var hours = endHour - startHour + 1;
+
+        var localStart = SelectedDate.Date.AddHours(startHour);
+        var utcStart = DateTime.SpecifyKind(localStart, DateTimeKind.Local).ToUniversalTime();
 
         var tariff = await context.Tariffs
             .FirstOrDefaultAsync(t => t.ComputerTypeId == _selectedRow.ComputerTypeId);
@@ -172,7 +177,7 @@ public partial class CreateSessionViewModel(
                 tariff.Id,
                 TimeSpan.FromHours(hours));
 
-            SessionCreated?.Invoke();
+            navigationService.Navigate(typeof(ClientSessionPage));
         }
         catch (Exception ex)
         {
@@ -193,7 +198,7 @@ public partial class CreateSessionViewModel(
             .OrderBy(c => c.Id)
             .ToListAsync();
 
-        var dayStart = SelectedDate.Date.ToUniversalTime();
+        var dayStart = DateTime.SpecifyKind(SelectedDate.Date, DateTimeKind.Local).ToUniversalTime();
         var dayEnd = dayStart.AddDays(1);
 
         var sessions = await context.Sessions
@@ -232,7 +237,7 @@ public partial class CreateSessionViewModel(
                     Hour = h,
                     IsOccupied = session is not null,
                     SessionLabel = session is not null && h == (int)(session.StartedAt - dayStart).TotalHours
-                        ? session.Client.FullName
+                        ? session.Client.UserName!
                         : string.Empty
                 });
             }
@@ -265,6 +270,12 @@ public partial class CreateSessionViewModel(
                 cell.IsSelected = false;
             }
         }
+        
+        _dragStartHour = -1;
+        _dragEndHour = -1;
+        _selectedRow = null;
+
+        SelectionSummary = string.Empty;
         
         ConfirmCommand.NotifyCanExecuteChanged();
     }

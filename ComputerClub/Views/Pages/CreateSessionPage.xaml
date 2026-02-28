@@ -149,9 +149,10 @@
                                                 </Style>
                                             </Border.Style>
                                             <TextBlock Text="{Binding SessionLabel}"
-                                                       FontSize="10"
+                                                       FontSize="15"
                                                        Padding="2,0"
                                                        VerticalAlignment="Center"
+                                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                                        IsHitTestVisible="False" />
                                         </Border>
                                     </DataTemplate>
