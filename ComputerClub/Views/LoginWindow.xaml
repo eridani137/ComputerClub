@@ -69,9 +69,9 @@
             <TextBlock Grid.Row="3"
                        Text="Пароль:"
                        Margin="0,0,0,5" />
-            <!-- TODO -->
+            
             <ui:PasswordBox x:Name="PasswordBox"
-                            Password="Qwerty123_"
+                            Password="{Binding Password}"
                             Grid.Row="4"
                             Padding="5"
                             PasswordChanged="PasswordBox_PasswordChanged"
