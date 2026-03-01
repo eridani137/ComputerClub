@@ -32,31 +32,51 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="60" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-        <Border Grid.Row="0" Padding="16,10"
+        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                Padding="16,10"
                 Background="{DynamicResource ControlFillColorDefaultBrush}"
                 Margin="0,0,0,1">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <ui:Button Content="Вчера"
-                           Command="{Binding PreviousDayCommand}"
-                           Margin="0,0,8,0" />
-                <ui:Button Icon="{ui:SymbolIcon ChevronLeft24}"
-                           Command="{Binding PreviousDayCommand}" />
+                <ui:Button Content="Вчера" Command="{Binding PreviousDayCommand}" Margin="0,0,8,0" />
+                <ui:Button Icon="{ui:SymbolIcon ChevronLeft24}" Command="{Binding PreviousDayCommand}" />
                 <TextBlock Text="{Binding SelectedDate, StringFormat=dd.MM.yyyy}"
                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                            FontSize="16" FontWeight="SemiBold"
                            VerticalAlignment="Center"
                            Margin="16,0" MinWidth="100"
                            HorizontalAlignment="Center" />
-                <ui:Button Icon="{ui:SymbolIcon ChevronRight24}"
-                           Command="{Binding NextDayCommand}" />
-                <ui:Button Content="Сегодня"
-                           Command="{Binding GoToTodayCommand}"
-                           Margin="8,0,0,0" />
+                <ui:Button Icon="{ui:SymbolIcon ChevronRight24}" Command="{Binding NextDayCommand}" />
+                <ui:Button Content="Сегодня" Command="{Binding GoToTodayCommand}" Margin="8,0,0,0" />
             </StackPanel>
         </Border>
 
-        <ScrollViewer Grid.Row="1"
+        <ItemsControl Grid.Row="1" Grid.Column="0"
+                      ItemsSource="{Binding Rows}"
+                      VerticalAlignment="Top">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border
+                        Background="{Binding ComputerTypeId,
+                            Converter={StaticResource ComputerTypeToBrushConverter}}"
+                        BorderBrush="#22000000"
+                        BorderThickness="0,0,0,1"
+                        Height="34" Width="60">
+                        <TextBlock Text="{Binding ComputerId}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontWeight="SemiBold"
+                                   FontSize="13" />
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <ScrollViewer Grid.Row="1" Grid.Column="1"
                       HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding Rows}"
@@ -65,29 +85,28 @@
                 <ItemsControl.Template>
                     <ControlTemplate TargetType="ItemsControl">
                         <StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="60,0,0,0">
-                                <ItemsControl ItemsSource="{Binding DataContext.SlotHeaders,
-    RelativeSource={RelativeSource AncestorType=ItemsControl}}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <StackPanel Orientation="Horizontal" />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border BorderBrush="#33FFFFFF"
-                                                    BorderThickness="1,0,0,1"
-                                                    Width="40" Height="28">
-                                                <TextBlock Text="{Binding Label}"
-                                                           FontSize="9"
-                                                           HorizontalAlignment="Center"
-                                                           VerticalAlignment="Center"
-                                                           Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </StackPanel>
+                            <ItemsControl
+                                ItemsSource="{Binding DataContext.SlotHeaders,
+                            RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="#33FFFFFF"
+                                                BorderThickness="1,0,0,1"
+                                                Width="40" Height="28">
+                                            <TextBlock Text="{Binding Label}"
+                                                       FontSize="9"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"
+                                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
 
                             <ItemsPresenter />
                         </StackPanel>
@@ -96,56 +115,39 @@
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Grid Height="34">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="60" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-
-                            <Border Grid.Column="0"
-                                    Background="{Binding ComputerTypeId,
-                                Converter={StaticResource ComputerTypeToBrushConverter}}"
-                                    BorderBrush="#22000000"
-                                    BorderThickness="0,0,0,1">
-                                <TextBlock Text="{Binding ComputerId}"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
-                                           FontWeight="SemiBold"
-                                           FontSize="13" />
-                            </Border>
-
-                            <ItemsControl Grid.Column="1" ItemsSource="{Binding Cells}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Horizontal" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Width="40" Height="34"
-                                                BorderBrush="#22FFFFFF"
-                                                BorderThickness="1,0,0,1"
-                                                Tag="{Binding}"
-                                                Cursor="Hand"
-                                                IsHitTestVisible="True"
-                                                Background="{Binding DisplayBrush, Converter={StaticResource ScheduleCellToBrushConverter}}"
-                                                MouseLeftButtonDown="Cell_Click">
-                                            <TextBlock Text="{Binding SessionLabel}"
-                                                       FontSize="10"
-                                                       Padding="2,0"
-                                                       VerticalAlignment="Center"
-                                                       IsHitTestVisible="False" />
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </Grid>
+                        <ItemsControl ItemsSource="{Binding Cells}" Height="34">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Width="40" Height="34"
+                                            BorderBrush="#22FFFFFF"
+                                            BorderThickness="1,0,0,1"
+                                            Tag="{Binding}"
+                                            Cursor="Hand"
+                                            IsHitTestVisible="True"
+                                            Background="{Binding DisplayBrush,
+                                            Converter={StaticResource ScheduleCellToBrushConverter}}"
+                                            MouseLeftButtonDown="Cell_Click">
+                                        <TextBlock Text="{Binding SessionLabel}"
+                                                   FontSize="10"
+                                                   Padding="2,0"
+                                                   VerticalAlignment="Center"
+                                                   IsHitTestVisible="False" />
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
 
-        <Border Grid.Row="2" Padding="16"
+        <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                Padding="16"
                 Background="{DynamicResource ControlFillColorDefaultBrush}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -160,7 +162,7 @@
                     <TextBlock Text="{Binding ErrorMessage}"
                                Foreground="Red" FontSize="12"
                                Visibility="{Binding ErrorMessage,
-                                   Converter={StaticResource NullToVisibilityConverter}}" />
+                               Converter={StaticResource NullToVisibilityConverter}}" />
                 </StackPanel>
 
                 <ui:Button Grid.Column="1"

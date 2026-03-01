@@ -23,7 +23,12 @@ public partial class CreateSessionViewModel(
     public IEnumerable<int> Slots => Enumerable.Range(0, SlotsCount);
 
     public IEnumerable<SlotHeader> SlotHeaders =>
-        Slots.Select(i => new SlotHeader(i, i % 2 == 0 ? $"{i / 2:D2}:00" : string.Empty));
+        Enumerable.Range(0, SlotsCount).Select(i => new SlotHeader(
+            i,
+            i % 2 == 0
+                ? $"{i / 2:D2}:00"
+                : $"{i / 2:D2}:30"
+        ));
     
     [ObservableProperty] private DateTime _selectedDate = DateTime.Today;
     [ObservableProperty] private int _startHour;

@@ -129,9 +129,9 @@ public partial class ComputersManagementViewModel(
     {
         var (item, type) = param;
 
-        if (item.Status != ComputerStatus.Available && item.Status != ComputerStatus.OutOfService)
+        if (item.Status is ComputerStatus.Occupied or ComputerStatus.Reserved)
         {
-            snackbarService.Show("Ошибка", "Попробуйте еще, когда компьютер освободится",
+            snackbarService.Show("Ошибка", "Компьютер занят или зарезервирован",
                 ControlAppearance.Danger, new SymbolIcon(SymbolRegular.ErrorCircle24), TimeSpan.FromSeconds(3));
             return;
         }
@@ -148,13 +148,13 @@ public partial class ComputersManagementViewModel(
     [RelayCommand]
     private async Task ToggleOutOfService(ComputerItem item)
     {
-        if (item.Status == ComputerStatus.Occupied)
+        if (item.Status is ComputerStatus.Occupied or ComputerStatus.Reserved)
         {
-            snackbarService.Show("Ошибка", "Попробуйте еще, когда компьютер освободится",
+            snackbarService.Show("Ошибка", "Компьютер занят или зарезервирован",
                 ControlAppearance.Danger, new SymbolIcon(SymbolRegular.ErrorCircle24), TimeSpan.FromSeconds(3));
             return;
         }
-        
+
         var entity = await context.Computers.FindAsync(item.Id);
         if (entity is null) return;
 
