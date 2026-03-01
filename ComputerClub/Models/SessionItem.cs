@@ -8,6 +8,7 @@ public partial class SessionItem : ObservableObject
     [ObservableProperty] private int _id;
     [ObservableProperty] private int _clientId;
     [ObservableProperty] private string _clientName = string.Empty;
+    [ObservableProperty] private string _login = string.Empty;
     [ObservableProperty] private int _computerId;
     [ObservableProperty] private int _tariffId;
     [ObservableProperty] private string _tariffName = string.Empty;

@@ -36,6 +36,7 @@ public static class EntityMappers
         Id = e.Id,
         ClientId = e.ClientId,
         ClientName = e.Client?.FullName ?? string.Empty,
+        Login = e.Client?.UserName ?? string.Empty,
         ComputerId = e.ComputerId,
         TariffId = e.TariffId,
         TariffName = e.Tariff?.Name ?? string.Empty,
@@ -51,7 +52,7 @@ public static class EntityMappers
     {
         Id = e.Id,
         ClientId = e.ClientId,
-        ClientName = e.Client?.UserName ?? string.Empty,
+        ClientName = e.Client?.FullName ?? string.Empty,
         Amount = e.Amount,
         Type = e.Type,
         CreatedAt = e.CreatedAt,

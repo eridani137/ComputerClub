@@ -146,7 +146,7 @@
             </DataGrid.RowStyle>
 
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Клиент" Binding="{Binding ClientName}" Width="*" />
+                <DataGridTextColumn Header="Клиент" Binding="{Binding Login}" Width="*" />
                 <DataGridTextColumn Header="ПК №" Binding="{Binding ComputerId}" Width="60" />
                 <DataGridTextColumn Header="Тариф" Binding="{Binding TariffName}" Width="120" />
                 <DataGridTextColumn Header="₽/час" Binding="{Binding PricePerHour, StringFormat=N2}" Width="80" />
