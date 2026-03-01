@@ -39,7 +39,8 @@ public class DatabaseSeeder(
         {
             rootUser = new ComputerClubIdentity()
             {
-                UserName = rootUsername
+                UserName = rootUsername,
+                FullName = "Super Root"
             };
 
             var result = await userManager.CreateAsync(rootUser, rootPassword);

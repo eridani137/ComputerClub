@@ -7,6 +7,7 @@ using ComputerClub.Models;
 using ComputerClub.Services;
 using ComputerClub.Views.Pages;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using Wpf.Ui;
 
 namespace ComputerClub.ViewModels.Pages;
@@ -19,15 +20,14 @@ public partial class CreateSessionViewModel(
 {
     public ObservableCollection<ScheduleRow> Rows { get; } = [];
 
-    public int SlotsCount => 48;
-    public IEnumerable<int> Slots => Enumerable.Range(0, SlotsCount);
+    public static int SlotsCount => 144;
 
     public IEnumerable<SlotHeader> SlotHeaders =>
         Enumerable.Range(0, SlotsCount).Select(i => new SlotHeader(
             i,
-            i % 2 == 0
-                ? $"{i / 2:D2}:00"
-                : $"{i / 2:D2}:30"
+            i % 6 == 0
+                ? $"{i / 6:D2}:00"
+                : $"{i / 6:D2}:{(i % 6) * 10:D2}"
         ));
     
     [ObservableProperty] private DateTime _selectedDate = DateTime.Today;
@@ -138,10 +138,10 @@ public partial class CreateSessionViewModel(
 
         var start = Math.Min(_dragStartSlot, _dragEndSlot);
         var end = Math.Max(_dragStartSlot, _dragEndSlot);
-        var duration = TimeSpan.FromMinutes((end - start + 1) * 30);
+        var duration = TimeSpan.FromMinutes((end - start + 1) * 10);
 
-        var startTime = TimeSpan.FromMinutes(start * 30);
-        var endTime = TimeSpan.FromMinutes((end + 1) * 30);
+        var startTime = TimeSpan.FromMinutes(start * 10); 
+        var endTime = TimeSpan.FromMinutes((end + 1) * 10);
 
         SelectionSummary = $"ПК №{_selectedRow.ComputerId} · {startTime:hh\\:mm} – {endTime:hh\\:mm} · {duration.TotalHours:0.#} ч.";
     }
@@ -169,9 +169,9 @@ public partial class CreateSessionViewModel(
 
         var startSlot = Math.Min(_dragStartSlot, _dragEndSlot);
         var endSlot = Math.Max(_dragStartSlot, _dragEndSlot);
-        var duration = TimeSpan.FromMinutes((endSlot - startSlot + 1) * 30);
+        var duration = TimeSpan.FromMinutes((endSlot - startSlot + 1) * 10);
 
-        var localStart = SelectedDate.Date.AddMinutes(startSlot * 30);
+        var localStart = SelectedDate.Date.AddMinutes(startSlot * 10);
         var utcStart = DateTime.SpecifyKind(localStart, DateTimeKind.Local).ToUniversalTime();
         
         if (utcStart < DateTime.UtcNow)
@@ -257,8 +257,8 @@ public partial class CreateSessionViewModel(
 
             for (var slot = 0; slot < SlotsCount; slot++)
             {
-                var slotStart = dayStart.AddMinutes(slot * 30);
-                var slotEnd = slotStart.AddMinutes(30);
+                var slotStart = dayStart.AddMinutes(slot * 10);
+                var slotEnd = slotStart.AddMinutes(10);
 
                 var session = sessions.FirstOrDefault(s =>
                     s.ComputerId == computer.Id &&
@@ -270,8 +270,8 @@ public partial class CreateSessionViewModel(
                     r.StartsAt < slotEnd &&
                     r.EndsAt > slotStart);
                 
-                var sessionSlot = (int)((session?.StartedAt - dayStart)?.TotalMinutes / 30 ?? -1);
-                var reservationSlot = (int)((reservation?.StartsAt - dayStart)?.TotalMinutes / 30 ?? -1);
+                var sessionSlot = (int)((session?.StartedAt - dayStart)?.TotalMinutes / 10 ?? -1);
+                var reservationSlot = (int)((reservation?.StartsAt - dayStart)?.TotalMinutes / 10 ?? -1);
                 
                 row.Cells.Add(new ScheduleCell
                 {

@@ -1,5 +1,7 @@
-﻿using ComputerClub.Infrastructure;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using ComputerClub.Infrastructure;
 using ComputerClub.Infrastructure.Entities;
+using ComputerClub.Messages;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,8 +9,7 @@ namespace ComputerClub.Services;
 
 public class SessionService(
     ApplicationDbContext db,
-    UserManager<ComputerClubIdentity> userManager
-)
+    UserManager<ComputerClubIdentity> userManager)
 {
     public async Task<SessionEntity> OpenSession(
         int clientId, int computerId, int tariffId,
@@ -106,7 +107,7 @@ public class SessionService(
         await db.SaveChangesAsync(ctx);
         return session;
     }
-    
+
     public async Task<ReservationEntity> ReserveSession(
         int clientId, int computerId, int tariffId,
         DateTime startsAt, TimeSpan duration,
@@ -137,7 +138,8 @@ public class SessionService(
         if (client.Balance < cost)
         {
             throw new InvalidOperationException(
-                $"Недостаточно средств. Стоимость: {cost} ₽, баланс: {client.Balance} ₽");}
+                $"Недостаточно средств. Стоимость: {cost} ₽, баланс: {client.Balance} ₽");
+        }
 
         client.Balance -= cost;
 
@@ -163,73 +165,81 @@ public class SessionService(
         await db.SaveChangesAsync(ctx);
         return reservation;
     }
-    
+
     public async Task ActivateReservations(CancellationToken ct = default)
-{
-    var now = DateTime.UtcNow;
-
-    var pending = await db.Reservations
-        .Include(r => r.Computer)
-        .Include(r => r.Client)
-        .Include(r => r.Tariff)
-        .Where(r => r.Status == ReservationStatus.Pending && r.StartsAt <= now)
-        .ToListAsync(ct);
-
-    foreach (var reservation in pending)
     {
-        if (reservation.EndsAt <= now)
+        var now = DateTime.UtcNow;
+
+        var pending = await db.Reservations
+            .Include(r => r.Computer)
+            .Include(r => r.Client)
+            .Include(r => r.Tariff)
+            .Where(r => r.Status == ReservationStatus.Pending && r.StartsAt <= now)
+            .ToListAsync(ct);
+
+        if (!pending.Any()) return;
+
+        var affectedComputerIds = new List<int>();
+
+        foreach (var reservation in pending)
         {
-            reservation.Status = ReservationStatus.Cancelled;
-
-            var refundHours = (decimal)(reservation.EndsAt - reservation.StartsAt).TotalHours;
-            var refundAmount = Math.Round(refundHours * reservation.Tariff.PricePerHour, 2);
-
-            reservation.Client.Balance += refundAmount;
-
-            db.Payments.Add(new PaymentEntity
+            if (reservation.EndsAt <= now)
             {
-                ClientId = reservation.ClientId,
-                Amount = refundAmount,
-                Type = PaymentType.Refund,
-                CreatedAt = now
-            });
+                reservation.Status = ReservationStatus.Cancelled;
 
-            continue;
+                var refundAmount = Math.Round(
+                    (decimal)(reservation.EndsAt - reservation.StartsAt).TotalHours
+                    * reservation.Tariff.PricePerHour, 2);
+
+                reservation.Client.Balance += refundAmount;
+
+                db.Payments.Add(new PaymentEntity
+                {
+                    ClientId = reservation.ClientId,
+                    Amount = refundAmount,
+                    Type = PaymentType.Refund,
+                    CreatedAt = now
+                });
+            }
+            else
+            {
+                reservation.Computer.Status = ComputerStatus.Occupied;
+                reservation.Status = ReservationStatus.Active;
+
+                var missedHours = (decimal)(now - reservation.StartsAt).TotalHours;
+                var missedCost = Math.Round(missedHours * reservation.Tariff.PricePerHour, 2);
+
+                if (missedCost > 0)
+                {
+                    reservation.Client.Balance += missedCost;
+                    db.Payments.Add(new PaymentEntity
+                    {
+                        ClientId = reservation.ClientId,
+                        Amount = missedCost,
+                        Type = PaymentType.Refund,
+                        CreatedAt = now
+                    });
+                }
+
+                db.Sessions.Add(new SessionEntity
+                {
+                    ClientId = reservation.ClientId,
+                    ComputerId = reservation.ComputerId,
+                    TariffId = reservation.TariffId,
+                    StartedAt = now,
+                    PlannedDuration = reservation.EndsAt - now,
+                    Status = SessionStatus.Active
+                });
+            }
+
+            affectedComputerIds.Add(reservation.ComputerId);
         }
 
-        reservation.Computer.Status = ComputerStatus.Occupied;
-        reservation.Status = ReservationStatus.Active;
+        await db.SaveChangesAsync(ct);
 
-        var remainingDuration = reservation.EndsAt - now;
-
-        var missedHours = (decimal)(now - reservation.StartsAt).TotalHours;
-        var missedCost = Math.Round(missedHours * reservation.Tariff.PricePerHour, 2);
-
-        if (missedCost > 0)
+        foreach (var computerId in affectedComputerIds)
         {
-            reservation.Client.Balance += missedCost;
-            db.Payments.Add(new PaymentEntity
-            {
-                ClientId = reservation.ClientId,
-                Amount = missedCost,
-                Type = PaymentType.Refund,
-                CreatedAt = now
-            });
+            WeakReferenceMessenger.Default.Send(new SessionChangedMessage(computerId));
         }
-
-        var session = new SessionEntity
-        {
-            ClientId = reservation.ClientId,
-            ComputerId = reservation.ComputerId,
-            TariffId = reservation.TariffId,
-            StartedAt = now,
-            PlannedDuration = remainingDuration,
-            Status = SessionStatus.Active
-        };
-
-        db.Sessions.Add(session);
     }
-
-    await db.SaveChangesAsync(ct);
-}
 }

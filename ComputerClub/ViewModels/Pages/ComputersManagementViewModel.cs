@@ -50,6 +50,8 @@ public partial class ComputersManagementViewModel(
     [RelayCommand]
     private async Task RefreshStatuses()
     {
+        context.ChangeTracker.Clear();
+
         var entities = await context.Computers.ToListAsync();
 
         var activeSessions = await context.Sessions
@@ -71,10 +73,12 @@ public partial class ComputersManagementViewModel(
             item.SessionStartedAt = session?.StartedAt;
             item.SessionPlannedDuration = session?.PlannedDuration;
 
-            var reservation = reservations
-                .Where(r => r.ComputerId == entity.Id)
-                .OrderBy(r => r.StartsAt)
-                .FirstOrDefault();
+            var reservation = session is null
+                ? reservations
+                    .Where(r => r.ComputerId == entity.Id)
+                    .OrderBy(r => r.StartsAt)
+                    .FirstOrDefault()
+                : null;
 
             item.ReservationStartsAt = reservation?.StartsAt;
             item.ReservationEndsAt = reservation?.EndsAt;
