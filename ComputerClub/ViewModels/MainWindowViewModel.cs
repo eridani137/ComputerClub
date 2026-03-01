@@ -43,12 +43,12 @@ public partial class MainWindowViewModel(
         snackbarService.SetSnackbarPresenter(mainWindow.SnackbarPresenter);
 
         Type? homePageType;
-        
+
         MenuItems.Add(new NavigationViewItem(
             "Текущая сессия",
             SymbolRegular.Glasses24,
             typeof(ClientSessionPage)));
-        
+
         MenuItems.Add(new NavigationViewItem(
             "Создать сессию",
             SymbolRegular.Add24,
@@ -62,6 +62,12 @@ public partial class MainWindowViewModel(
                         "Управление компьютерами",
                         SymbolRegular.Grid24,
                         typeof(ComputersManagementPage)));
+
+                MenuItems.Add(
+                    new NavigationViewItem(
+                        "Текущая касса",
+                        SymbolRegular.Money24,
+                        typeof(CurrentCashPage)));
 
                 MenuItems.Add(
                     new NavigationViewItem(
@@ -84,25 +90,6 @@ public partial class MainWindowViewModel(
                     SymbolRegular.MoneyCalculator24,
                     typeof(PaymentsPage)));
 
-                MenuItems.Add(new NavigationViewItem()
-                {
-                    Content = "Отчеты",
-                    Icon = new SymbolIcon() { Symbol = SymbolRegular.DocumentBulletList24 },
-                    IsExpanded = true,
-                    MenuItems =
-                    {
-                        new NavigationViewItem(
-                            "Текущая касса",
-                            SymbolRegular.Money24,
-                            typeof(CurrentCashPage)),
-
-                        new NavigationViewItem(
-                            "Текущий отчет",
-                            SymbolRegular.ClipboardBulletListRtl20,
-                            typeof(CurrentReportPage))
-                    }
-                });
-
                 MenuItems.Add(new NavigationViewItem(
                     "Development",
                     SymbolRegular.Code24,
@@ -111,11 +98,11 @@ public partial class MainWindowViewModel(
                 homePageType = typeof(ComputersManagementPage);
 
                 break;
-            
+
             case "User":
 
                 homePageType = typeof(ClientSessionPage);
-                
+
                 break;
             default:
                 return;

@@ -112,7 +112,6 @@ public partial class App : Application
 
         services.AddTransient<ComputersManagementViewModel>();
         services.AddTransient<CurrentCashViewModel>();
-        services.AddTransient<CurrentReportViewModel>();
         services.AddTransient<ClientsViewModel>();
         services.AddTransient<TariffsViewModel>();
         services.AddTransient<SessionsViewModel>();
@@ -123,7 +122,6 @@ public partial class App : Application
 
         services.AddTransient<ComputersManagementPage>();
         services.AddTransient<CurrentCashPage>();
-        services.AddTransient<CurrentReportPage>();
         services.AddTransient<ClientsPage>();
         services.AddTransient<TariffsPage>();
         services.AddTransient<SessionsPage>();
