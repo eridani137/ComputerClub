@@ -56,6 +56,10 @@ public partial class ComputersManagementViewModel(
             .Where(s => s.Status == SessionStatus.Active)
             .ToListAsync();
 
+        var reservations = await context.Reservations
+            .Where(r => r.Status == ReservationStatus.Pending)
+            .ToListAsync();
+
         foreach (var entity in entities)
         {
             var item = Computers.FirstOrDefault(c => c.Id == entity.Id);
@@ -66,6 +70,19 @@ public partial class ComputersManagementViewModel(
             var session = activeSessions.FirstOrDefault(s => s.ComputerId == entity.Id);
             item.SessionStartedAt = session?.StartedAt;
             item.SessionPlannedDuration = session?.PlannedDuration;
+
+            var reservation = reservations
+                .Where(r => r.ComputerId == entity.Id)
+                .OrderBy(r => r.StartsAt)
+                .FirstOrDefault();
+
+            item.ReservationStartsAt = reservation?.StartsAt;
+            item.ReservationEndsAt = reservation?.EndsAt;
+
+            if (reservation is not null && entity.Status == ComputerStatus.Available)
+            {
+                item.Status = ComputerStatus.Reserved;
+            }
         }
     }
 

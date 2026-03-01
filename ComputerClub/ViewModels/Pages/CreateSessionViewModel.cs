@@ -19,16 +19,19 @@ public partial class CreateSessionViewModel(
 {
     public ObservableCollection<ScheduleRow> Rows { get; } = [];
 
+    public int SlotsCount => 48;
+    public IEnumerable<int> Slots => Enumerable.Range(0, SlotsCount);
+
+    public IEnumerable<SlotHeader> SlotHeaders =>
+        Slots.Select(i => new SlotHeader(i, i % 2 == 0 ? $"{i / 2:D2}:00" : string.Empty));
+    
     [ObservableProperty] private DateTime _selectedDate = DateTime.Today;
     [ObservableProperty] private int _startHour;
     [ObservableProperty] private string? _errorMessage;
 
     private ScheduleRow? _selectedRow;
-    private int _dragStartHour = -1;
-    private int _dragEndHour = -1;
-
-    public int HoursCount => 24;
-    public IEnumerable<int> Hours => Enumerable.Range(0, HoursCount);
+    private int _dragStartSlot = -1;
+    private int _dragEndSlot = -1;
     
     [RelayCommand]
     private async Task Loaded() => await Refresh();
@@ -68,45 +71,49 @@ public partial class CreateSessionViewModel(
 
         if (cell.IsSelected)
         {
-            var start = Math.Min(_dragStartHour, _dragEndHour);
-            var end = Math.Max(_dragStartHour, _dragEndHour);
+            var start = Math.Min(_dragStartSlot, _dragEndSlot);
+            var end = Math.Max(_dragStartSlot, _dragEndSlot);
 
-            if (cell.Hour == start) _dragStartHour++;
-            else if (cell.Hour == end)
+            if (cell.SlotIndex == start)
             {
-                _dragEndHour--;
+                _dragStartSlot++;
+            }
+            else if (cell.SlotIndex == end)
+            {
+                _dragEndSlot--;
             }
             else
             {
-                ClearSelection(); return;
+                ClearSelection(); 
+                return;
             }
         }
         else
         {
-            if (_dragStartHour < 0)
+            if (_dragStartSlot < 0)
             {
-                _dragStartHour = cell.Hour;
-                _dragEndHour = cell.Hour;
+                _dragStartSlot = cell.SlotIndex;
+                _dragEndSlot = cell.SlotIndex;
             }
             else
             {
-                var start = Math.Min(_dragStartHour, _dragEndHour);
-                var end = Math.Max(_dragStartHour, _dragEndHour);
+                var start = Math.Min(_dragStartSlot, _dragEndSlot);
+                var end = Math.Max(_dragStartSlot, _dragEndSlot);
 
-                if (cell.Hour == start - 1) _dragStartHour = cell.Hour;
-                else if (cell.Hour == end + 1) _dragEndHour = cell.Hour;
+                if (cell.SlotIndex == start - 1) _dragStartSlot = cell.SlotIndex;
+                else if (cell.SlotIndex == end + 1) _dragEndSlot = cell.SlotIndex;
                 else
                 {
                     ClearSelection();
-                    _dragStartHour = cell.Hour;
-                    _dragEndHour = cell.Hour;
+                    _dragStartSlot = cell.SlotIndex;
+                    _dragEndSlot = cell.SlotIndex;
                 }
             }
         }
 
-        if (_dragStartHour > _dragEndHour)
+        if (_dragStartSlot > _dragEndSlot)
         {
-            ClearSelection();
+            ClearSelection(); 
             return;
         }
 
@@ -118,22 +125,25 @@ public partial class CreateSessionViewModel(
 
     private void UpdateSummary()
     {
-        if (_selectedRow is null || _dragStartHour < 0)
+        if (_selectedRow is null || _dragStartSlot < 0)
         {
             SelectionSummary = string.Empty;
             return;
         }
 
-        var start = Math.Min(_dragStartHour, _dragEndHour);
-        var end = Math.Max(_dragStartHour, _dragEndHour);
-        var hours = end - start + 1;
+        var start = Math.Min(_dragStartSlot, _dragEndSlot);
+        var end = Math.Max(_dragStartSlot, _dragEndSlot);
+        var duration = TimeSpan.FromMinutes((end - start + 1) * 30);
 
-        SelectionSummary = $"ПК №{_selectedRow.ComputerId} · {start:D2}:00 – {end + 1:D2}:00 · {hours} ч.";
+        var startTime = TimeSpan.FromMinutes(start * 30);
+        var endTime = TimeSpan.FromMinutes((end + 1) * 30);
+
+        SelectionSummary = $"ПК №{_selectedRow.ComputerId} · {startTime:hh\\:mm} – {endTime:hh\\:mm} · {duration.TotalHours:0.#} ч.";
     }
 
     private bool CanConfirm()
     {
-        return _selectedRow is not null && _dragStartHour >= 0;
+        return _selectedRow is not null && _dragStartSlot >= 0;
     }
     
     [RelayCommand(CanExecute = nameof(CanConfirm))]
@@ -144,7 +154,7 @@ public partial class CreateSessionViewModel(
             ErrorMessage = "Ошибка получения пользователя";
             return;
         }
-        if (_selectedRow is null || _dragStartHour < 0)
+        if (_selectedRow is null || _dragStartSlot < 0)
         {
             ErrorMessage = "Выберите время";
             return;
@@ -152,12 +162,18 @@ public partial class CreateSessionViewModel(
 
         ErrorMessage = null;
 
-        var startHour = Math.Min(_dragStartHour, _dragEndHour);
-        var endHour = Math.Max(_dragStartHour, _dragEndHour);
-        var hours = endHour - startHour + 1;
+        var startSlot = Math.Min(_dragStartSlot, _dragEndSlot);
+        var endSlot = Math.Max(_dragStartSlot, _dragEndSlot);
+        var duration = TimeSpan.FromMinutes((endSlot - startSlot + 1) * 30);
 
-        var localStart = SelectedDate.Date.AddHours(startHour);
+        var localStart = SelectedDate.Date.AddMinutes(startSlot * 30);
         var utcStart = DateTime.SpecifyKind(localStart, DateTimeKind.Local).ToUniversalTime();
+        
+        if (utcStart < DateTime.UtcNow)
+        {
+            ErrorMessage = "Нельзя зарезервировать сессию в прошлом";
+            return;
+        }
 
         var tariff = await context.Tariffs
             .FirstOrDefaultAsync(t => t.ComputerTypeId == _selectedRow.ComputerTypeId);
@@ -175,7 +191,7 @@ public partial class CreateSessionViewModel(
                 _selectedRow.ComputerId,
                 tariff.Id,
                 utcStart,
-                TimeSpan.FromHours(hours));
+                duration);
 
             navigationService.Navigate(typeof(ClientSessionPage));
         }
@@ -189,8 +205,8 @@ public partial class CreateSessionViewModel(
     {
         Rows.Clear();
         ClearSelection();
-        _dragStartHour = -1;
-        _dragEndHour = -1;
+        _dragStartSlot = -1;
+        _dragEndSlot = -1;
         _selectedRow = null;
 
         var computers = await context.Computers
@@ -234,10 +250,10 @@ public partial class CreateSessionViewModel(
                 TypeName = type.Name
             };
 
-            for (var h = 0; h < HoursCount; h++)
+            for (var slot = 0; slot < SlotsCount; slot++)
             {
-                var slotStart = dayStart.AddHours(h);
-                var slotEnd = slotStart.AddHours(1);
+                var slotStart = dayStart.AddMinutes(slot * 30);
+                var slotEnd = slotStart.AddMinutes(30);
 
                 var session = sessions.FirstOrDefault(s =>
                     s.ComputerId == computer.Id &&
@@ -249,15 +265,18 @@ public partial class CreateSessionViewModel(
                     r.StartsAt < slotEnd &&
                     r.EndsAt > slotStart);
                 
+                var sessionSlot = (int)((session?.StartedAt - dayStart)?.TotalMinutes / 30 ?? -1);
+                var reservationSlot = (int)((reservation?.StartsAt - dayStart)?.TotalMinutes / 30 ?? -1);
+                
                 row.Cells.Add(new ScheduleCell
                 {
-                    Hour = h,
+                    SlotIndex = slot,
                     IsOccupied = session is not null || reservation is not null,
                     IsReservation = reservation is not null && session is null,
                     IsPast = slotEnd <= nowUtc,
-                    SessionLabel = session is not null && h == (int)(session.StartedAt - dayStart).TotalHours
+                    SessionLabel = session is not null && slot == sessionSlot
                         ? session.Client.UserName!
-                        : reservation is not null && h == (int)(reservation.StartsAt - dayStart).TotalHours
+                        : reservation is not null && slot == reservationSlot
                             ? $"[Р] {reservation.Client.UserName}"
                             : string.Empty
                 });
@@ -270,13 +289,11 @@ public partial class CreateSessionViewModel(
     private void UpdateSelection()
     {
         if (_selectedRow is null) return;
-
-        var start = Math.Min(_dragStartHour, _dragEndHour);
-        var end = Math.Max(_dragStartHour, _dragEndHour);
-
+        var start = Math.Min(_dragStartSlot, _dragEndSlot);
+        var end = Math.Max(_dragStartSlot, _dragEndSlot);
         foreach (var cell in _selectedRow.Cells)
         {
-            cell.IsSelected = cell.Hour >= start && cell.Hour <= end && !cell.IsOccupied;
+            cell.IsSelected = cell.SlotIndex >= start && cell.SlotIndex <= end && !cell.IsOccupied;
         }
         
         ConfirmCommand.NotifyCanExecuteChanged();
@@ -292,8 +309,8 @@ public partial class CreateSessionViewModel(
             }
         }
         
-        _dragStartHour = -1;
-        _dragEndHour = -1;
+        _dragStartSlot = -1;
+        _dragEndSlot = -1;
         _selectedRow = null;
 
         SelectionSummary = string.Empty;

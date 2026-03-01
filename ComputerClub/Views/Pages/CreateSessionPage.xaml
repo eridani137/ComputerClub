@@ -56,8 +56,7 @@
             </StackPanel>
         </Border>
 
-        <ScrollViewer x:Name="MainScrollViewer"
-                      Grid.Row="1"
+        <ScrollViewer Grid.Row="1"
                       HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding Rows}"
@@ -67,9 +66,8 @@
                     <ControlTemplate TargetType="ItemsControl">
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="60,0,0,0">
-                                <ItemsControl
-                                    ItemsSource="{Binding DataContext.Hours,
-                            RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                <ItemsControl ItemsSource="{Binding DataContext.SlotHeaders,
+    RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <StackPanel Orientation="Horizontal" />
@@ -80,16 +78,11 @@
                                             <Border BorderBrush="#33FFFFFF"
                                                     BorderThickness="1,0,0,1"
                                                     Width="40" Height="28">
-                                                <TextBlock FontSize="9"
+                                                <TextBlock Text="{Binding Label}"
+                                                           FontSize="9"
                                                            HorizontalAlignment="Center"
                                                            VerticalAlignment="Center"
-                                                           Foreground="{DynamicResource TextFillColorSecondaryBrush}">
-                                                    <TextBlock.Text>
-                                                        <MultiBinding StringFormat="{}{0}:00">
-                                                            <Binding />
-                                                        </MultiBinding>
-                                                    </TextBlock.Text>
-                                                </TextBlock>
+                                                           Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                                             </Border>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>

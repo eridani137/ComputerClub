@@ -14,7 +14,7 @@ public partial class ScheduleRow : ObservableObject
 
 public partial class ScheduleCell : ObservableObject
 {
-    [ObservableProperty] private int _hour;
+    [ObservableProperty] private int _slotIndex;
     [ObservableProperty] private bool _isOccupied;
     [ObservableProperty] private bool _isReservation;
     [ObservableProperty] private string _sessionLabel = string.Empty;
@@ -32,4 +32,8 @@ public partial class ScheduleCell : ObservableObject
     }
 
     public ScheduleCell DisplayBrush => this;
+    
+    public TimeSpan SlotTime => TimeSpan.FromMinutes(SlotIndex * 30);
 }
+
+public record SlotHeader(int Index, string Label);

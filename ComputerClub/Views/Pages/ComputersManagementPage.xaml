@@ -128,12 +128,13 @@
                                         </MenuItem.Icon>
 
                                     </MenuItem>
-                                    
+
                                     <Separator />
-                                    
-                                    <MenuItem Command="{Binding PlacementTarget.Tag.ToggleOutOfServiceCommand, 
+
+                                    <MenuItem
+                                        Command="{Binding PlacementTarget.Tag.ToggleOutOfServiceCommand, 
               RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                                              CommandParameter="{Binding PlacementTarget.DataContext, 
+                                        CommandParameter="{Binding PlacementTarget.DataContext, 
               RelativeSource={RelativeSource AncestorType=ContextMenu}}">
 
                                         <MenuItem.Style>
@@ -145,9 +146,10 @@
                                                     </Setter.Value>
                                                 </Setter>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding PlacementTarget.DataContext.Status, 
+                                                    <DataTrigger
+                                                        Binding="{Binding PlacementTarget.DataContext.Status, 
                                  RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                                                                 Value="{x:Static entities:ComputerStatus.OutOfService}">
+                                                        Value="{x:Static entities:ComputerStatus.OutOfService}">
                                                         <Setter Property="Header" Value="Включить" />
                                                         <Setter Property="Icon">
                                                             <Setter.Value>
@@ -174,7 +176,7 @@
                                         Background="{Binding TypeId, Converter={StaticResource ComputerTypeToBrushConverter}}"
                                         VerticalAlignment="Top"
                                         CornerRadius="6,6,0,0" />
-                                
+
                                 <TextBlock Text="{Binding SessionTimeDisplay}"
                                            VerticalAlignment="Center"
                                            HorizontalAlignment="Center"
@@ -183,7 +185,8 @@
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Visibility" Value="Collapsed" />
-                                            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+                                            <Setter Property="Foreground"
+                                                    Value="{DynamicResource TextFillColorPrimaryBrush}" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Status}"
                                                              Value="{x:Static entities:ComputerStatus.Occupied}">
@@ -193,6 +196,27 @@
                                         </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
+
+                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <StackPanel.Style>
+                                        <Style TargetType="StackPanel">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Status}"
+                                                             Value="{x:Static entities:ComputerStatus.Reserved}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <ui:SymbolIcon Symbol="CalendarClock24"
+                                                   FontSize="16"
+                                                   HorizontalAlignment="Center" />
+                                    <TextBlock Text="{Binding SessionTimeDisplay}"
+                                               FontSize="11"
+                                               FontWeight="SemiBold"
+                                               HorizontalAlignment="Center" />
+                                </StackPanel>
 
                                 <TextBlock Text="{Binding Id}"
                                            VerticalAlignment="Bottom"
