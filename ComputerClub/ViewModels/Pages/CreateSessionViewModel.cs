@@ -173,12 +173,6 @@ public partial class CreateSessionViewModel(
 
         var localStart = SelectedDate.Date.AddMinutes(startSlot * 10);
         var utcStart = DateTime.SpecifyKind(localStart, DateTimeKind.Local).ToUniversalTime();
-        
-        if (utcStart < DateTime.UtcNow)
-        {
-            ErrorMessage = "Нельзя зарезервировать сессию в прошлом";
-            return;
-        }
 
         var tariff = await context.Tariffs
             .FirstOrDefaultAsync(t => t.ComputerTypeId == _selectedRow.ComputerTypeId);
