@@ -1,11 +1,13 @@
-﻿namespace ComputerClub.Services;
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace ComputerClub.Services;
 
 public interface ISessionTick
 {
     void Tick();
 }
 
-public class SessionTickService : IDisposable
+public class SessionTickService(IServiceScopeFactory scopeFactory) : IDisposable
 {
     private readonly SemaphoreSlim _lock = new(1, 1);
     private readonly List<WeakReference<ISessionTick>> _targets = [];
@@ -45,18 +47,18 @@ public class SessionTickService : IDisposable
         _ = TickAsync(_cts.Token);
     }
 
-    private async Task TickAsync(CancellationToken ct)
+    private async Task TickAsync(CancellationToken ctx)
     {
         using var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
         try
         {
-            while (await timer.WaitForNextTickAsync(ct))
+            var lastActivation = DateTime.MinValue;
+
+            while (await timer.WaitForNextTickAsync(ctx))
             {
-                await _lock.WaitAsync(ct);
+                await _lock.WaitAsync(ctx);
                 try
                 {
-                    _targets.RemoveAll(r => !r.TryGetTarget(out _));
-
                     foreach (var reference in _targets)
                     {
                         if (reference.TryGetTarget(out var target))
@@ -68,6 +70,14 @@ public class SessionTickService : IDisposable
                 finally
                 {
                     _lock.Release();
+                }
+
+                if ((DateTime.UtcNow - lastActivation).TotalSeconds >= 30)
+                {
+                    lastActivation = DateTime.UtcNow;
+                    await using var scope = scopeFactory.CreateAsyncScope();
+                    var service = scope.ServiceProvider.GetRequiredService<SessionService>();
+                    await service.ActivateReservations(ctx);
                 }
             }
         }

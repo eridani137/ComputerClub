@@ -8,6 +8,7 @@
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:viewModels="clr-namespace:ComputerClub.ViewModels"
              xmlns:pages="clr-namespace:ComputerClub.ViewModels.Pages"
+             xmlns:converters="clr-namespace:ComputerClub.Converters"
              mc:Ignorable="d"
              d:DesignHeight="800"
              d:DesignWidth="1200"
@@ -15,10 +16,128 @@
              ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
              ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}">
     
-    <!-- <behaviors:Interaction.Triggers> -->
-    <!--     <behaviors:EventTrigger EventName="Loaded"> -->
-    <!--         <behaviors:InvokeCommandAction Command="{Binding LoadedCommand}" /> -->
-    <!--     </behaviors:EventTrigger> -->
-    <!-- </behaviors:Interaction.Triggers> -->
+    <behaviors:Interaction.Triggers>
+        <behaviors:EventTrigger EventName="Loaded">
+            <behaviors:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </behaviors:EventTrigger>
+    </behaviors:Interaction.Triggers>
+    
+    <Page.Resources>
+        <converters:UtcToLocalTimeConverter x:Key="UtcToLocalTimeConverter" />
+        <converters:PaymentTypeToBrushConverter x:Key="PaymentTypeToBrushConverter" />
+        <converters:PaymentTypeToStringConverter x:Key="PaymentTypeToStringConverter" />
+    </Page.Resources>
+
+    <DockPanel Margin="20">
+
+        <Border DockPanel.Dock="Top"
+                Background="{DynamicResource ControlFillColorDefaultBrush}"
+                CornerRadius="8" Padding="16" Margin="0,0,0,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="0,0,16,0">
+                    <TextBlock Text="Пополнения"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               FontSize="11" Margin="0,0,0,4" />
+                    <TextBlock Text="{Binding TotalTopUp, StringFormat=N2}"
+                               FontSize="20" FontWeight="SemiBold"
+                               Foreground="#0F8C40" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Margin="0,0,16,0">
+                    <TextBlock Text="Списания"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               FontSize="11" Margin="0,0,0,4" />
+                    <TextBlock Text="{Binding TotalCharge, StringFormat=N2}"
+                               FontSize="20" FontWeight="SemiBold"
+                               Foreground="#C42B1C" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Margin="0,0,16,0">
+                    <TextBlock Text="Возвраты"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               FontSize="11" Margin="0,0,0,4" />
+                    <TextBlock Text="{Binding TotalRefund, StringFormat=N2}"
+                               FontSize="20" FontWeight="SemiBold"
+                               Foreground="#9D8200" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="3">
+                    <TextBlock Text="Итого за день"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               FontSize="11" Margin="0,0,0,4" />
+                    <TextBlock Text="{Binding Total, StringFormat=N2}"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               FontSize="20" FontWeight="Bold" />
+                </StackPanel>
+
+                <ui:Button Grid.Column="4"
+                           Icon="{ui:SymbolIcon ArrowSync24}"
+                           Content="Обновить"
+                           Command="{Binding RefreshCommand}"
+                           VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+
+        <DataGrid ItemsSource="{Binding Payments}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
+                  GridLinesVisibility="Horizontal"
+                  HeadersVisibility="Column">
+
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="BorderBrush" Value="Transparent" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Дата/Время"
+                                    Binding="{Binding CreatedAt,
+                                        Converter={StaticResource UtcToLocalTimeConverter},
+                                        StringFormat=dd.MM.yyyy HH:mm:ss}"
+                                    Width="160" />
+
+                <DataGridTextColumn Header="Клиент"
+                                    Binding="{Binding ClientName}"
+                                    Width="*" />
+
+                <DataGridTextColumn Header="Тип"
+                                    Binding="{Binding TypeDisplay}"
+                                    Width="120" />
+
+                <DataGridTextColumn Header="Сессия №"
+                                    Binding="{Binding SessionId}"
+                                    Width="90" />
+
+                <DataGridTemplateColumn Header="Сумма" Width="130">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding AmountDisplay}"
+                                       FontWeight="SemiBold"
+                                       Foreground="{Binding Type,
+                                           Converter={StaticResource PaymentTypeToBrushConverter}}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </DockPanel>
     
 </Page>

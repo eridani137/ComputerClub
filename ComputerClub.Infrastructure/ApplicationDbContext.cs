@@ -11,6 +11,7 @@ public class ApplicationDbContext : IdentityDbContext<ComputerClubIdentity, Iden
     public DbSet<TariffEntity> Tariffs => Set<TariffEntity>();
     public DbSet<SessionEntity> Sessions => Set<SessionEntity>();
     public DbSet<PaymentEntity> Payments => Set<PaymentEntity>();
+    public DbSet<ReservationEntity> Reservations => Set<ReservationEntity>();
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)

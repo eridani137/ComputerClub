@@ -29,6 +29,15 @@ public static class ComputerStatuses
 
     public static ComputerStatusDefinition GetByStatus(ComputerStatus status) =>
         All.FirstOrDefault(s => s.Status == status) ?? All[0];
+    
+    public static SolidColorBrush GetCellColor(bool isOccupied, bool isReservation, bool isSelected, bool isPast)
+    {
+        if (isSelected) return new SolidColorBrush(Color.FromArgb(0x88, 0x4C, 0xAF, 0x50));
+        if (isReservation) return (SolidColorBrush)GetByStatus(ComputerStatus.Reserved).Color;
+        if (isOccupied) return (SolidColorBrush)GetByStatus(ComputerStatus.Occupied).Color;
+        if (isPast) return new SolidColorBrush(Color.FromArgb(0x33, 0xFF, 0xFF, 0xFF));
+        return new SolidColorBrush(Color.FromArgb(1, 0, 0, 0));
+    }
 }
 
 public record ComputerStatusDefinition

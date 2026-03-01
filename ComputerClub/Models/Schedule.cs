@@ -16,6 +16,20 @@ public partial class ScheduleCell : ObservableObject
 {
     [ObservableProperty] private int _hour;
     [ObservableProperty] private bool _isOccupied;
-    [ObservableProperty] private bool _isSelected;
+    [ObservableProperty] private bool _isReservation;
     [ObservableProperty] private string _sessionLabel = string.Empty;
+    [ObservableProperty] private bool _isPast;
+    
+    public bool IsSelected
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(DisplayBrush));
+        }
+    }
+
+    public ScheduleCell DisplayBrush => this;
 }

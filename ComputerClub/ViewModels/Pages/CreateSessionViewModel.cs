@@ -57,6 +57,7 @@ public partial class CreateSessionViewModel(
     public void OnCellClick(ScheduleRow row, ScheduleCell cell)
     {
         if (cell.IsOccupied) return;
+        if (cell.IsPast) return;
 
         if (_selectedRow is not null && !ReferenceEquals(row, _selectedRow))
         {
@@ -143,7 +144,6 @@ public partial class CreateSessionViewModel(
             ErrorMessage = "Ошибка получения пользователя";
             return;
         }
-
         if (_selectedRow is null || _dragStartHour < 0)
         {
             ErrorMessage = "Выберите время";
@@ -154,7 +154,6 @@ public partial class CreateSessionViewModel(
 
         var startHour = Math.Min(_dragStartHour, _dragEndHour);
         var endHour = Math.Max(_dragStartHour, _dragEndHour);
-
         var hours = endHour - startHour + 1;
 
         var localStart = SelectedDate.Date.AddHours(startHour);
@@ -165,16 +164,17 @@ public partial class CreateSessionViewModel(
 
         if (tariff is null)
         {
-            ErrorMessage = $"Тариф для типа «{_selectedRow.TypeName}» не найден";
+            ErrorMessage = $"Тариф для типа '{_selectedRow.TypeName}' не найден";
             return;
         }
 
         try
         {
-            await sessionService.OpenSession(
+            await sessionService.ReserveSession(
                 App.CurrentUser.Id,
                 _selectedRow.ComputerId,
                 tariff.Id,
+                utcStart,
                 TimeSpan.FromHours(hours));
 
             navigationService.Navigate(typeof(ClientSessionPage));
@@ -198,6 +198,7 @@ public partial class CreateSessionViewModel(
             .OrderBy(c => c.Id)
             .ToListAsync();
 
+        var nowUtc = DateTime.UtcNow;
         var dayStart = DateTime.SpecifyKind(SelectedDate.Date, DateTimeKind.Local).ToUniversalTime();
         var dayEnd = dayStart.AddDays(1);
 
@@ -211,7 +212,18 @@ public partial class CreateSessionViewModel(
         sessions = sessions
             .Where(s => s.StartedAt + s.PlannedDuration > dayStart)
             .ToList();
-
+        
+        var reservations = await context.Reservations
+            .Include(r => r.Client)
+            .Where(r => r.Status == ReservationStatus.Pending &&
+                        r.StartsAt < dayEnd &&
+                        r.StartsAt > dayStart.AddDays(-1))
+            .ToListAsync();
+        
+        reservations = reservations
+            .Where(r => r.EndsAt > dayStart)
+            .ToList();
+        
         foreach (var computer in computers)
         {
             var type = ComputerTypes.GetById(computer.TypeId);
@@ -232,13 +244,22 @@ public partial class CreateSessionViewModel(
                     s.StartedAt < slotEnd &&
                     s.StartedAt + s.PlannedDuration > slotStart);
 
+                var reservation = reservations.FirstOrDefault(r =>
+                    r.ComputerId == computer.Id &&
+                    r.StartsAt < slotEnd &&
+                    r.EndsAt > slotStart);
+                
                 row.Cells.Add(new ScheduleCell
                 {
                     Hour = h,
-                    IsOccupied = session is not null,
+                    IsOccupied = session is not null || reservation is not null,
+                    IsReservation = reservation is not null && session is null,
+                    IsPast = slotEnd <= nowUtc,
                     SessionLabel = session is not null && h == (int)(session.StartedAt - dayStart).TotalHours
                         ? session.Client.UserName!
-                        : string.Empty
+                        : reservation is not null && h == (int)(reservation.StartsAt - dayStart).TotalHours
+                            ? $"[Р] {reservation.Client.UserName}"
+                            : string.Empty
                 });
             }
 

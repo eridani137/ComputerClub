@@ -23,6 +23,7 @@
     <Page.Resources>
         <converters:ComputerTypeToBrushConverter x:Key="ComputerTypeToBrushConverter" />
         <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+        <converters:ScheduleCellToBrushConverter x:Key="ScheduleCellToBrushConverter" />
     </Page.Resources>
 
     <Grid>
@@ -134,25 +135,12 @@
                                                 Tag="{Binding}"
                                                 Cursor="Hand"
                                                 IsHitTestVisible="True"
+                                                Background="{Binding DisplayBrush, Converter={StaticResource ScheduleCellToBrushConverter}}"
                                                 MouseLeftButtonDown="Cell_Click">
-                                            <Border.Style>
-                                                <Style TargetType="Border">
-                                                    <Setter Property="Background" Value="#01000000" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding IsOccupied}" Value="True">
-                                                            <Setter Property="Background" Value="#AA6200EE" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                                            <Setter Property="Background" Value="#884CAF50" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Border.Style>
                                             <TextBlock Text="{Binding SessionLabel}"
-                                                       FontSize="15"
+                                                       FontSize="10"
                                                        Padding="2,0"
                                                        VerticalAlignment="Center"
-                                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                                        IsHitTestVisible="False" />
                                         </Border>
                                     </DataTemplate>

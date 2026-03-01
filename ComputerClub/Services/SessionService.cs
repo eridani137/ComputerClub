@@ -106,4 +106,130 @@ public class SessionService(
         await db.SaveChangesAsync(ctx);
         return session;
     }
+    
+    public async Task<ReservationEntity> ReserveSession(
+        int clientId, int computerId, int tariffId,
+        DateTime startsAt, TimeSpan duration,
+        CancellationToken ctx = default)
+    {
+        var client = await userManager.FindByIdAsync(clientId.ToString())
+                     ?? throw new InvalidOperationException("Клиент не найден");
+
+        var computer = await db.Computers.FindAsync([computerId], ctx)
+                       ?? throw new InvalidOperationException("Компьютер не найден");
+
+        var tariff = await db.Tariffs.FindAsync([tariffId], ctx)
+                     ?? throw new InvalidOperationException("Тариф не найден");
+
+        var endsAt = startsAt + duration;
+        var conflict = await db.Reservations.AnyAsync(r =>
+            r.ComputerId == computerId &&
+            r.Status == ReservationStatus.Pending &&
+            r.StartsAt < endsAt &&
+            r.EndsAt > startsAt, ctx);
+
+        if (conflict)
+        {
+            throw new InvalidOperationException("Время уже занято");
+        }
+
+        var cost = Math.Round((decimal)duration.TotalHours * tariff.PricePerHour, 2);
+        if (client.Balance < cost)
+        {
+            throw new InvalidOperationException(
+                $"Недостаточно средств. Стоимость: {cost} ₽, баланс: {client.Balance} ₽");}
+
+        client.Balance -= cost;
+
+        db.Payments.Add(new PaymentEntity
+        {
+            ClientId = clientId,
+            Amount = -cost,
+            Type = PaymentType.Charge,
+            CreatedAt = DateTime.UtcNow
+        });
+
+        var reservation = new ReservationEntity
+        {
+            ClientId = clientId,
+            ComputerId = computerId,
+            TariffId = tariffId,
+            StartsAt = startsAt,
+            EndsAt = endsAt,
+            Status = ReservationStatus.Pending
+        };
+
+        db.Reservations.Add(reservation);
+        await db.SaveChangesAsync(ctx);
+        return reservation;
+    }
+    
+    public async Task ActivateReservations(CancellationToken ct = default)
+{
+    var now = DateTime.UtcNow;
+
+    var pending = await db.Reservations
+        .Include(r => r.Computer)
+        .Include(r => r.Client)
+        .Include(r => r.Tariff)
+        .Where(r => r.Status == ReservationStatus.Pending && r.StartsAt <= now)
+        .ToListAsync(ct);
+
+    foreach (var reservation in pending)
+    {
+        if (reservation.EndsAt <= now)
+        {
+            reservation.Status = ReservationStatus.Cancelled;
+
+            var refundHours = (decimal)(reservation.EndsAt - reservation.StartsAt).TotalHours;
+            var refundAmount = Math.Round(refundHours * reservation.Tariff.PricePerHour, 2);
+
+            reservation.Client.Balance += refundAmount;
+
+            db.Payments.Add(new PaymentEntity
+            {
+                ClientId = reservation.ClientId,
+                Amount = refundAmount,
+                Type = PaymentType.Refund,
+                CreatedAt = now
+            });
+
+            continue;
+        }
+
+        reservation.Computer.Status = ComputerStatus.Occupied;
+        reservation.Status = ReservationStatus.Active;
+
+        var remainingDuration = reservation.EndsAt - now;
+
+        var missedHours = (decimal)(now - reservation.StartsAt).TotalHours;
+        var missedCost = Math.Round(missedHours * reservation.Tariff.PricePerHour, 2);
+
+        if (missedCost > 0)
+        {
+            reservation.Client.Balance += missedCost;
+            db.Payments.Add(new PaymentEntity
+            {
+                ClientId = reservation.ClientId,
+                Amount = missedCost,
+                Type = PaymentType.Refund,
+                CreatedAt = now
+            });
+        }
+
+        var session = new SessionEntity
+        {
+            ClientId = reservation.ClientId,
+            ComputerId = reservation.ComputerId,
+            TariffId = reservation.TariffId,
+            StartedAt = now,
+            PlannedDuration = remainingDuration,
+            Status = SessionStatus.Active
+        };
+
+        db.Sessions.Add(session);
+    }
+
+    await db.SaveChangesAsync(ct);
+}
 }
