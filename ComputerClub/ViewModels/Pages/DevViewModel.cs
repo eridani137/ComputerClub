@@ -10,7 +10,6 @@ namespace ComputerClub.ViewModels.Pages;
 
 public partial class DevViewModel(
     UserManager<ComputerClubIdentity> userManager,
-    RoleManager<IdentityRole<int>> roleManager,
     ILogger<DevViewModel> logger
 ) : ObservableObject
 {

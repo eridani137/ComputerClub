@@ -29,7 +29,7 @@
                         <TextBlock Text="{Binding Name}"
                                    VerticalAlignment="Center"
                                    FontSize="13"
-                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
                     </DockPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

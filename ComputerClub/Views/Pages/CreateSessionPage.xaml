@@ -45,7 +45,7 @@
                 <ui:Button Content="Вчера" Command="{Binding PreviousDayCommand}" Margin="0,0,8,0" />
                 <ui:Button Icon="{ui:SymbolIcon ChevronLeft24}" Command="{Binding PreviousDayCommand}" />
                 <TextBlock Text="{Binding SelectedDate, StringFormat=dd.MM.yyyy}"
-                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                            FontSize="16" FontWeight="SemiBold"
                            VerticalAlignment="Center"
                            Margin="16,0" MinWidth="100"
@@ -102,7 +102,7 @@
                                                        FontSize="9"
                                                        HorizontalAlignment="Center"
                                                        VerticalAlignment="Center"
-                                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
                                         </Border>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
@@ -157,7 +157,7 @@
 
                 <StackPanel Grid.Column="0" VerticalAlignment="Center">
                     <TextBlock Text="{Binding SelectionSummary}"
-                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                FontSize="14" FontWeight="SemiBold" />
                     <TextBlock Text="{Binding ErrorMessage}"
                                Foreground="Red" FontSize="12"

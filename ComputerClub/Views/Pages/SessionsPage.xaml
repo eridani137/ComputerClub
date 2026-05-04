@@ -45,7 +45,7 @@
 
                 <StackPanel Grid.Column="0" Margin="0,0,8,0">
                     <TextBlock Text="Клиент"
-                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                FontSize="11" Margin="0,0,0,2" />
                     <ComboBox ItemsSource="{Binding Clients}"
                               SelectedItem="{Binding SelectedClient}"
@@ -54,7 +54,7 @@
 
                 <StackPanel Grid.Column="1" Margin="0,0,8,0">
                     <TextBlock Text="Компьютер"
-                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                FontSize="11" Margin="0,0,0,2" />
                     <ComboBox ItemsSource="{Binding AvailableComputers}"
                               SelectedItem="{Binding SelectedComputer}"
@@ -63,7 +63,7 @@
 
                 <StackPanel Grid.Column="2" Margin="0,0,8,0">
                     <TextBlock Text="Тариф (по типу ПК)"
-                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                FontSize="11" Margin="0,0,0,2" />
                     <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
                             BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
@@ -89,7 +89,7 @@
                                             <DataTrigger Binding="{Binding SelectedTariff}" Value="{x:Null}">
                                                 <Setter Property="Text" Value="Выберите компьютер" />
                                                 <Setter Property="Foreground"
-                                                        Value="{DynamicResource TextFillColorSecondaryBrush}" />
+                                                        Value="{DynamicResource TextFillColorPrimaryBrush}" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -101,7 +101,7 @@
 
                 <StackPanel Grid.Column="3" Margin="0,0,8,0">
                     <TextBlock Text="Время аренды"
-                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                FontSize="11" Margin="0,0,0,2" />
                     <ui:NumberBox Value="{Binding PlannedHours, UpdateSourceTrigger=PropertyChanged}"
                                   Minimum="1" Maximum="24"

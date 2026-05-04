@@ -11,6 +11,7 @@
                 <ui:ControlsDictionary />
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <converters:BoolToThemeIconConverter x:Key="BoolToThemeIconConverter" />
             <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
             <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />

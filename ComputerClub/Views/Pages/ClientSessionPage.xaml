@@ -32,7 +32,7 @@
 
             <TextBlock Grid.Row="1"
                        HorizontalAlignment="Center"
-                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                        FontSize="18">
                 <Run Text="Компьютер №" />
                 <Run Text="{Binding ComputerId}" />
@@ -43,20 +43,20 @@
                        HorizontalAlignment="Center"
                        FontSize="120"
                        FontWeight="Bold"
-                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                        Margin="0,16" />
 
             <StackPanel Grid.Row="3"
                         HorizontalAlignment="Center"
                         Orientation="Horizontal">
                 <TextBlock Text="{Binding TariffName}"
-                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                            FontSize="18" />
                 <TextBlock Text=" · "
-                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                            FontSize="18" />
                 <TextBlock Text="{Binding TotalCost, StringFormat={}{0:N2} ₽}"
-                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                            FontSize="18" />
             </StackPanel>
 
@@ -79,18 +79,18 @@
                 <ui:SymbolIcon Symbol="Desktop24"
                                FontSize="64"
                                HorizontalAlignment="Center"
-                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                Margin="0,0,0,24" />
 
                 <TextBlock Text="Нет активной сессии"
                            FontSize="24"
                            FontWeight="SemiBold"
                            HorizontalAlignment="Center"
-                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                            Margin="0,0,0,8" />
 
                 <TextBlock Text="Обратитесь к администратору или начните сессию самостоятельно"
-                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                            FontSize="14"
                            HorizontalAlignment="Center"
                            Margin="0,0,0,32" />

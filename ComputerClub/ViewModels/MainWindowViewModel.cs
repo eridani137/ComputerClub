@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Wpf.Ui;
 using Wpf.Ui.Abstractions;
+using Wpf.Ui.Appearance;
 using Wpf.Ui.Controls;
 
 namespace ComputerClub.ViewModels;
@@ -21,9 +22,13 @@ public partial class MainWindowViewModel(
     IServiceScopeFactory scopeFactory
 ) : ObservableObject
 {
-    private FluentWindow _window;
+    private FluentWindow? _window;
+    private ApplicationTheme _currentTheme = ApplicationTheme.Dark;
 
     public ObservableCollection<NavigationViewItem> MenuItems { get; } = [];
+
+    public bool IsDarkTheme => _currentTheme == ApplicationTheme.Dark;
+    public string ThemeToggleLabel => IsDarkTheme ? "Светлая тема" : "Тёмная тема";
 
     [RelayCommand]
     private void Loaded(FluentWindow window)
@@ -112,11 +117,23 @@ public partial class MainWindowViewModel(
     }
 
     [RelayCommand]
+    private void ToggleTheme()
+    {
+        _currentTheme = _currentTheme == ApplicationTheme.Dark
+            ? ApplicationTheme.Light
+            : ApplicationTheme.Dark;
+
+        ApplicationThemeManager.Apply(_currentTheme);
+        OnPropertyChanged(nameof(IsDarkTheme));
+        OnPropertyChanged(nameof(ThemeToggleLabel));
+    }
+
+    [RelayCommand]
     private void Logout()
     {
         var scope = scopeFactory.CreateScope();
         App.ShowLoginWindow(scope.ServiceProvider);
-        _window.Close();
+        _window?.Close();
     }
 
     [RelayCommand]

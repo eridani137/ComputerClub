@@ -55,7 +55,7 @@
 
             <Button Content="Нет аккаунта? Зарегистрироваться"
                     Background="Transparent" BorderThickness="0"
-                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                     FontSize="12" Margin="0,8,0,0"
                     Command="{Binding ShowRegisterCommand}" />
 

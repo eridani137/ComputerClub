@@ -17,7 +17,8 @@
                  WindowStartupLocation="CenterScreen"
                  ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
                  ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                 ExtendsContentIntoTitleBar="True">
+                 ExtendsContentIntoTitleBar="True"
+                 WindowBackdropType="Mica">
     <behaviors:Interaction.Triggers>
         <behaviors:EventTrigger EventName="Loaded">
             <behaviors:InvokeCommandAction Command="{Binding LoadedCommand}"
@@ -45,6 +46,9 @@
                 </ui:NavigationView.MenuItemsSource>
 
                 <ui:NavigationView.FooterMenuItems>
+                    <ui:NavigationViewItem Icon="{Binding IsDarkTheme, Converter={StaticResource BoolToThemeIconConverter}}"
+                                           Content="{Binding ThemeToggleLabel}"
+                                           Command="{Binding ToggleThemeCommand}" />
                     <ui:NavigationViewItem Icon="{ui:SymbolIcon PictureInPicture24}"
                                            Content="Выход из аккаунта"
                                            Command="{Binding LogoutCommand}" />

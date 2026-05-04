@@ -41,14 +41,14 @@
 
                 <StackPanel Grid.Column="0" Margin="0,0,8,0">
                     <TextBlock Text="Название тарифа"
-                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                FontSize="11" Margin="0,0,0,2" />
                     <ui:TextBox Text="{Binding NewName, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Margin="0,0,8,0">
                     <TextBlock Text="Цена / час, ₽"
-                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                FontSize="11" Margin="0,0,0,2" />
                     <ui:NumberBox Value="{Binding NewPricePerHour, UpdateSourceTrigger=PropertyChanged}"
                                   Minimum="0" />
@@ -56,7 +56,7 @@
 
                 <StackPanel Grid.Column="2" Margin="0,0,8,0">
                     <TextBlock Text="Тип компьютера"
-                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                FontSize="11" Margin="0,0,0,2" />
                     <ComboBox ItemsSource="{Binding AvailableTypes}"
                               SelectedItem="{Binding NewComputerType}"

@@ -44,7 +44,7 @@
 
                 <StackPanel Grid.Column="0" Margin="0,0,16,0">
                     <TextBlock Text="Пополнения"
-                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                FontSize="11" Margin="0,0,0,4" />
                     <TextBlock Text="{Binding TotalTopUp, StringFormat=N2}"
                                FontSize="20" FontWeight="SemiBold"
@@ -53,7 +53,7 @@
 
                 <StackPanel Grid.Column="1" Margin="0,0,16,0">
                     <TextBlock Text="Списания"
-                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                FontSize="11" Margin="0,0,0,4" />
                     <TextBlock Text="{Binding TotalCharge, StringFormat=N2}"
                                FontSize="20" FontWeight="SemiBold"
@@ -62,7 +62,7 @@
 
                 <StackPanel Grid.Column="2" Margin="0,0,16,0">
                     <TextBlock Text="Возвраты"
-                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                FontSize="11" Margin="0,0,0,4" />
                     <TextBlock Text="{Binding TotalRefund, StringFormat=N2}"
                                FontSize="20" FontWeight="SemiBold"
@@ -71,10 +71,10 @@
 
                 <StackPanel Grid.Column="3">
                     <TextBlock Text="Итого за день"
-                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                FontSize="11" Margin="0,0,0,4" />
                     <TextBlock Text="{Binding Total, StringFormat=N2}"
-                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                FontSize="20" FontWeight="Bold" />
                 </StackPanel>
 

@@ -21,7 +21,8 @@
                  WindowStartupLocation="CenterScreen"
                  ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
                  ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                 ExtendsContentIntoTitleBar="True">
+                 ExtendsContentIntoTitleBar="True"
+                 WindowBackdropType="Mica">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
