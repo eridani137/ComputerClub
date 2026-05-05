@@ -1,0 +1,95 @@
+<Page x:Class="ComputerClub.Views.Pages.HelpPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:pages="clr-namespace:ComputerClub.ViewModels.Pages"
+      mc:Ignorable="d"
+      d:DesignHeight="800" d:DesignWidth="1000"
+      d:DataContext="{d:DesignInstance Type=pages:HelpViewModel, IsDesignTimeCreatable=False}"
+      ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+      ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}">
+
+    <ScrollViewer x:Name="MainScrollViewer" Margin="20" VerticalScrollBarVisibility="Auto" PreviewMouseWheel="MainScrollViewer_PreviewMouseWheel">
+        <StackPanel>
+            <TextBlock Text="Справка администратора" FontSize="28" FontWeight="Bold" Margin="0,0,0,20" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+
+            <ui:CardExpander Header="1. Управление сессиями" Margin="0,0,0,10" Icon="{ui:SymbolIcon NotepadPerson24}">
+                <StackPanel Margin="0,10">
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,10" Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                        <Run FontWeight="Bold">Открытие сессии:</Run> Перейдите во вкладку «Сессии». Выберите клиента из списка, укажите свободный ПК и выберите время аренды. Нажмите «Открыть сессию».
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,10" Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                        <Run FontWeight="Bold">Завершение сессии:</Run> В списке активных сессий нажмите кнопку «Закрыть». Система автоматически рассчитает итоговую стоимость и обновит баланс клиента, если это необходимо.
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                        <Run FontWeight="Bold">Бронирование:</Run> Во вкладке «Создать сессию» доступна сетка расписания, где можно зарезервировать компьютер на конкретное время в будущем.
+                    </TextBlock>
+                </StackPanel>
+            </ui:CardExpander>
+
+            <ui:CardExpander Header="2. Управление клиентами" Margin="0,0,0,10" Icon="{ui:SymbolIcon Person24}">
+                <StackPanel Margin="0,10">
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,10" Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                        <Run FontWeight="Bold">Регистрация:</Run> Перейдите в «Управление клиентами». Используйте кнопку добавления для регистрации нового пользователя.
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,10" Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                        <Run FontWeight="Bold">Пополнение баланса:</Run> Найдите клиента в списке, введите сумму пополнения и выберите тип оплаты (Наличные/Карта). Баланс обновится мгновенно.
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                        <Run FontWeight="Bold">Поиск:</Run> Используйте поле поиска для быстрой фильтрации клиентов по логину или ФИО.
+                    </TextBlock>
+                </StackPanel>
+            </ui:CardExpander>
+
+            <ui:CardExpander Header="3. Управление компьютерами" Margin="0,0,0,10" Icon="{ui:SymbolIcon Grid24}">
+                <StackPanel Margin="0,10">
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,10" Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                        <Run FontWeight="Bold">Карта зала:</Run> Во вкладке «Управление компьютерами» отображается визуальная схема. Компьютеры можно перетаскивать для настройки макета зала.
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,10" Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                        <Run FontWeight="Bold">Статусы:</Run> 
+                        <LineBreak/>• Зеленый — свободен
+                        <LineBreak/>• Оранжевый/Красный — занят
+                        <LineBreak/>• Фиолетовый — забронирован
+                        <LineBreak/>• Серый — не обслуживается
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                        <Run FontWeight="Bold">Настройка типа:</Run> Кликните правой кнопкой мыши по ПК, чтобы изменить его категорию (Эконом, Стандарт, VIP и т.д.).
+                    </TextBlock>
+                </StackPanel>
+            </ui:CardExpander>
+
+            <ui:CardExpander Header="4. Тарифы и Финансы" Margin="0,0,0,10" Icon="{ui:SymbolIcon MoneyCalculator24}">
+                <StackPanel Margin="0,10">
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,10" Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                        <Run FontWeight="Bold">Настройка тарифов:</Run> Во вкладке «Тарифы» можно задать стоимость часа для каждой категории компьютеров. Учтите, что для корректной работы у каждого типа ПК должен быть назначен тариф.
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,10" Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                        <Run FontWeight="Bold">Отчеты:</Run> Вкладка «Платежи» содержит историю всех финансовых операций. Можно фильтровать данные по типу (пополнение, списание) или по конкретному клиенту.
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                        <Run FontWeight="Bold">Касса:</Run> «Текущая касса» отображает сводку по доходам за текущую смену.
+                    </TextBlock>
+                </StackPanel>
+            </ui:CardExpander>
+
+            <ui:CardExpander Header="5. Устранение неполадок" Margin="0,0,0,10" Icon="{ui:SymbolIcon ErrorCircle24}">
+                <StackPanel Margin="0,10">
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,10" Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                        <Run FontWeight="Bold">Заблокированные кнопки:</Run> Если кнопка «Открыть сессию» не активна, убедитесь, что выбраны все три поля (клиент, ПК, тариф).
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,10" Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                        <Run FontWeight="Bold">Пустые списки:</Run> Если в выпадающем списке написано «Все типы ПК уже имеют тарифы» или «Нет свободных ПК», значит на данный момент соответствующие ресурсы исчерпаны.
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                        <Run FontWeight="Bold">Ошибки базы данных:</Run> При возникновении критических ошибок проверьте подключение к базе данных в настройках или обратитесь в техническую поддержку.
+                    </TextBlock>
+                </StackPanel>
+            </ui:CardExpander>
+            
+            <TextBlock Text="Версия ПО: 1.0.0.0 (build 2026.05.05)" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Margin="0,20,0,0" HorizontalAlignment="Right"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

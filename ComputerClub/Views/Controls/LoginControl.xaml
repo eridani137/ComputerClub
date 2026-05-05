@@ -26,9 +26,9 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Text="Вход" FontSize="20" FontWeight="SemiBold"
-                   HorizontalAlignment="Center" Margin="0,0,0,16" />
+                   HorizontalAlignment="Center" Margin="0,0,0,16" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 
-        <TextBlock Grid.Row="1" Text="Логин:" Margin="0,0,0,5" />
+        <TextBlock Grid.Row="1" Text="Логин:" Margin="0,0,0,5" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
         <ui:TextBox Grid.Row="2"
                     Text="{Binding Login, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                     Margin="0,0,0,5" />
@@ -36,7 +36,7 @@
                    Visibility="{Binding HasLoginError, Converter={StaticResource BooleanToVisibilityConverter}}"
                    Margin="0,0,0,8" />
 
-        <TextBlock Grid.Row="4" Text="Пароль:" Margin="0,0,0,5" />
+        <TextBlock Grid.Row="4" Text="Пароль:" Margin="0,0,0,5" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
         <ui:PasswordBox x:Name="PasswordBox"
                         Password="{Binding Password, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                         Grid.Row="5"

@@ -100,6 +100,11 @@ public partial class MainWindowViewModel(
                     SymbolRegular.Code24,
                     typeof(DevPage)));
 
+                MenuItems.Add(new NavigationViewItem(
+                    "Справка",
+                    SymbolRegular.QuestionCircle24,
+                    typeof(HelpPage)));
+
                 homePageType = typeof(ComputersManagementPage);
 
                 break;
