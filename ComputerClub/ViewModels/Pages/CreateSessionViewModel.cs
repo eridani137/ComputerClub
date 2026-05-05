@@ -9,15 +9,13 @@ using ComputerClub.Views.Pages;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Wpf.Ui;
-using Wpf.Ui.Controls;
 
 namespace ComputerClub.ViewModels.Pages;
 
 public partial class CreateSessionViewModel(
     ApplicationDbContext context,
     SessionService sessionService,
-    INavigationService navigationService,
-    IContentDialogService dialogService
+    INavigationService navigationService
 ) : ObservableObject
 {
     public ObservableCollection<ScheduleRow> Rows { get; } = [];
@@ -166,19 +164,6 @@ public partial class CreateSessionViewModel(
             ErrorMessage = "Выберите время";
             return;
         }
-
-        var paymentDialog = new ContentDialog
-        {
-            Title = "Способ оплаты",
-            Content = "Чем оплатить?",
-            PrimaryButtonText = "Наличными",
-            SecondaryButtonText = "Картой",
-            CloseButtonText = "Отмена",
-            DefaultButton = ContentDialogButton.Primary,
-        };
-
-        var paymentResult = await dialogService.ShowAsync(paymentDialog, CancellationToken.None);
-        if (paymentResult == ContentDialogResult.None) return;
 
         ErrorMessage = null;
 
