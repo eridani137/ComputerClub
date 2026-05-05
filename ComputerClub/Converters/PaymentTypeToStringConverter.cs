@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Windows.Data;
 using ComputerClub.Infrastructure.Entities;
 
@@ -11,7 +11,8 @@ public class PaymentTypeToStringConverter : IValueConverter
         return value is PaymentType type
             ? type switch
             {
-                PaymentType.TopUp => "Пополнение",
+                PaymentType.TopUpCash => "Пополнение (наличные)",
+                PaymentType.TopUpCard => "Пополнение (карта)",
                 PaymentType.Charge => "Списание",
                 PaymentType.Refund => "Возврат",
                 _ => string.Empty

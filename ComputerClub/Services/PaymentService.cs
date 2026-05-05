@@ -1,4 +1,4 @@
-﻿using ComputerClub.Infrastructure;
+using ComputerClub.Infrastructure;
 using ComputerClub.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,11 +19,16 @@ public class PaymentService(ApplicationDbContext context)
         return GetAll().Where(p => p.ClientId == clientId);
     }
 
-    public async Task<PaymentEntity> TopUp(int clientId, decimal amount, CancellationToken ctx = default)
+    public async Task TopUp(int clientId, decimal amount, PaymentType paymentType, CancellationToken ctx = default)
     {
         if (amount <= 0)
         {
             throw new ArgumentException("Сумма должна быть положительной");
+        }
+
+        if (paymentType is not (PaymentType.TopUpCash or PaymentType.TopUpCard))
+        {
+            throw new ArgumentException("Некорректный тип пополнения");
         }
 
         var client = await context.Users.FindAsync([clientId], ctx)
@@ -35,14 +40,12 @@ public class PaymentService(ApplicationDbContext context)
         {
             ClientId = clientId,
             Amount = amount,
-            Type = PaymentType.TopUp,
+            Type = paymentType,
             CreatedAt = DateTime.UtcNow
         };
 
         context.Payments.Add(payment);
         await context.SaveChangesAsync(ctx);
-
-        return payment;
     }
 
     public async Task<decimal> GetTotalTopUp(int clientId, CancellationToken ctx = default)

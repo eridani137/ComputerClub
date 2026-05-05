@@ -118,8 +118,8 @@
                                     Width="*" />
 
                 <DataGridTextColumn Header="Тип"
-                                    Binding="{Binding TypeDisplay}"
-                                    Width="120" />
+                                    Binding="{Binding Type, Converter={StaticResource PaymentTypeToStringConverter}}"
+                                    Width="220" />
 
                 <DataGridTextColumn Header="Сессия №"
                                     Binding="{Binding SessionId}"

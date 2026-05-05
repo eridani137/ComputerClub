@@ -1,4 +1,4 @@
-﻿namespace ComputerClub.Infrastructure.Entities;
+namespace ComputerClub.Infrastructure.Entities;
 
 public class PaymentEntity
 {
@@ -18,7 +18,8 @@ public class PaymentEntity
 
 public enum PaymentType
 {
-    TopUp,
+    TopUpCash,
     Charge,
-    Refund
+    Refund,
+    TopUpCard
 }

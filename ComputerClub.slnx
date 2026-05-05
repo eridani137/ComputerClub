@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/SolutionFolder/">
+    <File Path=".gitignore" />
+  </Folder>
   <Project Path="ComputerClub.Infrastructure/ComputerClub.Infrastructure.csproj" />
   <Project Path="ComputerClub/ComputerClub.csproj" />
 </Solution>

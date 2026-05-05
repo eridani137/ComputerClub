@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ComputerClub.Infrastructure.Entities;
 using ComputerClub.Mappers;
 using ComputerClub.Models;
 using ComputerClub.Services;
@@ -38,15 +39,15 @@ public partial class CurrentCashViewModel(
             Payments.Add(item.Map());
 
         TotalTopUp = Payments
-            .Where(p => p.Type == Infrastructure.Entities.PaymentType.TopUp)
+            .Where(p => p.Type is PaymentType.TopUpCash or PaymentType.TopUpCard)
             .Sum(p => p.Amount);
 
         TotalCharge = Payments
-            .Where(p => p.Type == Infrastructure.Entities.PaymentType.Charge)
+            .Where(p => p.Type == PaymentType.Charge)
             .Sum(p => p.Amount);
 
         TotalRefund = Payments
-            .Where(p => p.Type == Infrastructure.Entities.PaymentType.Refund)
+            .Where(p => p.Type == PaymentType.Refund)
             .Sum(p => p.Amount);
 
         Total = TotalTopUp + TotalCharge + TotalRefund;

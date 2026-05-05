@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -86,7 +86,7 @@ public partial class ClientsViewModel(
 
         try
         {
-            await paymentService.TopUp(item.Id, item.TopUpAmount);
+            await paymentService.TopUp(item.Id, item.TopUpAmount, item.TopUpPaymentType);
             item.Balance += item.TopUpAmount;
             item.TopUpAmount = 1000;
         }

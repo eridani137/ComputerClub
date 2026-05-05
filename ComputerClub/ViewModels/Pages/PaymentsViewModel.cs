@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -25,7 +25,8 @@ public partial class PaymentsViewModel(PaymentService paymentService)
     public IReadOnlyList<object> PaymentTypes =>
     [
         AllTypes,
-        PaymentType.TopUp,
+        PaymentType.TopUpCash,
+        PaymentType.TopUpCard,
         PaymentType.Charge,
         PaymentType.Refund
     ];

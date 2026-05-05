@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
+using ComputerClub.Infrastructure.Entities;
 
 namespace ComputerClub.Models;
 
@@ -12,4 +13,5 @@ public partial class ClientItem : ObservableObject
     [ObservableProperty] private decimal _balance;
     
     [ObservableProperty] private decimal _topUpAmount = 1000;
+    [ObservableProperty] private PaymentType _topUpPaymentType = PaymentType.TopUpCash;
 }
