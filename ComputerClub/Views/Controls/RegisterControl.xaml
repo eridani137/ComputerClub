@@ -37,7 +37,6 @@
                    Margin="0,0,0,16"
                    Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 
-        <!-- Логин -->
         <TextBlock Grid.Row="1" Text="Логин:" Margin="0,0,0,5" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
         <ui:TextBox Grid.Row="2"
                     Text="{Binding RegLogin, UpdateSourceTrigger=PropertyChanged}"
@@ -48,7 +47,6 @@
                    Visibility="{Binding HasRegLoginError, Converter={StaticResource BooleanToVisibilityConverter}}"
                    Margin="0,0,0,8" />
 
-        <!-- ФИО -->
         <TextBlock Grid.Row="4" Text="ФИО:" Margin="0,0,0,5" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
         <ui:TextBox Grid.Row="5"
                     Text="{Binding RegFullName, UpdateSourceTrigger=PropertyChanged}"
@@ -60,7 +58,6 @@
                    Visibility="{Binding HasRegFullNameError, Converter={StaticResource BooleanToVisibilityConverter}}"
                    Margin="0,0,0,8" />
 
-        <!-- Телефон -->
         <TextBlock Grid.Row="7" Text="Телефон:" Margin="0,0,0,5" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
         <ui:TextBox Grid.Row="8"
                     Text="{Binding RegPhone, UpdateSourceTrigger=PropertyChanged}"
@@ -72,7 +69,6 @@
                    Visibility="{Binding HasRegPhoneError, Converter={StaticResource BooleanToVisibilityConverter}}"
                    Margin="0,0,0,8" />
 
-        <!-- Пароль -->
         <TextBlock Grid.Row="10" Text="Пароль:" Margin="0,0,0,5" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
         <ui:PasswordBox x:Name="PasswordBox"
                         Grid.Row="11"
@@ -84,7 +80,6 @@
                    Visibility="{Binding HasRegPasswordError, Converter={StaticResource BooleanToVisibilityConverter}}"
                    Margin="0,0,0,8" />
 
-        <!-- Кнопки -->
         <StackPanel Grid.Row="13"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top"

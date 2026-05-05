@@ -44,10 +44,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Infrastructure\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\ComputerClub.Infrastructure\ComputerClub.Infrastructure.csproj" />
     </ItemGroup>
 
