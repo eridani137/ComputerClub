@@ -185,7 +185,9 @@ public partial class SessionsViewModel(
     public void Tick()
     {
         foreach (var session in Sessions.Where(s => s.IsActive))
+        {
             session.RefreshDuration();
+        }
 
         var expired = Sessions
             .Where(s => s.IsActive && DateTime.UtcNow >= s.StartedAt + s.PlannedDuration)

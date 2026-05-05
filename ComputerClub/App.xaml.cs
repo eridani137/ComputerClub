@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Windows;
 using ComputerClub.Configuration;
 using ComputerClub.Infrastructure;
@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Serilog;
 using Wpf.Ui;
 using Wpf.Ui.DependencyInjection;
@@ -138,6 +137,7 @@ public partial class App : Application
 
         services.AddTransient<SessionService>();
         services.AddTransient<PaymentService>();
+        services.AddTransient<ShiftReportService>();
         
         services.AddSingleton<SessionTickService>();
 

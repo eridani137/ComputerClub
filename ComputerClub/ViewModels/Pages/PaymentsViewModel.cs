@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ComputerClub.Infrastructure.Entities;
@@ -20,7 +18,7 @@ public partial class PaymentsViewModel(PaymentService paymentService)
     [ObservableProperty] private PaymentType? _filterType;
     [ObservableProperty] private string? _filterClient;
 
-    public const string AllTypes = "Все";
+    private const string AllTypes = "Все";
 
     public IReadOnlyList<object> PaymentTypes =>
     [
@@ -40,7 +38,7 @@ public partial class PaymentsViewModel(PaymentService paymentService)
         _activeFilterType = value is PaymentType type ? type : null;
         _ = Refresh();
     }
-    
+
     [RelayCommand]
     private async Task Loaded()
     {
