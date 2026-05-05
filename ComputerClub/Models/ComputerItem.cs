@@ -15,6 +15,8 @@ public partial class ComputerItem : ObservableObject
     [ObservableProperty] private DateTime? _reservationStartsAt;
     [ObservableProperty] private DateTime? _reservationEndsAt;
 
+    public string DisplayName => Id > 0 ? $"ПК №{Id}" : "Нет свободных компьютеров";
+
     public string SessionTimeDisplay
     {
         get

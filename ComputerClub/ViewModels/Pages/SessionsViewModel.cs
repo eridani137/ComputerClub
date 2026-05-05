@@ -50,7 +50,9 @@ public partial class SessionsViewModel(
     {
         ErrorMessage = null;
 
-        if (SelectedClient is null || SelectedTariff is null || SelectedComputer is null)
+        if (SelectedClient is null || SelectedClient.Id <= 0 || 
+            SelectedTariff is null || 
+            SelectedComputer is null || SelectedComputer.Id <= 0)
         {
             ErrorMessage = "Выберите клиента, компьютер и тариф";
             return;
@@ -145,6 +147,11 @@ public partial class SessionsViewModel(
             Clients.Add(client.Map());
         }
 
+        if (Clients.Count == 0)
+        {
+            Clients.Add(new ClientItem { Id = -1, Login = "Нет зарегистрированных клиентов" });
+        }
+
         var tariffs = await context.Tariffs.ToListAsync();
         foreach (var tariff in tariffs)
         {
@@ -164,6 +171,11 @@ public partial class SessionsViewModel(
         foreach (var c in computers)
         {
             AvailableComputers.Add(c.Map());
+        }
+
+        if (AvailableComputers.Count == 0)
+        {
+            AvailableComputers.Add(new ComputerItem { Id = -1 });
         }
     }
 

@@ -58,7 +58,7 @@
                                FontSize="11" Margin="0,0,0,2" />
                     <ComboBox ItemsSource="{Binding AvailableComputers}"
                               SelectedItem="{Binding SelectedComputer}"
-                              DisplayMemberPath="Id" />
+                              DisplayMemberPath="DisplayName" />
                 </StackPanel>
 
                 <StackPanel Grid.Column="2" Margin="0,0,8,0">
