@@ -119,6 +119,7 @@ public partial class App : Application
         services.AddTransient<ClientSessionViewModel>();
         services.AddTransient<CreateSessionViewModel>();
         services.AddTransient<HelpViewModel>();
+        services.AddTransient<TopUpViewModel>();
 
         services.AddTransient<ComputersManagementPage>();
         services.AddTransient<CurrentCashPage>();
@@ -130,6 +131,7 @@ public partial class App : Application
         services.AddTransient<ClientSessionPage>();
         services.AddTransient<CreateSessionPage>();
         services.AddTransient<HelpPage>();
+        services.AddTransient<TopUpPage>();
 
         services.AddNavigationViewPageProvider();
         services.AddSingleton<ISnackbarService, SnackbarService>();

@@ -110,6 +110,10 @@ public partial class MainWindowViewModel(
                 break;
 
             case "User":
+                MenuItems.Add(new NavigationViewItem(
+                    "Пополнение баланса",
+                    SymbolRegular.ArrowCircleUp24,
+                    typeof(TopUpPage)));
 
                 homePageType = typeof(ClientSessionPage);
 

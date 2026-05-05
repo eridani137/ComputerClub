@@ -1,0 +1,100 @@
+<Page x:Class="ComputerClub.Views.Pages.TopUpPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:pages="clr-namespace:ComputerClub.ViewModels.Pages"
+      xmlns:converters="clr-namespace:ComputerClub.Converters"
+      mc:Ignorable="d"
+      d:DesignHeight="800" d:DesignWidth="1200"
+      d:DataContext="{d:DesignInstance Type=pages:TopUpViewModel, IsDesignTimeCreatable=False}"
+      ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+      ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}">
+
+    <behaviors:Interaction.Triggers>
+        <behaviors:EventTrigger EventName="Loaded">
+            <behaviors:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </behaviors:EventTrigger>
+    </behaviors:Interaction.Triggers>
+
+    <Page.Resources>
+        <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
+        <converters:PaymentTypeEqualConverter x:Key="PaymentTypeEqualConverter" />
+    </Page.Resources>
+
+    <DockPanel Margin="20">
+
+        <ui:InfoBar DockPanel.Dock="Top"
+                    IsOpen="{Binding ErrorMessage, Converter={StaticResource NullToBoolConverter}}"
+                    Message="{Binding ErrorMessage}"
+                    Severity="Error"
+                    IsClosable="True"
+                    Margin="0,0,0,12" />
+
+        <Grid>
+            <ui:Card HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     Padding="40"
+                     Width="400">
+                <StackPanel>
+
+                    <TextBlock Text="Пополнение баланса"
+                               FontSize="20"
+                               FontWeight="SemiBold"
+                               Margin="0,0,0,4"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+
+                    <TextBlock FontSize="28"
+                               FontWeight="Bold"
+                               Margin="0,0,0,28"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}">
+                        <Run Text="{Binding Balance, StringFormat={}{0:N2}}" />
+                        <Run Text=" ₽" />
+                    </TextBlock>
+
+                    <TextBlock Text="Сумма"
+                               FontSize="13"
+                               Margin="0,0,0,6"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                    <ui:NumberBox Value="{Binding Amount, UpdateSourceTrigger=PropertyChanged}"
+                                  Minimum="1"
+                                  SmallChange="100"
+                                  LargeChange="1000"
+                                  ClearButtonEnabled="False"
+                                  HorizontalAlignment="Stretch"
+                                  Margin="0,0,0,20" />
+
+                    <TextBlock Text="Способ оплаты"
+                               FontSize="13"
+                               Margin="0,0,0,8"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,28">
+                        <RadioButton Content="Наличные"
+                                     IsChecked="{Binding SelectedPaymentType,
+                                         Converter={StaticResource PaymentTypeEqualConverter},
+                                         ConverterParameter=TopUpCash,
+                                         UpdateSourceTrigger=PropertyChanged}"
+                                     Margin="0,0,16,0"
+                                     GroupName="TopUpPayMethod" />
+                        <RadioButton Content="Карта"
+                                     IsChecked="{Binding SelectedPaymentType,
+                                         Converter={StaticResource PaymentTypeEqualConverter},
+                                         ConverterParameter=TopUpCard,
+                                         UpdateSourceTrigger=PropertyChanged}"
+                                     GroupName="TopUpPayMethod" />
+                    </StackPanel>
+
+                    <ui:Button Content="Пополнить"
+                               Icon="{ui:SymbolIcon ArrowCircleUp24}"
+                               Appearance="Primary"
+                               HorizontalAlignment="Stretch"
+                               Command="{Binding TopUpCommand}" />
+
+                </StackPanel>
+            </ui:Card>
+        </Grid>
+
+    </DockPanel>
+</Page>
