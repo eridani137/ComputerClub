@@ -14,7 +14,7 @@ public partial class TariffsViewModel(ApplicationDbContext context) : Observable
     public ObservableCollection<TariffItem> Tariffs { get; } = [];
 
     [ObservableProperty] private ObservableCollection<ComputerTypeDefinition> _availableTypes = [];
-    
+
     [ObservableProperty] private string _newName = string.Empty;
     [ObservableProperty] private decimal _newPricePerHour;
     [ObservableProperty] private ComputerTypeDefinition? _newComputerType;
@@ -28,10 +28,10 @@ public partial class TariffsViewModel(ApplicationDbContext context) : Observable
         {
             Tariffs.Add(e.Map());
         }
-        
+
         RefreshAvailableTypes();
     }
-    
+
     [RelayCommand]
     private async Task AddTariff()
     {
@@ -49,7 +49,7 @@ public partial class TariffsViewModel(ApplicationDbContext context) : Observable
             return;
         }
 
-        if (NewComputerType is null)
+        if (NewComputerType is null || NewComputerType.Id <= 0)
         {
             ErrorMessage = "Выберите тип компьютера";
             return;
@@ -79,7 +79,7 @@ public partial class TariffsViewModel(ApplicationDbContext context) : Observable
         NewPricePerHour = 0;
         NewComputerType = null;
     }
-    
+
     [RelayCommand]
     private async Task RemoveTariff(TariffItem item)
     {
@@ -101,7 +101,7 @@ public partial class TariffsViewModel(ApplicationDbContext context) : Observable
         Tariffs.Remove(item);
         RefreshAvailableTypes();
     }
-    
+
     [RelayCommand]
     private async Task SaveTariff(TariffItem item)
     {
@@ -115,13 +115,14 @@ public partial class TariffsViewModel(ApplicationDbContext context) : Observable
 
         await context.SaveChangesAsync();
     }
-    
+
     private void RefreshAvailableTypes()
     {
         var usedTypeIds = Tariffs.Select(t => t.ComputerTypeId).ToHashSet();
+        var available = ComputerTypes.All.Where(t => t.Id != 0 && !usedTypeIds.Contains(t.Id)).ToList();
 
-        AvailableTypes = new ObservableCollection<ComputerTypeDefinition>(
-            ComputerTypes.All.Where(t => t.Id != 0 && !usedTypeIds.Contains(t.Id))
-        );
+        AvailableTypes = available.Count == 0
+            ? [new ComputerTypeDefinition { Id = -1, Name = "Все типы ПК уже имеют тарифы" }]
+            : new ObservableCollection<ComputerTypeDefinition>(available);
     }
 }
