@@ -25,11 +25,33 @@ public partial class ClientsViewModel(
 
     [ObservableProperty] private ClientItem? _selectedClient;
     [ObservableProperty] private string? _errorMessage;
+    [ObservableProperty] private string _searchQuery = string.Empty;
+    
+    partial void OnSearchQueryChanged(string value)
+    {
+        _ = Refresh();
+    }
     
     [RelayCommand]
     private async Task Loaded()
     {
-        var clients = await userManager.Users.ToListAsync();
+        await Refresh();
+    }
+
+    [RelayCommand]
+    private async Task Refresh()
+    {
+        Clients.Clear();
+        
+        var query = userManager.Users.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(SearchQuery))
+        {
+            query = query.Where(u => u.UserName!.Contains(SearchQuery) || 
+                                     (u.FullName != null && u.FullName.Contains(SearchQuery)));
+        }
+
+        var clients = await query.ToListAsync();
 
         foreach (var client in clients)
         {

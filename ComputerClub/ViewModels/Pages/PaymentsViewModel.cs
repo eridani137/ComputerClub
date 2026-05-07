@@ -60,7 +60,8 @@ public partial class PaymentsViewModel(PaymentService paymentService)
 
         if (!string.IsNullOrWhiteSpace(FilterClient))
         {
-            query = query.Where(p => p.Client.UserName!.Contains(FilterClient));
+            query = query.Where(p => p.Client.UserName!.Contains(FilterClient) || 
+                                     (p.Client.FullName != null && p.Client.FullName.Contains(FilterClient)));
         }
 
         var items = await query.ToListAsync();

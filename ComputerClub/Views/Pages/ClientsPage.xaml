@@ -28,6 +28,32 @@
 
     <DockPanel Margin="20">
 
+        <Border DockPanel.Dock="Top"
+                Background="{DynamicResource ControlFillColorDefaultBrush}"
+                CornerRadius="8" Padding="16" Margin="0,0,0,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                    <TextBlock Text="Поиск клиента"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                               FontSize="11" Margin="0,0,0,2" />
+                    <ui:TextBox Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
+                                PlaceholderText="Поиск по ФИО или логину" />
+                </StackPanel>
+
+                <ui:Button Grid.Column="1"
+                           Content="Обновить"
+                           Height="36"
+                           Icon="{ui:SymbolIcon ArrowSync24}"
+                           Command="{Binding RefreshCommand}"
+                           VerticalAlignment="Bottom" />
+            </Grid>
+        </Border>
+
         <ui:InfoBar DockPanel.Dock="Top"
                     IsOpen="{Binding ErrorMessage, Converter={StaticResource NullToBoolConverter}}"
                     Message="{Binding ErrorMessage}"
