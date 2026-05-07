@@ -68,7 +68,7 @@ public partial class CurrentCashViewModel(
             .Where(p => p.Type == PaymentType.Refund)
             .Sum(p => p.Amount);
 
-        Total = TotalTopUp + TotalCharge + TotalRefund;
+        Total = TotalTopUp;
     }
 
     [RelayCommand]

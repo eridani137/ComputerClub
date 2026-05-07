@@ -25,7 +25,7 @@ public class ShiftReportService(ApplicationDbContext context)
         var charges = payments.Where(p => p.Type == PaymentType.Charge).Sum(p => p.Amount); // отрицательные
         var refunds = payments.Where(p => p.Type == PaymentType.Refund).Sum(p => p.Amount);
         var totalTopUp = topUpCash + topUpCard;
-        var netCash = totalTopUp + charges + refunds;
+        var netCash = totalTopUp;
 
         using var wb = new XLWorkbook();
 
