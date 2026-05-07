@@ -7,9 +7,12 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui:ThemesDictionary Theme="Dark" />
+                <ui:ThemesDictionary Theme="Light" />
                 <ui:ControlsDictionary />
             </ResourceDictionary.MergedDictionaries>
+            <SolidColorBrush x:Key="ButtonBackground" Color="#BEBEBE" />
+            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#AEAEAE" />
+            <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#9E9E9E" />
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <converters:BoolToThemeIconConverter x:Key="BoolToThemeIconConverter" />
             <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />

@@ -49,17 +49,20 @@ public partial class TariffsViewModel(ApplicationDbContext context) : Observable
             return;
         }
 
-        if (NewComputerType is null || NewComputerType.Id <= 0)
+        if (NewComputerType is null)
         {
             ErrorMessage = "Выберите тип компьютера";
             return;
         }
 
-        var exists = await context.Tariffs.AnyAsync(t => t.ComputerTypeId == NewComputerType.Id);
-        if (exists)
+        if (NewComputerType.Id > 0)
         {
-            ErrorMessage = $"Тариф для типа '{NewComputerType.Name}' уже существует";
-            return;
+            var exists = await context.Tariffs.AnyAsync(t => t.ComputerTypeId == NewComputerType.Id);
+            if (exists)
+            {
+                ErrorMessage = $"Тариф для типа '{NewComputerType.Name}' уже существует";
+                return;
+            }
         }
 
         var entity = new TariffEntity
@@ -119,10 +122,8 @@ public partial class TariffsViewModel(ApplicationDbContext context) : Observable
     private void RefreshAvailableTypes()
     {
         var usedTypeIds = Tariffs.Select(t => t.ComputerTypeId).ToHashSet();
-        var available = ComputerTypes.All.Where(t => t.Id != 0 && !usedTypeIds.Contains(t.Id)).ToList();
+        var available = ComputerTypes.All.Where(t => t.Id == 0 || !usedTypeIds.Contains(t.Id)).ToList();
 
-        AvailableTypes = available.Count == 0
-            ? [new ComputerTypeDefinition { Id = -1, Name = "Все типы ПК уже имеют тарифы" }]
-            : new ObservableCollection<ComputerTypeDefinition>(available);
+        AvailableTypes = new ObservableCollection<ComputerTypeDefinition>(available);
     }
 }
